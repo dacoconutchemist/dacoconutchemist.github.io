@@ -1,11 +1,10 @@
 var pages = {
-    "Amogus sound illusion": ["/amogus", "hear what you read!"],
     "fx-991DEX typer": ["/fx-991DEX", "converts text to button presses on the fx-991DEX calculator"],
-    "Guthib": ["/guthib", "\"You spelled it wrong.\""],
     "Hexguessr": ["/hexguessr", "hone your hex color reading and writing skills!"],
     "Rock-Paper-Scissors": ["/rockpaperscissors", "look at em go!"],
     "Gravity simulation": ["/particles", "balls go vroom vroom"],
-    "Desmos": ["/desmos", "stuff I made with desmos (not available yet)"],
+    "4our 4ours": ["/4our4ours", "the Four Fours game from Numberphile, but digital and more customizable (not available yet)"],
+    "Desmos": ["/desmos", "stuff I made with Desmos (not available yet)"],
     "Tampermonkey": ["/tampermonkey", "my userscripts (not available yet)"]
 };
 
