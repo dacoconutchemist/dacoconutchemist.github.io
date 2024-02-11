@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Калькулятор цін ГК</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <!-- CDN stuff -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <!-- /CDN stuff -->
+  </head>
+  <body style="overflow-y:visible">
+    <div id="header">
+      <div class="row" style="margin: 5px;">
+        <div class="col" style="text-align: left; justify-content: left; display: flex; flex-direction: column;">
+          <a id="colortoggler" href="javascript:void(0)" onclick="toggleColor(this)">🌙</a>
+          <a id="langsel" href="javascript:void(0)" onclick="changeLang()">Вибрати версію та мову зачарувань</a>
+          <p id="langdisplay">Мова: </p>
+        </div> 
+        <div class="col" style="text-align: right; justify-content: right; display: flex; align-items: center;">
+          Створено dacoconutchemist, офіційно затверджено адмінами ГК
+        </div>
+      </div>
+      <h1><a href="https://pricecalc.gummercraft.repl.co" id="title">Калькулятор мінімальних цін на ГК</a></h1>
+    </div>
+    
+    <div class="maincontainer container rounded ml-2 mr-2 row">
+      <div class="col-sm-auto d-flex flex-column align-items-center justify-content-center mx-auto">
+        <img class="bigimg" id="bigimg">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdowntext">
+            Незеритове кайло
+          </button>
+          <ul class="dropdown-menu dropdown-menu-center" id="itemslist"></ul>
+        </div>
+      </div>
+      <h2 class="col-sm-1 d-flex flex-column align-items-center justify-content-center mx-auto">+</h2>
+      <div class="col-lg-auto d-flex flex-column justify-content-center mx-auto" id="enchcheck"></div>
+      <h2 class="col-sm-1 d-flex flex-column align-items-center justify-content-center mx-auto">=</h2>
+      <div class="col-sm-auto d-flex flex-column justify-content-center align-items-center mx-auto">
+        <div class="d-flex flex-row justify-content-center align-items-center mx-auto">
+          <img class="bigimg" src="sunflower.png">
+          <span id="priceout" class="text-warning"></span>
+        </div>
+        <span id="bookexpl">Для зачарованих книг з зачаруваннями, які несумісні (такі інколи можуть вийти з стола зачарування), розрахунок проводиться дещо по іншому. Пояснення можна знайти <a href="https://t.me/gummerCraft_chat/780531" target="_blank">тут</a> і <a href="https://t.me/gummerCraft_chat/780920" target="_blank">тут</a>.
+        
+        </span>
+        <span>Цей калькулятор видає саме МІНІМАЛЬНУ ціну, тобто продавати речі за цінами ВИЩЕ показаної калькулятором МОЖНА</span>
+      </div>
+      <button type="button" class="btn btn-outline-warning" id="copylink" onclick="copyLink()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-intersect" viewBox="0 0 16 16">
+          <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm5 10v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2v5a2 2 0 0 1-2 2H5zm6-8V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2V6a2 2 0 0 1 2-2h5z"/>
+        </svg>
+      &nbsp;Скопіювати посилання на поточні зачарування і інструмент, щоб показати порушнику =)
+      </button>
+      <!--<input type="text" value="" id="copyField" style="display:none;">-->
+    </div>
+    <div id="langseloverlay" style="display: none;">
+      <div id="langselcontainer">
+        <h2>Виберіть мову та/або версію:</h2>
+        <h6>(зміниться тільки мова зачарів а не інтерфейсу)</h6>
+        <div id="langchecks"></div>
+        <br>
+        <a href="javascript:void(0)" onclick="setLang()">Обрати мову</a>
+        <br class="notshowonfirst">
+        <a href="javascript:void(0)" onclick="changeLang(!notranslation)" class="notshowonfirst">Закрити</a>
+        <!--<a href="javascript:void(0)" onclick="Cookies.remove('lang')">Очистити</a>-->
+      </div>
+    </div>
+    
+    <script src="itemdata.js"></script>
+    <script src="script.js"></script>
+    <!--<script src="https://replit.com/public/js/replit-badge-v2.js" theme="light" position="bottom-right"></script>-->
+  </body>
+</html>
