@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HexGuessr</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link rel="stylesheet" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+    Enter the hex color below that corresponds to the given color
+		<div>
+			<div id="guessedhex" style="width: 200px; height: 200px; display: inline-block;"></div><div id="comparisonhex" style="width: 100px; height: 200px; display: none;"></div>
+		</div>
+		<input type="text" id="hexinput" placeholder="Enter hex color" style="color: #000; background-color: #fff">
+		<button id="hexsubmit" style="color: #000">Submit</button>
+		<span id="result" style="white-space: pre-line; text-align: center;"></span>
+		<button id="hexnext" style="color: #000; display: none;" onclick="initHexFromColor()">Next</button>
+    <br>
+    <a href="/">Back to homepage</a>
+		<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>

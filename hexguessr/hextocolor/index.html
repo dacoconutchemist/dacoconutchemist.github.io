@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HexGuessr</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link rel="stylesheet" href="../style.css">
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/a-color-picker@1.1.8/dist/acolorpicker.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+    Choose a color below that corresponds to the given hex code
+    <!--тут якщо натиснути на кружок то копіюється хекс код, це нагадування майбутньому собі - fixed-->
+    <b><span id="guessedhex"></span></b>
+    <div id="picker"
+         acp-color="#e96010"
+         acp-show-rgb="no"
+         acp-show-hsl="no"
+         acp-show-hex="no">
+    </div>
+		<div>
+			<div id="guessedcolor" style="width: 200px; height: 200px; display: inline-block; background-color: #e96010;"></div><div id="comparisoncolor" style="width: 100px; height: 200px; display: none;"></div>
+		</div>
+		<button id="colorsubmit" style="color: #000">Submit</button>
+		<span id="result" style="white-space: pre-line; text-align: center;"></span>
+		<button id="colornext" style="color: #000; display: none;" onclick="initColorFromHex()">Next</button>
+    <br>
+    <a href="/">Back to homepage</a>
+		<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>

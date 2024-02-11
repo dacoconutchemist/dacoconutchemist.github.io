@@ -1,0 +1,20 @@
+body {
+	background-color: #333333;
+}
+body {
+	display: flex;
+	align-items: center;
+  justify-content: center;
+	flex-direction: column;
+}
+* {
+  font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+	color: #fff;
+  font-size: 25px;
+  text-align: center;
+}
+
+::-webkit-input-placeholder { text-align: center; }
+:-moz-placeholder { text-align: center; }
+::-moz-placeholder { text-align: center; }
+:-ms-input-placeholder { text-align: center; }
