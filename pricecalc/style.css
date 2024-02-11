@@ -1,0 +1,134 @@
+html {
+  /*height:100%*/
+  width: 100%;
+}
+
+@font-face {
+  font-family: ukrminecraft;
+  src: url(minecraftfontukr.ttf);
+}
+
+* {
+  font-family: ukrminecraft !important;
+}
+
+#header {
+  /*position: absolute;*/
+  width: 100%;
+}
+#colortoggler {
+  text-decoration: none;
+}
+
+#colortoggler::after {
+  content: ' Змінити тему';
+}
+
+#langsel {
+  text-decoration: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  /*justify-content: center;*/
+  align-items: center;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+h1 {
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.maincontainer {
+  background-color: #80808044;
+  padding: 10px;
+}
+
+.inlineimg {
+  display: inline-block;
+  image-rendering: pixelated;
+  height: 24px;
+  width:auto;
+}
+
+.bigimg {
+  width: 75px; 
+  height: auto; 
+  image-rendering: pixelated;
+  margin-bottom: 10px;
+}
+
+#itemslist {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.dropdown-menu-center {
+  right: auto !important;
+  left: 50% !important;
+  top: 100% !important;
+  -webkit-transform: translate(-50%, 0) !important;
+  -o-transform: translate(-50%, 0) !important;
+  transform: translate(-50%, 0) !important;
+}
+
+#enchcheck {
+  /*overflow-y: auto;*/
+}
+
+#priceout {
+  font-size: xx-large;
+}
+
+#bookexpl {
+  white-space: pre-line;
+}
+
+#copylink {
+  margin-top: 10px;
+}
+
+#title {
+  color: #fff; 
+  text-decoration:none;
+}
+
+#langseloverlay {
+  /*background-color: rgba(var(--bs-body-bg), 0.5);*/
+  position:absolute;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100%;
+  overflow-x:hidden;
+  display:none;
+  align-items: center;
+  justify-content: center;
+}
+
+#langchecks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#langselcontainer {
+  background-color: var(--bs-body-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 20px;
+  border: var(--bs-body-color) solid 1px;
+}
+
+#langselcontainer > * {
+  text-align: center;
+}
