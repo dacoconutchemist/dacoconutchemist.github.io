@@ -1,0 +1,44 @@
+.sprite1 {
+	--height: 30px;
+	display: inline-block;
+	width: calc(var(--height) / 208 * 345);
+	height: var(--height);
+	background-image: url('spritesheet1-345x208grid.png');
+	background-size: calc(var(--height) * 6 / 208 * 345) calc(var(--height) * 5);
+	background-position: calc(49.75px * -1) calc(30px * -1);
+}
+.sprite2 {
+	--height: 30px;
+	display: inline-block;
+	width: calc(var(--height) / 282 * 411);
+	height: var(--height);
+	background-image: url('spritesheet2-411x282grid.png');
+	background-size: calc(var(--height) * 5 / 282 * 411) calc(var(--height) * 4);
+	background-position: calc(43.7px * -1) calc(30px * -1);
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: center !important;
+    border: 1px solid #fff !important;
+    padding: 5px;
+}
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+#output {
+	max-width: 90%;
+	text-align: center;
+}
+h1 {
+	margin-bottom: 0px !important;
+}
+i {
+	margin-bottom: 10px;
+}
