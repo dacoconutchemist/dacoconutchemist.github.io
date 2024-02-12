@@ -3,7 +3,7 @@ var pages = {
     "Hexguessr": ["/hexguessr", "hone your hex color reading and writing skills!"],
     "Rock-Paper-Scissors": ["/rockpaperscissors", "look at em go!"],
     "Gravity simulation": ["/particles", "balls go vroom vroom"],
-    "4our 4ours": ["/4our4ours", "the Four Fours game from Numberphile, but digital and more customizable (not available yet)"],
+    "4our 4ours": ["/4our4ours", "the Four Fours game from Numberphile, but digital and more customizable (beta version)"],
     "Desmos": ["/desmos", "stuff I made with Desmos (not available yet)"],
     "Tampermonkey": ["/tampermonkey", "my userscripts (not available yet)"]
 };
