@@ -1,0 +1,134 @@
+:root {
+	--generalpadding: 8px;
+}
+
+.fonted {
+	font-family: 'Symbola', serif;
+	text-align: center;
+}
+
+body, html {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+}
+
+#tophold {
+	flex: 7;
+	display: flex;
+	flex-direction: row;
+	margin: 0;
+}
+
+#lefthold {
+	flex: 3;
+	background-color: var(--bs-secondary-bg);
+	display: flex;
+	flex-direction: column;
+	/*padding: var(--generalpadding);*/
+	margin: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#righthold {
+	flex: 7;
+	background-color: var(--bs-body-bg);
+	display: flex;
+	flex-direction: column;
+	align-items: safe center;
+	justify-content: safe center;
+	padding: var(--generalpadding);
+	margin: 0;
+	overflow-x: auto;
+}
+
+#bottomhold {
+	flex: 3;
+	background-color: var(--bs-tertiary-bg);
+	padding: var(--generalpadding);
+	overflow-y: auto;
+}
+
+#bottomholdinternal {
+	margin: 0;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	width: 100%;
+	height: auto;
+}
+
+#result_add {
+	border-radius: 5px;
+	border: none;
+	font-style: italic;
+}
+
+.numberselector {
+	font-family: 'Symbola', serif;
+	text-align: center;
+	font-weight: bold;
+	width: 40px;
+	height: 40px;
+	border-radius: 5px;
+	margin: 8px;
+	border: none;
+    background-color: var(--bs-secondary-bg);
+	transition: background-color 0.25s ease-out;
+	word-break: break-all;
+	font-size: 16px;
+	line-height: 17px;
+}
+
+.numberselector:hover, .numberselector.selected {
+	background-color: #57616b;
+}
+
+#topbar {
+	background-color: #14171a;
+	width: 100%;
+	padding: 12px;
+	padding-left: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: left;
+}
+
+#topbar > * {
+	font-family: 'Symbola', serif;
+	margin-right: 20px;
+	text-decoration: none;
+	font-style: italic;
+	color: #ffffff;
+	cursor: pointer;
+}
+
+.expressioninlist {
+	width: 100%; 
+	padding: 12px; 
+	border-bottom: 1px solid #57616b; 
+	overflow-x: scroll;
+}
+
+@media screen and (max-width: 768px) {
+	#lefthold {
+		flex: 5
+	}
+	#righthold {
+		flex: 5;
+	}
+}
+
+@media screen and (max-width: 576px) {
+	#tophold {
+		flex-direction: column-reverse;
+	}
+}
