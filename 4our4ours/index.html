@@ -10,13 +10,14 @@
         <link rel="icon" type="image/x-icon" href="favicon.png">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="mathquill-basic.js"></script>
+        <script src="mathquill-basic-modified.js"></script>
     </head>
     <body data-bs-theme="dark">
         <div id="topbar">
+            <a class="fonted" onclick="saveGame()">Files</a>
             <a class="fonted" onclick="saveGame()">Save</a>
             <a class="fonted" onclick="loadGame()">Load</a>
-            <a class="fonted" onclick="alert('я ще не написав хелп, питай в автора')">Help</a>
+            <a class="fonted" onclick="$('#helpoverlay').show()">Help</a>
         </div>
         <div id="tophold">
             <div id="lefthold">
@@ -40,6 +41,46 @@
             beta version, this isn't fully complete yet
             бета-версія, я це ще не розробив до кінця
         </i>
+        <div id="helpoverlay" style="display: none">
+            <div id="helpwindow">
+                <div id="helpcontent" class="fonted">
+FUNCTION HELP:
+This game uses the same entry system as Desmos
+
+There needs to be a multiplication symbol (for example, <span class="bolded">4(4-4+4)</span> won't work, but <span class="bolded">4*(4-4+4)</span> will)
+All functions need parentheses (for example <span class="bolded">4*sin 4</span> won't work, but <span class="bolded">4*sin(4)</span> will)
+Apart from the functions listed below, you can use <span class="bolded">+, -, /, *, ^,</span> unary minus and parentheses
+
+special functions:
+
+<span class="bolded">sqrt</span> - square root, automatically converts to <span class="bolded">√▔</span>
+<span class="bolded">log_x(y)</span> - log base x of y, automatically converts to <span class="bolded">log ₓ (y)</span>
+<span class="bolded">|x|</span> - absolute value of x
+<span class="bolded">x%</span> - same as x/100
+<span class="bolded">x!</span> - factorial (only for whole numbers)
+<span class="bolded">gcd(x,y)</span> - greatest common divisor (2 arguments)
+<span class="bolded">lcm(x,y)</span> - least common multiple (2 arguments)
+
+functions with 1 argument:
+usage: <span class="bolded">func(x)</span>
+
+<span class="bolded">floor</span> - round down
+<span class="bolded">ceil</span> - round up
+<span class="bolded">ln</span> - natural log
+<span class="bolded">log</span> - base 10 log
+<span class="bolded">abs</span> - absolute value (alias)
+<span class="bolded">exp</span> - exponentiate (e^x)
+<span class="bolded">sin, cos, tan / tg</span> - sine, cosine, tangent (all in radians), tangent has 2 aliases
+<span class="bolded">csc, sec, cot / ctg</span> - cosecant, secant, cotangent (all in radians), cotangent has 2 aliases
+For all the aforementioned trigonometric functions, their:
+arc variants (<span class="bolded">arcsin, arccos, arctan / arctg, arccsc, arcsec, arccot / arcctg</span>), 
+hyperbolic variants (<span class="bolded">sinh, cosh, tanh / ctgh, csch, sech, coth / ctgh</span>),
+arc hyperbolic variants (<span class="bolded">arcsinh, arccosh, arctanh / arctgh, arccsch, arcsech, arccoth / arcctgh</span>) 
+are available.
+                </div>
+                <b id="helpclose" onclick="$('#helpoverlay').hide()">X</b>
+            </div>
+        </div>
         <script src="evaluation.js"></script>
         <script src="game.js"></script>
         <script src="dom.js"></script>

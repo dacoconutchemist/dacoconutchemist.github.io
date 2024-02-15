@@ -13,16 +13,15 @@ function mathEditEvent() {
     let toJS = toJavascript(latex, CURRENTGAME.options);
     let result = safeEvaluate(toJS);
 
-    /*console.info(
+    console.info(
     `[INFO]
     input expression: ${latex}
     replaced expression: ${toJS}
-    result: ${result}`);*/
+    result: ${result}`);
 
     $('#result_add').hide();
     addNumShown = false;
-    if (result) {
-
+    if (result === 0 || result) {
     	$('#comp_result').text(`= ${+result.toFixed(10)}`);
 
     	if (!CURRENTGAME.checkValidity(latex)) 
@@ -51,7 +50,10 @@ function mathEditEvent() {
 
 mathField.config({
     autoCommands: 'sqrt',
-    autoOperatorNames: "floor ceil log ln exp gcd lcm sin cos tan",
+    autoOperatorNames: "floor ceil log ln exp gcd lcm sin cos tan tg csc " + 
+                       "sec cot ctg arcsin arccos arctg arctan arccsc arcsec " + 
+                       "arccot arcctg sinh cosh tanh tgh csch sech coth ctgh " + 
+                       "arcsinh arccosh arctgh arctanh arccsch arcsech arccoth arcctgh",
     spaceBehavesLikeTab: true,
     handlers: {
         edit: mathEditEvent,
