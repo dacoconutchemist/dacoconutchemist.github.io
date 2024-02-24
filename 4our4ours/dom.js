@@ -181,13 +181,13 @@ var timeouts = [];
 $(".repeatPresses").each(function() {
     var element = $(this);
     var timeout;
-    element.on('mousedown', function() {
+    element.on('mousedown touchstart', function() {
         timeout = setTimeout(function() {
             triggerAction();
             timeout = setInterval(triggerAction, 100);
         }, 1000);
         timeouts.push(timeout);
-    }).on('mouseup mouseleave', function() {
+    }).on('mouseup mouseleave touchend touchcancel', function() {
         clearTimeout(timeout);
         clearInterval(timeout);
     });
