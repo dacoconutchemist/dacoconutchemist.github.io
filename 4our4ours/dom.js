@@ -203,7 +203,6 @@ $(".repeatPresses").each(function() {
     }
 });*/
 
-var timeouts = [];
 $(".repeatPresses").each(function() {
     var element = $(this);
     var timeout;
@@ -214,11 +213,12 @@ $(".repeatPresses").each(function() {
             triggerAction();
             timeout = setInterval(triggerAction, 100);
         }, 1000);
-        timeouts.push(timeout);
     }).on('mouseup mouseleave touchend touchcancel', function() {
         clearTimeout(timeout);
         clearInterval(timeout);
-    }).on('click touchend', function(e) {
+    });
+
+    element.on('click touchend', function(e) {
         e.preventDefault(); // Prevent default touch behavior
         triggerAction();
     });
