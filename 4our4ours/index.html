@@ -7,21 +7,23 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="mathquill-basic.css"/>
         <link rel="stylesheet" href="style.css">
-        <link rel="icon" type="image/x-icon" href="favicon.png">
+        <link rel="icon" type="image/x-icon" href="media/favicon.png">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Using a part of this fork (the file src/services/saneKeyboardEvents.util.js, lines 1364 - 1644 in mathquill-basic-modified.js) to fix inputs on mobile devices -->
+        <!-- https://github.com/Mathpp/mathquill/tree/androidgboard -->
         <script src="mathquill-basic-modified.js"></script>
     </head>
     <body data-bs-theme="dark">
         <div id="topbar">
-            <!--<a class="fonted" onclick="saveGame()">Files</a>-->
+            <a class="fonted" onclick="">Files</a>
             <a class="fonted" onclick="saveGame()">Save</a>
-            <a class="fonted" onclick="loadGame()">Load</a>
+            <label for="fileInput" class="fonted">Load</label>
             <a class="fonted" onclick="$('#helpoverlay').show()">Help</a>
         </div>
         <div id="tophold">
-            <div id="lefthold">
-                <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">
+            <div id="leftholdhold">
+                <div id="lefthold" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">
                     <i class="fonted">Select a number on the panel below first..</i>
                 </div>
             </div>
@@ -37,6 +39,79 @@
                 <i class="fonted">No numbers yet, try to create one above!</i>
             </div>
         </div>
+        <div id="openKbd" onmousedown="toggleKbd()">
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chevron-double-up" viewBox="0 0 16 16" id="openKbdArr">
+                    <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708z"/>
+                    <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+                </svg>
+            </span>
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-keyboard-fill" viewBox="0 0 16 16">
+                    <path d="M0 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm13 .25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M2.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 3 8.75v-.5A.25.25 0 0 0 2.75 8zM4 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 5 8.75v-.5A.25.25 0 0 0 4.75 8h-.5a.25.25 0 0 0-.25.25M6.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 7 8.75v-.5A.25.25 0 0 0 6.75 8zM8 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 9 8.75v-.5A.25.25 0 0 0 8.75 8h-.5a.25.25 0 0 0-.25.25M13.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm0 2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm-3-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm.75 2.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M11.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zM9 6.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5A.25.25 0 0 0 9.75 6h-.5a.25.25 0 0 0-.25.25M7.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 8 6.75v-.5A.25.25 0 0 0 7.75 6zM5 6.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 6 6.75v-.5A.25.25 0 0 0 5.75 6h-.5a.25.25 0 0 0-.25.25M2.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5A.25.25 0 0 0 4 6.75v-.5A.25.25 0 0 0 3.75 6zM2 10.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M4.25 10a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25z"/>
+                </svg>
+            </span>
+        </div>
+        <div id="kbd" class="d-flex flex-column hidden">
+            <div id="kbdtop">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); flex:4">
+                    <button class="kbdbtn" onclick="typeLatex('csc', true)"><span class="trigarc">arc</span>csc<span class="trigh">h</span></button>
+                    <button class="kbdbtn" onclick="typeLatex('ceil(')">ceil</button>
+                    <button class="kbdbtn" onclick="typeLatex('log_→(')">logₐ</button>
+                    <button class="kbdbtn" onclick="typeLatex('gcd(,')">gcd</button>
+                    <button class="kbdbtn" onclick="typeLatex('sec', true)"><span class="trigarc">arc</span>sec<span class="trigh">h</span></button>
+                    <button class="kbdbtn" onclick="typeLatex('floor(')">floor</button>
+                    <button class="kbdbtn" onclick="typeLatex('log(')">log</button>
+                    <button class="kbdbtn" onclick="typeLatex('lcm(,')">lcm</button>
+                    <button class="kbdbtn" onclick="typeLatex('tan', true)"><span class="trigarc">arc</span>tan<span class="trigh">h</span></button>
+                    <button class="kbdbtn" onclick="typeLatex('sin', true)"><span class="trigarc">arc</span>sin<span class="trigh">h</span></button>
+                    <button class="kbdbtn" onclick="typeLatex('ln(')">ln</button>
+                    <button class="kbdbtn" onclick="typeLatex('|')">|x|</button>
+                    <button class="kbdbtn" onclick="typeLatex('cot', true)"><span class="trigarc">arc</span>cot<span class="trigh">h</span></button>
+                    <button class="kbdbtn" onclick="typeLatex('cos', true)"><span class="trigarc">arc</span>cos<span class="trigh">h</span></button>
+                    <button class="kbdbtn" onclick="typeLatex('exp(')">exp</button>
+                    <button class="kbdbtn" onclick="typeLatex('!')">!</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); flex:5">
+                    <button class="kbdbtn" onclick="typeLatex('^')">aᵇ</button>
+                    <button class="kbdbtn" onclick="typeLatex('7')">7</button>
+                    <button class="kbdbtn" onclick="typeLatex('8')">8</button>
+                    <button class="kbdbtn" onclick="typeLatex('9')">9</button>
+                    <button class="kbdbtn" onclick="typeLatex('+')">+</button>
+                    <button class="kbdbtn" onclick="typeLatex('(')">(</button>
+                    <button class="kbdbtn" onclick="typeLatex('4')">4</button>
+                    <button class="kbdbtn" onclick="typeLatex('5')">5</button>
+                    <button class="kbdbtn" onclick="typeLatex('6')">6</button>
+                    <button class="kbdbtn" onclick="typeLatex('-')">-</button>
+                    <button class="kbdbtn" onclick="typeLatex(')')">)</button>
+                    <button class="kbdbtn" onclick="typeLatex('1')">1</button>
+                    <button class="kbdbtn" onclick="typeLatex('2')">2</button>
+                    <button class="kbdbtn" onclick="typeLatex('3')">3</button>
+                    <button class="kbdbtn" onclick="typeLatex('/')">/</button>
+                    <button class="kbdbtn" onclick="typeLatex('sqrt')">√&#65279;▔</button>
+                    <button class="kbdbtn" onclick="typeLatex('0')">0</button>
+                    <button class="kbdbtn" onclick="typeLatex('.')">.</button>
+                    <button class="kbdbtn" onclick="typeLatex('%')">%</button>
+                    <button class="kbdbtn" onclick="typeLatex('*')">·</button>
+                </div>
+            </div>
+            <div class="d-flex flex-row" style="width:100%; flex:1; flex-grow: 1">
+                <div class="d-flex flex-row justify-content-center align-items-center" style="flex:1; margin: 4px;">
+                    <input id="trigarccheck" type="checkbox" name="trigarccheck">
+                    <label for="trigarccheck" class="fonted" style="font-weight: bold; margin-left: 3px; line-height: 17px;">arc trig</label>
+                </div>
+                <div class="d-flex flex-row justify-content-center align-items-center" style="flex:1; margin: 4px;">
+                    <input id="trighcheck" type="checkbox" name="trighcheck">
+                    <label for="trighcheck" class="fonted" style="font-weight: bold; margin-left: 3px; line-height: 17px;">hyper trig</label>
+                </div>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('↑')" style="flex:1">↑</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('↓')" style="flex:1">↓</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('←')" style="flex:1">←</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('→')" style="flex:1">→</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('⌫')" style="flex:1">⌫</button>
+            </div>
+        </div>
+
         <i style="position: absolute; pointer-events:none; top:0; left:0; width: 100%; height: 100%; text-align: right; vertical-align: top; white-space: pre-wrap; padding: 8px;" class="fonted">4our 4ours by dacoconutchemist
             beta version, this isn't fully complete yet
             бета-версія, я це ще не розробив до кінця
@@ -50,6 +125,8 @@ This game uses the same entry system as Desmos
 There needs to be a multiplication symbol (for example, <span class="bolded">4(4-4+4)</span> won't work, but <span class="bolded">4*(4-4+4)</span> will)
 All functions need parentheses (for example <span class="bolded">4*sin 4</span> won't work, but <span class="bolded">4*sin(4)</span> will)
 Apart from the functions listed below, you can use <span class="bolded">+, -, /, *, ^,</span> unary minus and parentheses
+You can always use the keyboard, opened by the button on the bottom. The bottom row of buttons can be held down to make the action repeat itself. 
+But if you decide to type functions in manually, the following is for you:
 
 special functions:
 
@@ -81,6 +158,7 @@ are available.
                 <b id="helpclose" onclick="$('#helpoverlay').hide()">X</b>
             </div>
         </div>
+        <input id="fileInput" type="file" style="position: fixed; top: -100vh; left: -100vw">
         <script src="evaluation.js"></script>
         <script src="game.js"></script>
         <script src="dom.js"></script>

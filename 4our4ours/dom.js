@@ -13,11 +13,11 @@ function mathEditEvent() {
     let toJS = toJavascript(latex, CURRENTGAME.options);
     let result = safeEvaluate(toJS);
 
-    console.info(
+    /*console.info(
     `[INFO]
     input expression: ${latex}
     replaced expression: ${toJS}
-    result: ${result}`);
+    result: ${result}`);*/
 
     $('#result_add').hide();
     addNumShown = false;
@@ -73,15 +73,23 @@ function addExpr() {
 }
 
 function updateLeftPanel(currNum) {
-	let content = "";
-	for (let i of CURRENTGAME.expressions[currNum]) {
-		let latex = i.latex;
-		content += `<div class="expressioninlist" onclick="mathField.latex(String.raw\`${latex}\`)"><div>${currNum}=${latex}</div></div>`;
+	let content = `
+		<div class="expressioninlist exprarrowhold">
+			<b class="fonted exprarrow" onclick="selectPrevButton()"><</b>
+			<b class="fonted exprarrow" onclick="selectNextButton()">></b>
+		</div>
+	`;
+	if (CURRENTGAME.expressions && currNum) {
+		$('#lefthold').removeAttr('style');
+		for (let i of CURRENTGAME.expressions[currNum]) {
+			let latex = i.latex;
+			content += `<div class="expressioninlist" onclick="mathField.latex(String.raw\`${latex}\`)"><div>${currNum}=${latex}</div></div>`;
+		}
+		$("#lefthold").html(content);
+		$("#lefthold").children().slice(1).each(function() {
+			MQ.StaticMath(this.children[0]);
+		});
 	}
-	$("#lefthold").html(content);
-	$("#lefthold").children().each(function() {
-		MQ.StaticMath(this.children[0]);
-	});
 }
 var prevBtn, prevNum;
 function updateBottomPanel() {
@@ -103,6 +111,92 @@ function selectBottomPanel(btn, currNum) {
 	prevNum = currNum;
 	updateLeftPanel(prevNum);
 }
+
+function selectNextButton() {
+	let nextSibling = prevBtn.nextElementSibling;
+	if (!nextSibling) nextSibling = prevBtn.parentElement.firstElementChild;
+	selectBottomPanel(nextSibling, parseInt(nextSibling.innerText));
+}
+
+function selectPrevButton() {
+	let previousSibling = prevBtn.previousElementSibling;
+	if (!previousSibling) {
+	    const siblings = prevBtn.parentElement.children;
+	    previousSibling = siblings[siblings.length - 1];
+	}
+	selectBottomPanel(previousSibling, parseInt(previousSibling.innerText));
+}
+
+function toggleKbd() {
+	$('#kbd').toggleClass("hidden");
+	let $toggle = $("#openKbd");
+	let $toggleArr = $("#openKbdArr");
+	if ($toggle.css('bottom') != "0px") {
+		$toggle.css('bottom', '');
+		$toggleArr.css('transform', 'rotate(0deg)');
+	} else {
+		$toggle.css('bottom', '40%');
+		$toggleArr.css('transform', 'rotate(180deg)');
+	}
+}
+
+function typeLatex(text, trig) {
+	$("#mathquill-input").click();
+	if (trig) {
+		let arc = $('#trigarccheck').is(":checked");
+		let hyper = $('#trighcheck').is(":checked");
+		if (arc) mathField.typedText("arc")
+		mathField.typedText(text);
+		if (hyper) mathField.typedText("h");
+		mathField.typedText("(")
+	}
+	else {
+		for (let i of [...text]) {
+			if (i == "→") mathField.keystroke('Right');
+			else if (i == "←") mathField.keystroke('Left');
+			else if (i == "↑") mathField.keystroke('Up');
+			else if (i == "↓") mathField.keystroke('Down');
+			else if (i == "⌫") mathField.keystroke('Backspace');
+			else mathField.typedText(i);
+		}
+	}
+}
+
+$("#mathquill-input").click(function(){
+    mathField.latex("");
+    $(this).off("click");
+});
+
+$(".trigarc").hide();
+$(".trigh").hide();
+
+$("#trigarccheck, #trighcheck").on("change", () => {
+	let arc = $('#trigarccheck').is(":checked");
+	let hyper = $('#trighcheck').is(":checked");
+	$(".trigarc").toggle(arc);
+	$(".trigh").toggle(hyper);
+});
+
+var timeouts = [];
+$(".repeatPresses").each(function() {
+    var element = $(this);
+    var timeout;
+    element.on('mousedown', function() {
+        timeout = setTimeout(function() {
+            triggerAction();
+            timeout = setInterval(triggerAction, 100);
+        }, 1000);
+        timeouts.push(timeout);
+    }).on('mouseup mouseleave', function() {
+        clearTimeout(timeout);
+        clearInterval(timeout);
+    });
+    function triggerAction() {
+        element.trigger('click');
+    }
+});
+
+
 
 safeEvaluateInit();
 updateBottomPanel();

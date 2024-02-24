@@ -47,7 +47,6 @@ class Game {
 		this.currentNumber = num;
 	}
 	addExpression(latex, js, result) {
-		// TODO: compare converted, display latex (STATIC MATH https://docs.mathquill.com/en/latest/Api_Methods/#mqstaticmathhtml_element ), add result
 		if (!this.expressions[result]) this.expressions[result] = [];
 		this.expressions[result].push({latex, js});
 		console.log(this.expressions);
@@ -74,6 +73,7 @@ var CURRENTGAME = new Game({
 });
 
 function saveGame() {
+	// add <a> tag with object url, click, delete element in dom
 	const blob = new Blob([JSON.stringify(CURRENTGAME.generateJSON())], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     let $link = $('<a>', {
@@ -88,21 +88,15 @@ function saveGame() {
     }, 100);
 }
 
-function loadGame() {
-	const $fileInput = $('<input type="file">').css('display', 'none').appendTo('body');
-    $fileInput.on('change', function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                var jsonData = JSON.parse(event.target.result);
-                CURRENTGAME.constructorDebug(jsonData);
-                updateBottomPanel();
-            };
-            reader.readAsText(file);
-        }
-        $fileInput.remove(); // Remove the input element from the DOM
-    });
-
-    $fileInput.click();
-}
+$('#fileInput').on('change input', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            var jsonData = JSON.parse(event.target.result);
+            CURRENTGAME.constructorDebug(jsonData);
+            updateBottomPanel();
+        };
+        reader.readAsText(file);
+    }
+});

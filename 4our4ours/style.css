@@ -26,7 +26,7 @@ body {
 	margin: 0;
 }
 
-#lefthold {
+#leftholdhold {
 	flex: 3;
 	background-color: var(--bs-secondary-bg);
 	display: flex;
@@ -38,8 +38,7 @@ body {
 }
 
 #righthold {
-	flex: 7;
-	background-color: var(--bs-body-bg);
+	flex:7;
 	display: flex;
 	flex-direction: column;
 	align-items: safe center;
@@ -47,6 +46,7 @@ body {
 	padding: var(--generalpadding);
 	margin: 0;
 	overflow-x: auto;
+	position: relative;
 }
 
 #bottomhold {
@@ -159,8 +159,90 @@ body {
 	font-weight: bold;
 }
 
+.exprarrow {
+	cursor: pointer;
+	user-select: none;
+}
+
+.exprarrowhold {
+	display: flex; 
+	flex-direction: row; 
+	justify-content: space-between; 
+	padding: 2px 6px 2px 6px;
+}
+
+#openKbd {
+	position: absolute;
+	bottom: 0;
+	left:50%;
+	transform: translateX(-50%);
+	background-color: #485159;
+	border-radius: 5px 5px 0 0;
+	padding: 5px;
+	padding-top: 2px;
+	padding-bottom: 5px;
+	user-select: none;
+	transition: padding-bottom 0.25s ease-out;
+}
+#openKbd:hover {
+	padding-bottom: 10px;
+}
+#openKbd::before,#openKbd::after {
+	width: 5px;
+	height: 5px;
+	background-color: #485159;
+	content: "";
+	display: block;
+	position: absolute;
+	bottom:0;
+}
+#openKbd::before {
+	right:100%;
+	clip-path: polygon(100% 100%,100% 0%,97.4% 22.2%,90% 43.3%,78.1% 62.3%,62.3% 78.1%,43.3% 90%,22.2% 97.4%,0% 100%);
+	margin-right:-0.1px;
+}
+#openKbd::after {
+	left:100%;
+	clip-path: polygon(0% 100%,0% 0%,2.5% 22.3%,9.9% 43.4%,21.8% 62.3%,37.7% 78.2%,56.6% 90.1%,77.7% 97.5%,100% 100%);
+	margin-left:-0.1px;
+}
+
+#kbd {
+	width: 768px;
+	position: absolute;
+	bottom: 0;
+	left:50%;
+	transform: translateX(-50%);
+	background-color: #485159;
+	height:40%;
+	border-radius: 5px 5px 0 0;
+}
+
+.kbdbtn {
+	font-family: 'Symbola', serif;
+	text-align: center;
+	font-weight: bold;
+	border-radius: 5px;
+	margin: 2px;
+	border: none;
+    background-color: var(--bs-secondary-bg);
+	word-break: break-all;
+	font-size: 16px;
+	line-height: 17px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+#kbdtop {
+	display: flex;
+	flex-direction: row;
+	flex: 6;
+}
+
 @media screen and (max-width: 768px) {
-	#lefthold {
+	#leftholdhold {
 		flex: 5
 	}
 	#righthold {
@@ -169,6 +251,12 @@ body {
 	#helpwindow {
 		max-width: 100%;
 		max-height: 90%;
+	}
+	#kbd {
+		width: 100%;
+	}
+	#kbdtop {
+		flex-direction: column-reverse;
 	}
 }
 

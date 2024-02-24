@@ -1384,6 +1384,10 @@ var Parser = P(function(_, super_, Parser) {
  *    + attach event handlers and export methods
  ************************************************/
 
+// Using a part of this fork (the file src/services/saneKeyboardEvents.util.js, lines 1364 - 1644 in mathquill-basic-modified.js) to fix inputs on mobile devices
+// https://github.com/Mathpp/mathquill/tree/androidgboard
+//                                                               - dacoconutchemist
+
 var saneKeyboardEvents = (function() {
   // The following [key values][1] map was compiled from the
   // [DOM3 Events appendix section on key codes][2] and
