@@ -127,6 +127,7 @@ function selectPrevButton() {
 	selectBottomPanel(previousSibling, parseInt(previousSibling.innerText));
 }
 
+// toggle keyboard, toggle the opening button's height and the arrow direction
 function toggleKbd() {
 	$('#kbd').toggleClass("hidden");
 	let $toggle = $("#openKbd");
@@ -141,8 +142,10 @@ function toggleKbd() {
 }
 
 function typeLatex(text, trig) {
+	// click to erase the placeholder
 	$("#mathquill-input").click();
 	if (trig) {
+		// for trig, add arc and h before and after depending on checkboxes
 		let arc = $('#trigarccheck').is(":checked");
 		let hyper = $('#trighcheck').is(":checked");
 		if (arc) mathField.typedText("arc")
@@ -151,6 +154,7 @@ function typeLatex(text, trig) {
 		mathField.typedText("(")
 	}
 	else {
+		// else, type characters accounting for special keys
 		for (let i of [...text]) {
 			if (i == "→") mathField.keystroke('Right');
 			else if (i == "←") mathField.keystroke('Left');
@@ -162,14 +166,16 @@ function typeLatex(text, trig) {
 	}
 }
 
+// erase placeholder
 $("#mathquill-input").click(function(){
     mathField.latex("");
     $(this).off("click");
 });
 
+// hide arc and h by default
 $(".trigarc").hide();
 $(".trigh").hide();
-
+// show it if the chekboxes are pressed
 $("#trigarccheck, #trighcheck").on("change", () => {
 	let arc = $('#trigarccheck').is(":checked");
 	let hyper = $('#trighcheck').is(":checked");
@@ -177,7 +183,7 @@ $("#trigarccheck, #trighcheck").on("change", () => {
 	$(".trigh").toggle(hyper);
 });
 
-var timeouts = [];
+/*var timeouts = [];
 $(".repeatPresses").each(function() {
     var element = $(this);
     var timeout;
@@ -195,9 +201,33 @@ $(".repeatPresses").each(function() {
     function triggerAction() {
         element.trigger('click');
     }
+});*/
+
+var timeouts = [];
+$(".repeatPresses").each(function() {
+    var element = $(this);
+    var timeout;
+
+    element.on('mousedown touchstart', function(e) {
+        e.preventDefault(); // Prevent default touch behavior
+        timeout = setTimeout(function() {
+            triggerAction();
+            timeout = setInterval(triggerAction, 100);
+        }, 1000);
+        timeouts.push(timeout);
+    }).on('mouseup mouseleave touchend touchcancel', function() {
+        clearTimeout(timeout);
+        clearInterval(timeout);
+    }).on('click touchend', function(e) {
+        e.preventDefault(); // Prevent default touch behavior
+        triggerAction();
+    });
+
+    function triggerAction() {
+        element.trigger('click');
+    }
 });
 
 
-
-safeEvaluateInit();
+safeEvaluateInit(); // checks globals so needs to be at the end
 updateBottomPanel();
