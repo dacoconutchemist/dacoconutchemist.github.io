@@ -240,7 +240,8 @@ $(".repeatPresses").each(function() {
             timeout = setInterval(triggerAction, 100);
         }, 1000);
         //timeouts.push(timeout);
-    }).on('mouseup mouseleave touchend touchcancel', function() {
+    }).on('mouseup mouseleave touchend touchcancel', function(e) {
+    	e.preventDefault();
         clearTimeout(timeout);
         clearInterval(timeout);
     });
