@@ -181,7 +181,8 @@ var timeouts = [];
 $(".repeatPresses").each(function() {
     var element = $(this);
     var timeout;
-    element.on('mousedown touchstart', function() {
+    element.on('mousedown touchstart', function(e) {
+    	e.preventDefault();
         timeout = setTimeout(function() {
             triggerAction();
             timeout = setInterval(triggerAction, 100);
