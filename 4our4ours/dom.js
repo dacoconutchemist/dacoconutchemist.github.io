@@ -234,15 +234,18 @@ $(".repeatPresses").each(function() {
     element.on('mousedown touchstart', function(e) {
     	e.preventDefault();
         timeout = setTimeout(function() {
-            element.trigger('click');
+            triggerAction();
             interval = setInterval(triggerAction, 100);
         }, 750);
     }).on('mouseup mouseleave touchend touchcancel', function() {
-    	if (!interval) element.trigger('click');
+    	if (!interval) triggerAction();
     	// both of those just set to undefined but this looks cleaner
         timeout = clearTimeout(timeout);
         interval = clearInterval(timeout);
     });
+    function triggerAction() {
+    	element.trigger('click');
+    }
 });
 
 
