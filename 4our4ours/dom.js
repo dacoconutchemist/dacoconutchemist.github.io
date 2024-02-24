@@ -203,7 +203,7 @@ $(".repeatPresses").each(function() {
     }
 });*/
 
-$(".repeatPresses").each(function() {
+/*$(".repeatPresses").each(function() {
     var element = $(this);
     var timeout;
 
@@ -226,6 +226,23 @@ $(".repeatPresses").each(function() {
     function triggerAction() {
         element.trigger('click');
     }
+});*/
+
+$(".repeatPresses").each(function() {
+    var element = $(this);
+    var timeout, interval;
+    element.on('mousedown touchstart', function(e) {
+    	e.preventDefault();
+        timeout = setTimeout(function() {
+            element.trigger('click');
+            interval = setInterval(triggerAction, 100);
+        }, 750);
+    }).on('mouseup mouseleave touchend touchcancel', function() {
+    	if (!interval) element.trigger('click');
+    	// both of those just set to undefined but this looks cleaner
+        timeout = clearTimeout(timeout);
+        interval = clearInterval(timeout);
+    });
 });
 
 
