@@ -96,9 +96,19 @@
                 </div>
             </div>
             <div class="d-flex flex-row" style="width:100%; flex:1; flex-grow: 1">
-                <button class="kbdbtn" onclick="typeLatex('←')" style="flex:1">←</button>
-                <button class="kbdbtn" onclick="typeLatex('→')" style="flex:1">→</button>
-                <button class="kbdbtn" onclick="typeLatex('⌫')" style="flex:1">⌫</button>
+                <div class="d-flex flex-row justify-content-center align-items-center" style="flex:1; margin: 4px;">
+                    <input id="trigarccheck" type="checkbox" name="trigarccheck">
+                    <label for="trigarccheck" class="fonted" style="font-weight: bold; margin-left: 3px; line-height: 17px;">arc trig</label>
+                </div>
+                <div class="d-flex flex-row justify-content-center align-items-center" style="flex:1; margin: 4px;">
+                    <input id="trighcheck" type="checkbox" name="trighcheck">
+                    <label for="trighcheck" class="fonted" style="font-weight: bold; margin-left: 3px; line-height: 17px;">hyper trig</label>
+                </div>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('↑')" style="flex:1">↑</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('↓')" style="flex:1">↓</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('←')" style="flex:1">←</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('→')" style="flex:1">→</button>
+                <button class="kbdbtn repeatPresses" onclick="typeLatex('⌫')" style="flex:1">⌫</button>
             </div>
         </div>
 
@@ -115,6 +125,8 @@ This game uses the same entry system as Desmos
 There needs to be a multiplication symbol (for example, <span class="bolded">4(4-4+4)</span> won't work, but <span class="bolded">4*(4-4+4)</span> will)
 All functions need parentheses (for example <span class="bolded">4*sin 4</span> won't work, but <span class="bolded">4*sin(4)</span> will)
 Apart from the functions listed below, you can use <span class="bolded">+, -, /, *, ^,</span> unary minus and parentheses
+You can always use the keyboard, opened by the button on the bottom. The bottom row of buttons can be held down to make the action repeat itself. 
+But if you decide to type functions in manually, the following is for you:
 
 special functions:
 

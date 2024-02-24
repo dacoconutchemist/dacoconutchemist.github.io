@@ -142,12 +142,23 @@ function toggleKbd() {
 
 function typeLatex(text, trig) {
 	$("#mathquill-input").click();
-	if (trig) {}
-	for (let i of [...text]) {
-		if (i == "→") mathField.keystroke('Right');
-		else if (i == "←") mathField.keystroke('Left');
-		else if (i == "⌫") mathField.keystroke('Backspace');
-		else mathField.typedText(i);
+	if (trig) {
+		let arc = $('#trigarccheck').is(":checked");
+		let hyper = $('#trighcheck').is(":checked");
+		if (arc) mathField.typedText("arc")
+		mathField.typedText(text);
+		if (hyper) mathField.typedText("h");
+		mathField.typedText("(")
+	}
+	else {
+		for (let i of [...text]) {
+			if (i == "→") mathField.keystroke('Right');
+			else if (i == "←") mathField.keystroke('Left');
+			else if (i == "↑") mathField.keystroke('Up');
+			else if (i == "↓") mathField.keystroke('Down');
+			else if (i == "⌫") mathField.keystroke('Backspace');
+			else mathField.typedText(i);
+		}
 	}
 }
 
@@ -158,6 +169,34 @@ $("#mathquill-input").click(function(){
 
 $(".trigarc").hide();
 $(".trigh").hide();
+
+$("#trigarccheck, #trighcheck").on("change", () => {
+	let arc = $('#trigarccheck').is(":checked");
+	let hyper = $('#trighcheck').is(":checked");
+	$(".trigarc").toggle(arc);
+	$(".trigh").toggle(hyper);
+});
+
+var timeouts = [];
+$(".repeatPresses").each(function() {
+    var element = $(this);
+    var timeout;
+    element.on('mousedown', function() {
+        timeout = setTimeout(function() {
+            triggerAction();
+            timeout = setInterval(triggerAction, 100);
+        }, 1000);
+        timeouts.push(timeout);
+    }).on('mouseup mouseleave', function() {
+        clearTimeout(timeout);
+        clearInterval(timeout);
+    });
+    function triggerAction() {
+        element.trigger('click');
+    }
+});
+
+
 
 safeEvaluateInit();
 updateBottomPanel();
