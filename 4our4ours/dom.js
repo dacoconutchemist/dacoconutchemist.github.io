@@ -246,7 +246,7 @@ $(".repeatPresses").each(function() {
         clearInterval(timeout);
     });
     function triggerAction() {
-        element.trigger('click');
+        eval(element.data("onclick"));
     }
 });
 
