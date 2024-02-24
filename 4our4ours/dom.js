@@ -228,23 +228,24 @@ $(".repeatPresses").each(function() {
     }
 });*/
 
+//var timeouts = [];
 $(".repeatPresses").each(function() {
     var element = $(this);
-    var timeout, interval;
+    var timeout;
     element.on('mousedown touchstart', function(e) {
     	e.preventDefault();
+    	triggerAction();
         timeout = setTimeout(function() {
             triggerAction();
-            interval = setInterval(triggerAction, 100);
-        }, 750);
-    }).on('mouseup mouseleave touchend touchcancel mouseout', function() {
-    	if (!interval) triggerAction();
-    	// both of those just set to undefined but this looks cleaner
-        timeout = clearTimeout(timeout);
-        interval = clearInterval(timeout);
+            timeout = setInterval(triggerAction, 100);
+        }, 1000);
+        //timeouts.push(timeout);
+    }).on('mouseup mouseleave touchend touchcancel', function() {
+        clearTimeout(timeout);
+        clearInterval(timeout);
     });
     function triggerAction() {
-    	element.trigger('click');
+        element.trigger('click');
     }
 });
 
