@@ -171,7 +171,7 @@ var setLevel = el => {
 function copyLink() {
   var newdict = { "i": curritem };
   newdict['e'] = enchlist;
-  navigator.clipboard.writeText("https://pricecalc.gummercraft.repl.co?data=" + encodeURIComponent(JSON.stringify(newdict))).then(
+  navigator.clipboard.writeText("https://dacoconutchemist.github.io/pricecalc?data=" + encodeURIComponent(JSON.stringify(newdict))).then(
     () => alert('Скопійовано успішно'),
     () => alert('Не вдалось скопіювати')
   );
