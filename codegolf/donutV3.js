@@ -1,0 +1,2 @@
+setInterval(u=>{K=e=>Array(24).fill(e);Q=[];M=K`  `.map(K);with(Math)s=sin,c=cos,F=floor;P=(x,y,z)=>(w=y*(B=c(W))-z*(A=s(W)),[x*(D=c(V))-w*(C=s(V)),x*C+w*D,y*A+z*B]);for(i=500;i>0;i-=.05)p=c(h=i%7),m=s(g=i/79),n=c(g),Q.push([P(n*p,m*p,o=s(h))[1],...P((a=9+3*p)*n,a*m,3*o)]);Q.sort((e,f)=>f[3]-e[3]);Q.map(e=>{T="█▓▒░ "[F(e[0]*2+2)];M[F(e[2]+12)][F(e[1]+12)]=T+T});W+=1/8;V+=.1;console.log(M.map(e=>e.join``).join`
+`)},W=V=110)
