@@ -119,6 +119,18 @@ console.log(M.map(e=>e.join``).join`
 ```
 Joining the characters together and printing them to the console. Here a newline character is used instead of `\n` to shorten the length.
 
+
+Now, let's look at the compressed version of the code:
+
+```javascript
+_="";
+for(G of`unicode gibberish`)
+    for(v=G.charCodeAt();v|0;v/=95)
+        _+=String.fromCharCode(v%95+31);
+eval(_)
+```
+Here, each character of the compressed string is interpreted as a base-95 number, the digits of which are ASCII characters in the 31 - 126 range (usual word characters). The newlines and `"█▓▒░ "` are escaped (in the case of the color pallette escaped with `\u`) to achieve the restricted character range. This basically compressed every 2 characters of the original code into one of the unicode gibberish (minus the overhead code to decompress it). As a result, we get the original code and `eval` it.
+
 ## Minesweeper
 wip
 
