@@ -1,4 +1,6 @@
 var pages = {
+	"Price Calculator": ["/pricecalc", "calculated the minimal allowed prices for goods on GummerCraft (page in Ukrainian)"],
+    "Translator": ["/translate", "translates fictional languages on GummerCraft, doubling as an Ukrainian-to-English keyboard layout fixer (page in Ukrainian)"],
     "fx-991DEX typer": ["/fx-991DEX", "converts text to button presses on the fx-991DEX calculator"],
     "Hexguessr": ["/hexguessr", "hone your hex color reading and writing skills!"],
     "Rock-Paper-Scissors": ["/rockpaperscissors", "look at em go!"],
