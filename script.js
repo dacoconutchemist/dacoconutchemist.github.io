@@ -21,3 +21,35 @@ for (let i in pages) {
 setInterval(() => {
 	document.documentElement.style.height = document.body.getBoundingClientRect().height + "px";	
 }, 50);
+
+
+$(window).on("load", () => {
+	let sharebutton = $('#sharebutton');
+	let sharelabel = $('#urlsharelabel');
+	let offsetY = sharebutton[0].getBoundingClientRect().top - sharelabel[0].getBoundingClientRect().top;
+	//console.log(offsetY);
+	sharelabel.css("transform", `translateY(${offsetY}px)`);
+	sharelabel[0].offsetHeight; // https://stackoverflow.com/a/16575811
+	sharelabel.css("opacity", `1`);
+	sharelabel.css("transition", `transform 0.3s ease-out`);
+	sharebutton.hover(() => {
+		sharelabel.css("transform", `translateY(0px)`);
+		sharelabel.text("da.gd/ab");
+	}, () => {
+		sharelabel.css("transform", `translateY(${offsetY}px)`);
+	});
+	sharebutton.on("click", () => { 
+	    navigator.clipboard.writeText("da.gd/ab").then(
+	    	() => {
+	    		sharelabel.css("transition", `transform 0.3s ease-out`);
+	    		sharelabel.css("color", `#00cc00`);
+	    		sharelabel[0].offsetHeight; // https://stackoverflow.com/a/16575811
+	    		sharelabel.css("transition", `transform 0.3s ease-out, color 1s ease-out`);
+	    		sharelabel.css("color", `#ffffff`);
+	    		sharelabel.text("Copied!");
+	    	},
+	    	() => alert('Copying failed')
+	    );
+	});
+});
+
