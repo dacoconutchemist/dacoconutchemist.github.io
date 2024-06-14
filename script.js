@@ -10,6 +10,24 @@ var pages = {
     "Tampermonkey": ["/tampermonkey", "my userscripts (not available yet)"]
 };
 
+let hashdict = {
+	"#0": "/pricecalc",
+	"#1": "/translate",
+	"#2": "/fx-991DEX",
+	"#3": "/hexguessr",
+	"#4": "/rockpaperscissors",
+	"#5": "/particles",
+	"#6": "/4our4ours",
+	"#7": "/desmos",
+	"#8": "/tampermonkey"
+}
+
+
+
+
+
+
+
 for (let i in pages) {
     $('#content').append(`
     	<div class="col-12 col-sm-6 col-md-6 col-lg-3 tile">
@@ -78,18 +96,6 @@ $(window).on("load", () => {
 	    );
 	});
 });
-
-let hashdict = {
-	"#": "/pricecalc",
-	"#1": "/translate",
-	"#2": "/fx-991DEX",
-	"#3": "/hexguessr",
-	"#4": "/rockpaperscissors",
-	"#5": "/particles",
-	"#6": "/4our4ours",
-	"#7": "/desmos",
-	"#8": "/tampermonkey"
-}
 
 if (document.location.hash) {
 	document.location.replace(
