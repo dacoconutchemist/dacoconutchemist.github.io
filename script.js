@@ -97,7 +97,7 @@ $(window).on("load", () => {
 	});
 });
 
-if (document.location.hash) {
+if (document.location.hash in hashdict) {
 	document.location.replace(
 		"https://dacoconutchemist.github.io" + 
 		hashdict[document.location.hash] +
