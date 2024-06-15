@@ -51,7 +51,7 @@ if (document.location.hash in hashdict) {
         document.documentElement.style.height = document.body.getBoundingClientRect().height + "px";    
     }, 50);
 
-    var touchscreen = true;//window.DetectIt.primaryInput === 'touch';
+    var touchscreen = window.DetectIt.primaryInput === 'touch';
     $(window).on("load", () => {
         let sharebutton = $('#sharebutton');
         let sharelabel = $('#urlsharelabel');
