@@ -34,12 +34,15 @@ if (document.location.hash in hashdict) {
         document.location.search.toString()
     );
 } else {
+	$("#copyright").html(`&copy; dacoconutchemist ${new Date().getFullYear()}`);
     for (let i in pages) {
         $('#content').append(`
             <div class="col-12 col-sm-6 col-md-6 col-lg-3 tile">
                 <img src="homepage_images${pages[i][0]}.png" class="image">
                 <h4 style="margin-top: 5px;"><b><a href="${pages[i][0]}">${i}</a></b></h2>
-                ${pages[i][1]}
+                <div style="flex:1"></div>
+                <div style="width: 100%; padding: 10px; padding-top: 0px; text-align: center">${pages[i][1]}</div>
+                <div style="flex:1"></div>
             </div>
         `);
     }
@@ -48,7 +51,7 @@ if (document.location.hash in hashdict) {
         document.documentElement.style.height = document.body.getBoundingClientRect().height + "px";    
     }, 50);
 
-    var touchscreen = window.DetectIt.primaryInput === 'touch';
+    var touchscreen = true;//window.DetectIt.primaryInput === 'touch';
     $(window).on("load", () => {
         let sharebutton = $('#sharebutton');
         let sharelabel = $('#urlsharelabel');
@@ -59,7 +62,7 @@ if (document.location.hash in hashdict) {
         let mouseEnterEvent = () => {
             sharelabel.css("transform", `translateY(0px)`);
             sharelabel.css("clip-path", `polygon(0 0, 100% 0, 100% 120%, 0 120%)`);
-            sharelabel.text("da.gd/ab");
+            sharelabel.html("&nbsp;da.gd/ab");
         };
         let mouseLeaveEvent = () => {
             sharelabel.css("transform", `translateY(${offsetY}px)`);
@@ -88,7 +91,7 @@ if (document.location.hash in hashdict) {
                     sharelabel[0].offsetHeight; // https://stackoverflow.com/a/16575811
                     sharelabel.css("transition", `${defaultTransition}, color 1s ease-out`);
                     sharelabel.css("color", `#ffffff`);
-                    sharelabel.text("Copied!");
+                    sharelabel.html("&nbsp;Copied!");
                     if (touchscreen) {
                         touchTimeout1 = setTimeout(() => {
                             mouseLeaveEvent();

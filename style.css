@@ -40,3 +40,19 @@ i {
 	display:flex;
 	flex-direction: column;
 }
+
+#urlsharelabel {
+	writing-mode: vertical-rl; 
+	text-orientation: sideways; 
+	margin-bottom: 10px; 
+	width: 50px; 
+	display: flex; 
+	align-items: center; 
+	justify-content: center; 
+	z-index: -2; 
+	font-weight: 900; 
+	text-shadow: var(--bs-body-bg) 0px 4px 3px, var(--bs-body-bg) 0px -4px 3px, var(--bs-body-bg) 4px  0px 3px, var(--bs-body-bg) -4px  0px 3px, 
+				 var(--bs-body-bg) 3px 3px 3px, var(--bs-body-bg) 3px -3px 3px, var(--bs-body-bg) -3px 3px 3px, var(--bs-body-bg) -3px -3px 3px,
+				 var(--bs-body-bg) 0px 4px 3px, var(--bs-body-bg) 0px -4px 3px, var(--bs-body-bg) 4px  0px 3px, var(--bs-body-bg) -4px  0px 3px, 
+				 var(--bs-body-bg) 3px 3px 3px, var(--bs-body-bg) 3px -3px 3px, var(--bs-body-bg) -3px 3px 3px, var(--bs-body-bg) -3px -3px 3px;
+}
