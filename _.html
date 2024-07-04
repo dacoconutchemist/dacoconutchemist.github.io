@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script>
+    var encrypted = ["U2FsdGVkX1/W5yUGgkVeK269KyYUdGMpUOIgUKECPLlAw7ppF7r6NPujaZI8oT77a3ER5fszgUWoBq8MaeW9frRR4w+z2/ulIfG+ubqbYxteKp2WfGnpM6Y5+msvHxHme+tYad4aksfNDaOkrKoAN52Ta9+I+vegNzk5I6C7zKp7uZZ+LFN+O7qwqfx0xKF2mD6ZsTcQPq31V+Mzl/X6lYmunEmo2FK/BJh7EhVdi61N7Tq2Z/+TvnAw49lFUj0EEFGG5Pi+rQOHC/R8Ga3iJQ==","U2FsdGVkX19Hfd7UtiCaghrWxQYnyyXuL4DW81jBUK97/cuxlb9QE/Ozam4rJCwPFbPdYokSyRui0BU5jJAYKdQJ8+WeJ9osgcuvRYLCHPYo4jtTrKeZQZZzJExNZzWqKNlgOlBiv1heGNKpx2sZFuL5LMOZzeQE4AHwnbttKFwWGdwnjGylk/huTVWdnzV9/Aasta3P2Zm0hU4745jnF8G8pjAWaCFNeAqGH+Pb1bh75X0lEQGKm81AT6lK2yPDWltWpUSqGMMxPSgZMttKKngHZ2V411dU1GiT7Ek0ck5b0et3RF17WbaSm61fr+tzBhWs/6jLgjhUmmq0u+1fnnJ3qMorXT20GeArTh76lXMQj/FQd0B9Rx3mwgspx5QBTYXKZUzqUva6jI6Qph6oJoH5AUvNSot+guE8dkcmlxXRXJSwAS3SdhyMtm9R7krfmAPncEtOKy4GwnAwZvauoZ1nJJKntI/XPuqCjYVy40E="];
+
+    
+
+    function decodeString(cipherText, key) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(cipherText, key);
+        const plainText = bytes.toString(CryptoJS.enc.Utf8);
+        return plainText;
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function handleDecrypt() {
+      const key = document.getElementById('key').value;
+      let flag = true;
+      for (let i of encrypted) {
+        let raw = decodeString(i, key);
+        if (raw.startsWith("fe9cdfae-0460-448d-b307-b7f6f927732e ")) {
+          document.getElementById('output').innerHTML = raw.slice(37);
+          flag = false;
+          break;
+        }
+      }
+      if (flag) open(location, '_self').close();
+    }
+  </script>
+</head>
+<body style="transform-origin: top left; transform: scale(2)">
+  <input type="text" id="key"><button onclick="handleDecrypt()">&nbsp;&nbsp;&nbsp;☺&nbsp;&nbsp;&nbsp;</button>
+  <p id="output" style="white-space: pre-wrap;"></p>
+</body>
+</html>
