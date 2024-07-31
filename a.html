@@ -137,7 +137,7 @@
         user-select: none;
       }
 
-      #fakeconfirm {
+      #confirm_popup {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -208,7 +208,7 @@
         opacity: 1;
       }
 
-      #fakeconfirm > .confirm-charm {
+      #confirm_popup > .confirm-charm {
         opacity: 1;
       }
 
@@ -272,7 +272,7 @@
       </button>
     </div>
     
-    <div id="fakeconfirm" style="display:none;">
+    <div id="confirm_popup" style="display:none;">
       <span class="confirm-charm confirm-before"></span>
       <span id="outputtext"></span>
       <span class="confirm-charm confirm-after"></span>
@@ -413,11 +413,11 @@
 
       function success(decoded) {
         beaconClick();
-        const fakeconfirm = $('#fakeconfirm');
+        const confirm_popup = $('#confirm_popup');
         const confirm = $('#confirm');
 
         confirm.css("opacity", "0");
-        fakeconfirm.show();
+        confirm_popup.show();
 
         let bounds = confirm[0].getBoundingClientRect();
         let styles = window.getComputedStyle(confirm[0]);
@@ -426,22 +426,22 @@
         let settings = "1s ease-in-out";
         
         animateProperties([{
-          element: fakeconfirm, property: "top", settings,
+          element: confirm_popup, property: "top", settings,
           valueStart: (bounds.top + window.scrollY + 1.5 * borderTopWidth) + "px", valueEnd: "0px"
         }, {
-          element: fakeconfirm, property: "left", settings,
+          element: confirm_popup, property: "left", settings,
           valueStart: (bounds.left + window.scrollX + 1.5 * borderLeftWidth) + "px", valueEnd: "0px"
         }, {
-          element: fakeconfirm, property: "width", settings,
+          element: confirm_popup, property: "width", settings,
           valueStart: (confirm[0].offsetWidth - 0.5 * borderLeftWidth) + "px", valueEnd: "100%"
         }, {
-          element: fakeconfirm, property: "height", settings,
+          element: confirm_popup, property: "height", settings,
           valueStart: (confirm[0].offsetHeight - 0.5 * borderTopWidth) + "px", valueEnd: "100%"
         }, {
-          element: fakeconfirm, property: "border-width", settings,
+          element: confirm_popup, property: "border-width", settings,
           valueStart: "3px", valueEnd: "0"
         }, {
-          element: fakeconfirm, property: "color", settings,
+          element: confirm_popup, property: "color", settings,
           valueStart: "#fff0", valueEnd: "#ffff"
         }, {
           element: $('.confirm-close'), property: "opacity", settings,
@@ -452,14 +452,14 @@
         }]);
 
         $('#outputtext').html(decoded);
-        $('#fakeconfirm > .confirm-charm').css('height', (confirm[0].offsetHeight - 1.5 * borderTopWidth) + "px");
+        $('#confirm_popup > .confirm-charm').css('height', (confirm[0].offsetHeight - 1.5 * borderTopWidth) + "px");
       }
 
       function closePanel() {
         buttonClick();
-        const fakeconfirm = $('#fakeconfirm');
+        const confirm_popup = $('#confirm_popup');
         const confirm = $('#confirm');
-        fakeconfirm.hide();
+        confirm_popup.hide();
         confirm.css("opacity", "1");
         $('#k_hold').css("transition", "");
         $('#k').text("");
@@ -551,6 +551,12 @@
           $('#k_placeholder').hide();
         }
       });
+
+      $(document).keydown(function(e) {
+			    if (e.key === "Tab" || e.keyCode === 9) {
+			        e.preventDefault();
+			    }
+			});
     </script>
 
 
