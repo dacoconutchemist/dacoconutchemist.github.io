@@ -152,12 +152,6 @@
         white-space: pre-wrap;
       }
 
-      .confirm:hover, .confirm.touch-hover {
-        color: #fff;
-        border-color: #ffffff9b;
-        background: #fff6;
-      }
-
       .confirm-charm {
         aspect-ratio: 1 / 1;
         image-rendering: pixelated;
@@ -192,7 +186,25 @@
         height: 100%;
       }
 
-      .confirm:hover > .confirm-charm, .confirm.touch-hover > .confirm-charm {
+      @media (hover: hover) {
+        .confirm:hover {
+          color: #fff;
+          border-color: #ffffff9b;
+          background: #fff6;
+        }
+
+        .confirm:hover > .confirm-charm {
+          opacity: 1;
+        }
+      }
+
+      .confirm.touch-hover {
+        color: #fff;
+        border-color: #ffffff9b;
+        background: #fff6;
+      }
+
+      .confirm.touch-hover > .confirm-charm {
         opacity: 1;
       }
 
@@ -236,9 +248,9 @@
       }
 
       #helpbtn {
-      	position: absolute;
-      	margin-bottom: 10px;
-      	bottom:0;
+        position: absolute;
+        margin-bottom: 10px;
+        bottom:0;
       }
     </style>
   </head>
@@ -356,18 +368,18 @@
       function fail() {
         const inputfield = $('#k');
         if (inputfield.text().length) {
-        	glassClick();
-        	failCounter++;
+          glassClick();
+          failCounter++;
         }
         else buttonClick();
 
         if (failCounter >= 3 && !helpPoppedUp) {
-        	$('#helpbtn_text').text('Потрібна допомога?');
-        	animateProperties({
-	          element: $('#helpbtn'), property: "transform", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
-	          valueStart: "translateY(calc(100% + 10px))", valueEnd: "translateY(0)"
-	        });
-	        helpPoppedUp = true;
+          $('#helpbtn_text').text('Потрібна допомога?');
+          animateProperties({
+            element: $('#helpbtn'), property: "transform", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
+            valueStart: "translateY(calc(100% + 10px))", valueEnd: "translateY(0)"
+          });
+          helpPoppedUp = true;
         }
 
         animateProperties({
@@ -380,21 +392,21 @@
       }
 
       function helpBtnClick() {
-      	if (poppingDown) return;
-      	anvilClick();
-      	$('#helpbtn_text').text('Її не буде)))))))');
-      	poppingDown = true;
-      	setTimeout(() => {
-      		animateProperties({
-	          element: $('#helpbtn'), property: "transform", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
-	          valueStart: "translateY(0)", valueEnd: "translateY(calc(100% + 10px))"
-	        });
-	        setTimeout(() => {
-	      		helpPoppedUp = false;
-	      		poppingDown = false
-	      		failCounter = 0;
-	      	}, 600);
-      	}, 1000);
+        if (poppingDown) return;
+        anvilClick();
+        $('#helpbtn_text').text('Її не буде)))))))');
+        poppingDown = true;
+        setTimeout(() => {
+          animateProperties({
+            element: $('#helpbtn'), property: "transform", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
+            valueStart: "translateY(0)", valueEnd: "translateY(calc(100% + 10px))"
+          });
+          setTimeout(() => {
+            helpPoppedUp = false;
+            poppingDown = false
+            failCounter = 0;
+          }, 600);
+        }, 1000);
       }
 
       function success(decoded) {
@@ -453,19 +465,19 @@
       }
       
       $(document).ready(function() {
-		    if ('ontouchstart' in document.documentElement) {
-		    	$('*').on('touchstart', function(e) {
+        if ('ontouchstart' in document.documentElement) {
+          $('*').on('touchstart', function(e) {
             var $this = $(this);
             $('*').removeClass('touch-hover');
             $this.addClass('touch-hover');
-	        });
-	        $('*').on('touchend touchcancel', function() {
+          });
+          $('*').on('touchend touchcancel', function() {
             var $this = $(this);
             setTimeout(function() {
               $this.removeClass('touch-hover');
             }, 300);
-	        });
-		    }
+          });
+        }
 
         $('#k').on('input', function(event) {
           const inputfield = $('#k');
