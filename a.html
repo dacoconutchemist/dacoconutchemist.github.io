@@ -1,517 +1,657 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-	  <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title></title>
-	  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-	  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#65440;</title>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="preload" href="https://dacoconutchemist.github.io/minecraftfontukr.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABrSURBVFhH7dWxCcAwDABBOyN4ooyeibyC07hLXoVA4OKvSRrBgzDqLTDvufbvx3gGzmbnrv09gjHEGHJUTPppR7LP3jURY4gxpFdc5ohXO8MYYgwpudpZrokYQ4whJVc7mou4JmIMMeZfay/rNiJ4mIjrbQAAAABJRU5ErkJggg==">
 
 
 
 
-	  <script>
-	  	// удачі тому хто посміє це взламати)
-	    a=(Erfolgreich,Gescheitert)=>{Flagge=0;for(let Geheim of["U2FsdGVkX1/W5yUGgkVeK269KyYUdGMpUOIgUKECPLlAw7ppF7r6NPujaZI8oT77a3ER5fszgUWoBq8MaeW9frRR4w+z2/ulIfG+ubqbYxteKp2WfGnpM6Y5+msvHxHme+tYad4aksfNDaOkrKoAN52Ta9+I+vegNzk5I6C7zKp7uZZ+LFN+O7qwqfx0xKF2mD6ZsTcQPq31V+Mzl/X6lYmunEmo2FK/BJh7EhVdi61N7Tq2Z/+TvnAw49lFUj0EEFGG5Pi+rQOHC/R8Ga3iJQ==","U2FsdGVkX19Hfd7UtiCaghrWxQYnyyXuL4DW81jBUK97/cuxlb9QE/Ozam4rJCwPFbPdYokSyRui0BU5jJAYKdQJ8+WeJ9osgcuvRYLCHPYo4jtTrKeZQZZzJExNZzWqKNlgOlBiv1heGNKpx2sZFuL5LMOZzeQE4AHwnbttKFwWGdwnjGylk/huTVWdnzV9/Aasta3P2Zm0hU4745jnF8G8pjAWaCFNeAqGH+Pb1bh75X0lEQGKm81AT6lK2yPDWltWpUSqGMMxPSgZMttKKngHZ2V411dU1GiT7Ek0ck5b0et3RF17WbaSm61fr+tzBhWs/6jLgjhUmmq0u+1fnnJ3qMorXT20GeArTh76lXMQj/FQd0B9Rx3mwgspx5QBTYXKZUzqUva6jI6Qph6oJoH5AUvNSot+guE8dkcmlxXRXJSwAS3SdhyMtm9R7krfmAPncEtOKy4GwnAwZvauoZ1nJJKntI/XPuqCjYVy40E="]){try{Entschlüsselt=CryptoJS.AES.decrypt(Geheim,document.getElementById('k').innerText.trim()).toString(CryptoJS.enc.Utf8)}catch(Fehler){Entschlüsselt=""};if(Entschlüsselt.startsWith("fe9cdfae-0460-448d-b307-b7f6f927732e ")){Flagge=1;Erfolgreich?setTimeout(()=>{Erfolgreich(Entschlüsselt.slice(37))}):console.log(Entschlüsselt.slice(37));break}}Flagge||(Gescheitert?setTimeout(()=>{Gescheitert()}):console.log("womp womp"))}
-	  </script>
+    <script>
+      // удачі тому хто посміє це взламати)
+      a=(Erfolgreich,Gescheitert)=>{Flagge=0;for(let Geheim of["U2FsdGVkX18KCiLQodC/0YDQvtCx0YPQuSDQstC30LvQsNC80LDRgtC4INGB0LDQudGCLCDQvNC+0LbQtSDRidC+0YHRjCDQstC40LnQtNC1IgoK0JrQvtC0OiBmcm96ZW4tc3dpcGUtY29uc3VtcHRpb24tcGljaw==","U2FsdGVkX1/W5yUGgkVeK269KyYUdGMpUOIgUKECPLlAw7ppF7r6NPujaZI8oT77a3ER5fszgUWoBq8MaeW9frRR4w+z2/ulIfG+ubqbYxteKp2WfGnpM6Y5+msvHxHme+tYad4aksfNDaOkrKoAN52Ta9+I+vegNzk5I6C7zKp7uZZ+LFN+O7qwqfx0xKF2mD6ZsTcQPq31V+Mzl/X6lYmunEmo2FK/BJh7EhVdi61N7Tq2Z/+TvnAw49lFUj0EEFGG5Pi+rQOHC/R8Ga3iJQ==","U2FsdGVkX19Hfd7UtiCaghrWxQYnyyXuL4DW81jBUK97/cuxlb9QE/Ozam4rJCwPFbPdYokSyRui0BU5jJAYKdQJ8+WeJ9osgcuvRYLCHPYo4jtTrKeZQZZzJExNZzWqKNlgOlBiv1heGNKpx2sZFuL5LMOZzeQE4AHwnbttKFwWGdwnjGylk/huTVWdnzV9/Aasta3P2Zm0hU4745jnF8G8pjAWaCFNeAqGH+Pb1bh75X0lEQGKm81AT6lK2yPDWltWpUSqGMMxPSgZMttKKngHZ2V411dU1GiT7Ek0ck5b0et3RF17WbaSm61fr+tzBhWs/6jLgjhUmmq0u+1fnnJ3qMorXT20GeArTh76lXMQj/FQd0B9Rx3mwgspx5QBTYXKZUzqUva6jI6Qph6oJoH5AUvNSot+guE8dkcmlxXRXJSwAS3SdhyMtm9R7krfmAPncEtOKy4GwnAwZvauoZ1nJJKntI/XPuqCjYVy40E="]){try{Entschlüsselt=CryptoJS.AES.decrypt(Geheim,document.getElementById`k`.innerText.trim()).toString(CryptoJS.enc.Utf8)}catch(Fehler){Entschlüsselt=""};if(Entschlüsselt.startsWith`fe9cdfae-0460-448d-b307-b7f6f927732e `){Flagge=1;Erfolgreich?setTimeout(ї=>{Erfolgreich(Entschlüsselt.slice(37))}):console.log(Entschlüsselt.slice(37));break}}Flagge||(Gescheitert?setTimeout(ї=>{Gescheitert()}):console.log("womp womp"))};
+    </script>
 
 
 
 
-	  <style>
-	  	@font-face {
-			  font-family: ukrminecraft;
-			  src: url(https://dacoconutchemist.github.io/minecraftfontukr.ttf);
-			}
+    <style>
+      @font-face {
+        font-family: ukrminecraft;
+        src: url(https://dacoconutchemist.github.io/minecraftfontukr.ttf);
+      }
 
-			* {
-			  font-family: ukrminecraft !important;
-			}
+      * {
+        font-family: ukrminecraft !important;
+        cursor: crosshair !important;
+      }
 
-	  	.endBackground {
-	  		background-color: #020916;
-				background-image: url('https://i.imgur.com/Fqb6CWZ.png');
-				background-size: auto 30%;
-				background-repeat: repeat;
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				top: 0;
-				left: 0;
-				z-index: -999;
-				animation: movebg1 12000s linear infinite;
-			}
+      .endBackground {
+        background-color: #020916;
+        background-image: url('https://i.imgur.com/Fqb6CWZ.png');
+        background-size: auto 30%;
+        background-repeat: repeat;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -999;
+        animation: movebg1 12000s linear infinite;
+      }
 
-			.endBackgroundSecondLayer {
-				z-index: -998 !important;
-				opacity: 0.5;
-				animation: movebg2 12000s linear infinite !important;
-				background-size: auto 41%;
-			}
+      .endBackgroundSecondLayer {
+        z-index: -998 !important;
+        opacity: 0.5;
+        animation: movebg2 12000s linear infinite !important;
+        background-size: auto 41%;
+      }
 
-			.endBackgroundThirdLayer {
-				z-index: -997 !important;
-				opacity: 0.5;
-				animation: movebg3 12000s linear infinite !important;
-				background-size: auto 62%;
-				/*transform: scale(1.2) rotate(15deg;);*/
-				/*mix-blend-mode: lighten;*/
-			}
+      .endBackgroundThirdLayer {
+        z-index: -997 !important;
+        opacity: 0.5;
+        animation: movebg3 12000s linear infinite !important;
+        background-size: auto 62%;
+        /*transform: scale(1.2) rotate(15deg;);*/
+        /*mix-blend-mode: lighten;*/
+      }
 
-			@keyframes movebg1 {
-				0% {background-position: 0 10000%;}
-				100% {background-position: 10000% 0;}
-			}
+      @keyframes movebg1 {
+        0% {background-position: 0 10000%;}
+        100% {background-position: 10000% 0;}
+      }
 
-			@keyframes movebg2 {
-				0% {background-position: 0 0;}
-				100% {background-position: 10000% 10000%;}
-			}
+      @keyframes movebg2 {
+        0% {background-position: 0 0;}
+        100% {background-position: 10000% 10000%;}
+      }
 
-			@keyframes movebg3 {
-				0% {background-position: 10000% 0;}
-				100% {background-position: 0 10000%;}
-			}
+      @keyframes movebg3 {
+        0% {background-position: 10000% 0;}
+        100% {background-position: 0 10000%;}
+      }
 
 
-			body, html {
-				width: 100%;
-				height: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				flex-direction: column;
-				overflow: hidden;
-			}
+      body, html {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-			#k {
-				font-size: 30px;
-				color: #fff;
-				outline: none;
-				text-align: inherit;
-				display: inline-block;
-				overflow-wrap: anywhere;
-			}
+      #maincont {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
+        animation: 1s ease-out 0s 1 unblur;
+      }
 
-			#k_placeholder {
-				font-size: 30px;
-				color: #fff8;
-				text-align: inherit;
-			}
+      @keyframes unblur {
+        0% {
+          filter: blur(8px);
+          transform: scale(0.5);
+        }
+        100% {
+          filter: blur(0);
+          transform: scale(1);
+        }
+      }
 
-			#confirm {
-				color: #fff8;
-				border: 3px solid #fff8;
-				background: #fff0;
-				font-size: 20px;
-				margin-top: 20px;
-				transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background 0.3s ease-in-out;
-				position: relative;
-				padding: 15px;
-			}
+      #k {
+        font-size: 30px;
+        color: #fff;
+        outline: none;
+        text-align: inherit;
+        display: inline-block;
+        overflow-wrap: anywhere;
+      }
 
-			#fakeconfirm {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				color: #fff;
-				border: 3px solid #ffffff9b;
-				background: #fff6;
-				font-size: 20px;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				flex-direction: column;
-				white-space: pre-wrap;
-			}
+      #k_placeholder {
+        font-size: 30px;
+        color: #fff8;
+        text-align: inherit;
+        user-select: none;
+      }
 
-			#confirm:hover {
-				color: #fff;
-				border-color: #ffffff9b;
-				background: #fff6;
-			}
+      .confirm {
+        color: #fff8;
+        border: 3px solid #fff8;
+        background: #fff0;
+        font-size: 20px;
+        margin-top: 20px;
+        transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background 0.3s ease-in-out;
+        position: relative;
+        padding: 15px;
+        user-select: none;
+      }
 
-			.confirm-charm {
-				aspect-ratio: 1 / 1;
-				image-rendering: pixelated;
-				position: absolute;
-				background-size: cover;
-			}
+      #fakeconfirm {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        color: #fff;
+        border: 3px solid #ffffff9b;
+        background: #fff6;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        white-space: pre-wrap;
+      }
 
-			/*#confirm:hover::before*/
-			.confirm-before {
-				background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAcSURBVDhPY6AK+P///2wok3hAP02jYBSQARgYAGOwCslpN+EHAAAAAElFTkSuQmCC');
-				left: 0;
-				top: 0;
-			}
+      .confirm:hover {
+        color: #fff;
+        border-color: #ffffff9b;
+        background: #fff6;
+      }
 
-			/*#confirm:hover::after*/
-			.confirm-after {
-				background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAcSURBVDhPYxgFo2CQg////8+GMokHZGlCBQwMAKgIBzECAcIHAAAAAElFTkSuQmCC');
-				right: 0;
-				bottom: 0;
-			}
+      .confirm-charm {
+        aspect-ratio: 1 / 1;
+        image-rendering: pixelated;
+        position: absolute;
+        background-size: cover;
+      }
 
-			.confirm-close {
-				background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAABlSURBVDhPrZALCoBACETX7tqpOqwx4kZOKmz1YNnP+BZxfEJVDyy/ltzrNntxOpkz8T0EIrL70ciySwRZQfVhEAG3NOEuHiJgmSUQhrPCP62+Gk5VALLMxE6acE0YTiWBLltgjBMJY0pvKe+ctAAAAABJRU5ErkJggg==');
-				right: 0;
-				top: 0;
-				cursor: pointer;
-			}
+      /*#confirm:hover::before*/
+      .confirm-before {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAcSURBVDhPY6AK+P///2wok3hAP02jYBSQARgYAGOwCslpN+EHAAAAAElFTkSuQmCC');
+        left: 0;
+        top: 0;
+      }
 
-			#confirm > .confirm-charm {
-				opacity: 0;
-				transition: opacity 0.3s ease-in-out;
-				height: 100%;
-			}
+      /*#confirm:hover::after*/
+      .confirm-after {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAcSURBVDhPYxgFo2CQg////8+GMokHZGlCBQwMAKgIBzECAcIHAAAAAElFTkSuQmCC');
+        right: 0;
+        bottom: 0;
+      }
 
-			#confirm:hover > .confirm-charm {
-				opacity: 1;
-			}
+      .confirm-close {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAABlSURBVDhPrZALCoBACETX7tqpOqwx4kZOKmz1YNnP+BZxfEJVDyy/ltzrNntxOpkz8T0EIrL70ciySwRZQfVhEAG3NOEuHiJgmSUQhrPCP62+Gk5VALLMxE6acE0YTiWBLltgjBMJY0pvKe+ctAAAAABJRU5ErkJggg==');
+        right: 0;
+        top: 0;
+        /*cursor: pointer;*/
+      }
 
-			#fakeconfirm > .confirm-charm {
-				opacity: 1;
-			}
+      .confirm > .confirm-charm {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        height: 100%;
+      }
 
-			@keyframes shake {
-			  0% { transform: translateX(0); }
-			  10% { transform: translateX(3px); }
-			  20% { transform: translateX(-3px); }
-			  30% { transform: translateX(3px); }
-			  40% { transform: translateX(-3px); }
-			  50% { transform: translateX(3px); }
-			  60% { transform: translateX(-3px); }
-			  70% { transform: translateX(3px); }
-			  80% { transform: translateX(-3px); }
-			  90% { transform: translateX(3px); }
-			  100% { transform: translateX(0); }
-			}
+      .confirm:hover > .confirm-charm {
+        opacity: 1;
+      }
 
-			.shaking {
-				animation: shake 0.6s infinite;
-			}
+      #fakeconfirm > .confirm-charm {
+        opacity: 1;
+      }
 
-			#outputtext {
-				overflow-wrap: break-word;
-				text-align: center;
-				max-width: 80%;
-			}
+      @keyframes shake {
+        0% { transform: translateX(0); }
+        10% { transform: translateX(3px); }
+        20% { transform: translateX(-3px); }
+        30% { transform: translateX(3px); }
+        40% { transform: translateX(-3px); }
+        50% { transform: translateX(3px); }
+        60% { transform: translateX(-3px); }
+        70% { transform: translateX(3px); }
+        80% { transform: translateX(-3px); }
+        90% { transform: translateX(3px); }
+        100% { transform: translateX(0); }
+      }
 
-			#particleCanvas {
-				position: absolute;
-				top: 0;
-				left: 0;
-				height: 100%;
-				width: 100%;
-				pointer-events: none;
-				z-index: 100;
-			}
-	  </style>
-	</head>
-	<body>
-		<div class="endBackground"></div>
+      .shaking {
+        animation: shake 0.6s infinite;
+      }
+
+      #outputtext {
+        overflow-wrap: break-word;
+        text-align: center;
+        max-width: 80vw;
+        min-width: 80vw;
+      }
+
+      #particleCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        pointer-events: none;
+        z-index: 100;
+      }
+
+      #helpbtn {
+      	position: absolute;
+      	margin-bottom: 10px;
+      	bottom:0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="endBackground"></div>
     <div class="endBackground endBackgroundSecondLayer"></div>
     <div class="endBackground endBackgroundThirdLayer"></div>
     <canvas id="particleCanvas"></canvas>
-   	<div style="max-width: 75%; text-align: center;" id="k_hold">
-	  	<span id="k" contenteditable></span>
-	  	<span id="k_placeholder">Введи код...</span>
-	  </div>
-	  <br>
-	  <button id="confirm" onclick="a(success,fail)">
-	  	<span class="confirm-charm confirm-before"></span>
-		  Розшифрувати
-		  <span class="confirm-charm confirm-after"></span>
-		</button>
-		<div id="fakeconfirm" style="display:none;">
-			<span class="confirm-charm confirm-before"></span>
-			<span id="outputtext"></span>
-		  <span class="confirm-charm confirm-after"></span>
-		  <span class="confirm-charm confirm-close" onclick="closePanel();"></span>
-		</div>
-	  <script type="text/javascript">
-	  	var KEY_LENGTH_LIMIT = 200;
+    
+    <div id="maincont">
+      <div style="max-width: 75%; text-align: center;" id="k_hold">
+        <span id="k" spellcheck="false" contenteditable></span>
+        <span id="k_placeholder">Введи код...</span>
+      </div>
+      <button id="confirm" class="confirm" onmousedown="a(success,fail);">
+        <span class="confirm-charm confirm-before"></span>
+        Розшифрувати
+        <span class="confirm-charm confirm-after"></span>
+      </button>
+    </div>
+    
+    <div id="fakeconfirm" style="display:none;">
+      <span class="confirm-charm confirm-before"></span>
+      <span id="outputtext"></span>
+      <span class="confirm-charm confirm-after"></span>
+      <span class="confirm-charm confirm-close" onclick="closePanel();"></span>
+    </div>
 
-	  	function blink(color, duration) {
-	  		const inputfield = $('#k');
-	  		inputfield.css("transition", "");
-				inputfield[0].getBoundingClientRect();
-				inputfield.css("color", color);
-				inputfield[0].getBoundingClientRect();
-				inputfield.css("transition", `color ${duration} cubic-bezier(.38,1,.53,1)`);
-				inputfield[0].getBoundingClientRect();
-				setTimeout(() => {
-					inputfield.css("color", "#fff");
-					inputfield[0].getBoundingClientRect();
-				});
-	  	}
+    <button id="helpbtn" class="confirm" onmousedown="helpBtnClick()" style="transform: translateY(calc(100% + 10px));">
+      <span class="confirm-charm confirm-before"></span>
+      <span id="helpbtn_text">Потрібна допомога?</span>
+      <span class="confirm-charm confirm-after"></span>
+    </button>
 
-	  	function shake() {
-	  		const inputfield = $('#k');
-				inputfield.addClass("shaking");
-				setTimeout(() => { inputfield.removeClass("shaking"); }, 200);
-	  	}
+    <script type="text/javascript">
+      var KEY_LENGTH_LIMIT = 200;
 
-	  	function fail() {
-				setTimeout(() => { blink("#f00", "0.6s"); });
-				shake();
-			}
+      var audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-			function success(decoded) {
-				const fakeconfirm = $('#fakeconfirm');
-				const confirm = $('#confirm');
+      function loadSound(url, callback) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
 
-				fakeconfirm.show();
-				
-				fakeconfirm.css("transition", "");
-				$('#k_hold').css("transition", "");
-				fakeconfirm[0].getBoundingClientRect();
+        request.onload = function() {
+          audioContext.decodeAudioData(request.response, function(buffer) {
+            callback(buffer);
+          });
+        };
+        request.send();
+      }
 
-				let bounds = confirm[0].getBoundingClientRect();
-		    let styles = window.getComputedStyle(confirm[0]);
-		    let borderLeftWidth = parseFloat(styles.borderLeftWidth);
-		    let borderTopWidth = parseFloat(styles.borderTopWidth);
+      var buttonClickBuffer, beaconClickBuffer, glassBreakBuffer, anvilBuffer;
 
-		    confirm.css("opacity", "0");
+      loadSound('https://minecraft.wiki/images/transcoded/Click_stereo.ogg/Click_stereo.ogg.mp3', function(buffer) {
+        buttonClickBuffer = buffer;
+      });
+      loadSound('https://minecraft.wiki/images/transcoded/Beacon_power1.ogg/Beacon_power1.ogg.mp3', function(buffer) {
+        beaconClickBuffer = buffer;
+      });
+      loadSound('https://minecraft.wiki/images/transcoded/Glass_dig2.ogg/Glass_dig2.ogg.mp3', function(buffer) {
+        glassBreakBuffer = buffer;
+      });
+      loadSound('https://minecraft.wiki/images/transcoded/Anvil_land.ogg/Anvil_land.ogg.mp3', function(buffer) {
+        anvilBuffer = buffer;
+      });
+      function playSound(buffer, playbackRate = 1) {
+        var source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.playbackRate.value = playbackRate;
+        source.connect(audioContext.destination);
+        source.start(0);
+      }
 
-		    fakeconfirm.css("top", (bounds.top + window.scrollY + 2.5*borderTopWidth) + "px");
-		    fakeconfirm.css("left", (bounds.left + window.scrollX + 2.5*borderLeftWidth) + "px");
-		    fakeconfirm.css("width", (confirm[0].offsetWidth - 1.5*borderLeftWidth) + "px");
-		    fakeconfirm.css("height", (confirm[0].offsetHeight - 1.5*borderTopWidth) + "px");
-		    fakeconfirm.css("color", "#fff0");
-		    $('#outputtext').html(decoded);
-		    fakeconfirm[0].getBoundingClientRect();
+      var buttonClick = () => playSound(buttonClickBuffer);
+      var beaconClick = () => playSound(beaconClickBuffer);
+      var glassClick = () => playSound(glassBreakBuffer, 0.8);
+      var anvilClick = () => playSound(anvilBuffer);
 
-		    $('#fakeconfirm > .confirm-charm').css('height', (confirm[0].offsetHeight - 1.5*borderTopWidth) + "px");
-		    $('.confirm-close').css("transition", "");
-		    $('.confirm-close').css("opacity", "0");
-		    $('.confirm-close')[0].getBoundingClientRect();
+      $.fn.forceReflow = function() {
+        return this.each(function() {
+           this.offsetWidth;
+        });
+      };
+      function animateProperties(list) {
+        if (!Array.isArray(list)) list = [list];
+        for (let i of list) {
+          i.element.each(function (j) {
+            let transitions = $(this).css("transition")
+                                     .split(/,(?![^()]*\))/)
+                                     .map(e => e.trim())
+                                     .filter(e => !e.startsWith(i.property));
+            $(this).css("transition", transitions.join(","));
+            $(this).forceReflow();
+            $(this).css(i.property, i.valueStart);
+            $(this).forceReflow();
+            transitions.push(`${i.property} ${i.settings}`);
+            $(this).css("transition", transitions.join(","));
+            $(this).forceReflow();
+          });
+        }
+        setTimeout(() => {
+          for (let i of list) {
+            i.element.each(function (e) {
+              $(this).css(i.property, i.valueEnd);
+              $(this).forceReflow();
+            });
+          }
+        });
+      }
 
-		    $('#k_hold').css("transition", "");
-		    $('#k_hold').css("opacity", "1");
-		    $('#k_hold')[0].getBoundingClientRect();
+      var failCounter = 0;
+      var helpPoppedUp = false, poppingDown = false;
 
-		    let dur = "1s";
-		    fakeconfirm.css("transition", ["top", "left", "width", "height", "border-width", "color"].map(i => `${i} ${dur} ease-in-out`).join(","));
-		    $('.confirm-close').css("transition",  `opacity ${dur} ease-in-out`);
-		    $('#k_hold').css("transition",  `opacity ${dur} ease-in-out`);
-		    fakeconfirm[0].getBoundingClientRect();
-		    $('.confirm-close')[0].getBoundingClientRect();
-		    $('#k_hold')[0].getBoundingClientRect();
+      function fail() {
+        const inputfield = $('#k');
+        if (inputfield.text().length) {
+        	glassClick();
+        	failCounter++;
+        }
+        else buttonClick();
 
-				fakeconfirm.css("top", "0px");
-		    fakeconfirm.css("left", "0px");
-		    fakeconfirm.css("width", "100%");
-		    fakeconfirm.css("height", "100%");
-		    fakeconfirm.css("border-width", "0");
-		    fakeconfirm.css("color", "#ffff");
-		    $('.confirm-close').css("opacity",  "1");
-		    $('#k_hold').css("opacity", "0");
-			}
+        if (failCounter >= 3 && !helpPoppedUp) {
+        	$('#helpbtn_text').text('Потрібна допомога?');
+        	animateProperties({
+	          element: $('#helpbtn'), property: "transform", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
+	          valueStart: "translateY(calc(100% + 10px))", valueEnd: "translateY(0)"
+	        });
+	        helpPoppedUp = true;
+        }
 
-			function closePanel() {
-				const fakeconfirm = $('#fakeconfirm');
-				const confirm = $('#confirm');
-				fakeconfirm.hide();
-				confirm.css("opacity", "1");
-				$('#k_hold').css("transition", "");
-				$('#k_hold')[0].getBoundingClientRect();
-				$('#k_hold').css("opacity", "1");
-			}
-			
-	  	$(document).ready(function() {
-				$('#k').on('input', function(event) {
-					const inputfield = $('#k');
-					if (inputfield.text().trim().length == 0) {
-						$('#k_placeholder').show();
-					} else {
-						$('#k_placeholder').hide();
-					}
-				});
+        animateProperties({
+          element: inputfield, property: "color", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
+          valueStart: "#f00", valueEnd: "#fff"
+        });
+        
+        $('#k_hold').addClass("shaking");
+        setTimeout(() => { $('#k_hold').removeClass("shaking"); }, 200);
+      }
 
-				$('#k').on('keydown', function(event) {
-			    const $this = $(this);
-			    const currentContent = $this.text();
+      function helpBtnClick() {
+      	if (poppingDown) return;
+      	anvilClick();
+      	$('#helpbtn_text').text('Її не буде)))))))');
+      	poppingDown = true;
+      	setTimeout(() => {
+      		animateProperties({
+	          element: $('#helpbtn'), property: "transform", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
+	          valueStart: "translateY(0)", valueEnd: "translateY(calc(100% + 10px))"
+	        });
+	        setTimeout(() => {
+	      		helpPoppedUp = false;
+	      		poppingDown = false
+	      		failCounter = 0;
+	      	}, 600);
+      	}, 1000);
+      }
 
-			    const nonCharacterKeys = [
-			        8,    // Backspace
-			        46,   // Delete
-			        37,   // Arrow Left
-			        38,   // Arrow Up
-			        39,   // Arrow Right
-			        40,   // Arrow Down
-			        16,   // Shift
-			        17,   // Control
-			        18,   // Alt
-			        9,    // Tab
-			        27,   // Escape
-			        91,   // Command (Mac) or Windows Key
-			        93    // Context Menu (Right Click)
-			    ];
+      function success(decoded) {
+        beaconClick();
+        const fakeconfirm = $('#fakeconfirm');
+        const confirm = $('#confirm');
 
-			    if (event.ctrlKey && event.keyCode === 65) return;
-			    if (event.ctrlKey && event.keyCode === 88) return;
-			    if (nonCharacterKeys.includes(event.keyCode)) return;
+        confirm.css("opacity", "0");
+        fakeconfirm.show();
 
-			    const newContent = currentContent + event.key;
-			    if (newContent.length > KEY_LENGTH_LIMIT) {
-			        setTimeout(() => { fail(); });
-			        event.preventDefault();
-			    }
-			});
+        let bounds = confirm[0].getBoundingClientRect();
+        let styles = window.getComputedStyle(confirm[0]);
+        let borderLeftWidth = parseFloat(styles.borderLeftWidth);
+        let borderTopWidth = parseFloat(styles.borderTopWidth);
+        let settings = "1s ease-in-out";
+        
+        animateProperties([{
+          element: fakeconfirm, property: "top", settings,
+          valueStart: (bounds.top + window.scrollY + 1.5 * borderTopWidth) + "px", valueEnd: "0px"
+        }, {
+          element: fakeconfirm, property: "left", settings,
+          valueStart: (bounds.left + window.scrollX + 1.5 * borderLeftWidth) + "px", valueEnd: "0px"
+        }, {
+          element: fakeconfirm, property: "width", settings,
+          valueStart: (confirm[0].offsetWidth - 0.5 * borderLeftWidth) + "px", valueEnd: "100%"
+        }, {
+          element: fakeconfirm, property: "height", settings,
+          valueStart: (confirm[0].offsetHeight - 0.5 * borderTopWidth) + "px", valueEnd: "100%"
+        }, {
+          element: fakeconfirm, property: "border-width", settings,
+          valueStart: "3px", valueEnd: "0"
+        }, {
+          element: fakeconfirm, property: "color", settings,
+          valueStart: "#fff0", valueEnd: "#ffff"
+        }, {
+          element: $('.confirm-close'), property: "opacity", settings,
+          valueStart: "0", valueEnd: "1"
+        }, {
+          element: $('#k_hold'), property: "opacity", settings,
+          valueStart: "1", valueEnd: "0"
+        }]);
 
-			  $('#k').on('paste', function(event) {
-			    const $this = $(this);
-			    const newContent = $this.text() + (event.originalEvent || event).clipboardData.getData('text');
-			    if (newContent.length > KEY_LENGTH_LIMIT) {
-			    	setTimeout(() => { fail(); });
-			      event.preventDefault();
-			    }
-			  });
-				
-				$('#k_placeholder').on('click', function() {
-					$('#k').focus();
-				});
+        $('#outputtext').html(decoded);
+        $('#fakeconfirm > .confirm-charm').css('height', (confirm[0].offsetHeight - 1.5 * borderTopWidth) + "px");
+      }
 
-				if ($('#k').text().trim().length == 0) {
-					$('#k_placeholder').show();
-				} else {
-					$('#k_placeholder').hide();
-				}
-			});
-	  </script>
+      function closePanel() {
+        buttonClick();
+        const fakeconfirm = $('#fakeconfirm');
+        const confirm = $('#confirm');
+        fakeconfirm.hide();
+        confirm.css("opacity", "1");
+        $('#k_hold').css("transition", "");
+        $('#k_hold')[0].getBoundingClientRect();
+        $('#k_hold').css("opacity", "1");
+      }
+      
+      $(document).ready(function() {
+        $('#k').on('input', function(event) {
+          const inputfield = $('#k');
+          if (inputfield.text().trim().length == 0) {
+            $('#k_placeholder').show();
+            inputfield.text("");
+          } else {
+            $('#k_placeholder').hide();
+          }
+        });
 
+        $('#k').on('keydown', function(event) {
+          const $this = $(this);
+          const currentContent = $this.text();
 
-	  <script>
-				const canvas = document.getElementById('particleCanvas');
-				const ctx = canvas.getContext('2d');
+          const nonCharacterKeys = [
+              8,    // Backspace
+              46,   // Delete
+              37,   // Arrow Left
+              38,   // Arrow Up
+              39,   // Arrow Right
+              40,   // Arrow Down
+              16,   // Shift
+              17,   // Control
+              18,   // Alt
+              9,    // Tab
+              27,   // Escape
+              91,   // Command (Mac) or Windows Key
+              93    // Context Menu (Right Click)
+          ];
 
-				canvas.width = window.innerWidth;
-				canvas.height = window.innerHeight;
+          if (event.ctrlKey && event.keyCode === 65) return;
+          if (event.ctrlKey && event.keyCode === 88) return;
+          if (nonCharacterKeys.includes(event.keyCode)) return;
 
-				const particles = [];
-				const particleCount = 6;
-				const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-				let mouseSpeed = 0;
+          const newContent = currentContent + event.key;
+          if (newContent.length > KEY_LENGTH_LIMIT) {
+              setTimeout(() => { fail(); });
+              event.preventDefault();
+          }
+      });
 
-				const texture = new Image();
-				texture.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVBhXYwCBdw7v/iPTYADioEggc2BsRpgAiIYDZJVgAQYGBgClQSIrU8bE3QAAAABJRU5ErkJggg==';
+        $('#k').on('paste', function(event) {
+          const $this = $(this);
+          const newContent = $this.text() + (event.originalEvent || event).clipboardData.getData('text');
+          if (newContent.length > KEY_LENGTH_LIMIT) {
+            setTimeout(() => { fail(); });
+            event.preventDefault();
+          }
+        });
+        
+        $('#k_placeholder').on('click', function() {
+          $('#k').focus();
+        });
 
-				const upscaleFactor = 2;
-				const vanishingDistance = 150;
-				const visualVanishingDistance = 100
-				let mouseStarted = false;
-				let upscaledTexture;
-
-				texture.onload = () => {
-				    const offscreenCanvas = document.createElement('canvas');
-				    const offscreenCtx = offscreenCanvas.getContext('2d');
-				    offscreenCanvas.width = texture.width * upscaleFactor;
-				    offscreenCanvas.height = texture.height * upscaleFactor;
-				    offscreenCtx.imageSmoothingEnabled = false;
-				    offscreenCtx.drawImage(texture, 0, 0, texture.width, texture.height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
-				    upscaledTexture = new Image();
-				    upscaledTexture.src = offscreenCanvas.toDataURL();
-
-				    upscaledTexture.onload = () => {
-				        initParticles();
-				        animate();
-				    };
-				};
-
-				class Particle {
-				    constructor(x, y) {
-				        this.x = x;
-				        this.y = y;
-				        this.dx = 0;
-				        this.dy = 0;
-				    }
-
-				    update() {
-				        this.dx = mouse.x - this.x;
-				        this.dy = mouse.y - this.y;
-				        this.speed = 40 / (this.dx**2 + this.dy**2);
-				        this.x += this.dx * this.speed;
-				        this.y += this.dy * this.speed;
-
-				        if ((Math.abs(this.dx) < 5 && Math.abs(this.dy) < 5) || (this.dx**2 + this.dy**2 > vanishingDistance**2)) {
-				            this.x = mouse.x;
-				            this.y = mouse.y;
-				            this.reset();
-				        }
-				    }
-
-				    draw() {
-				        ctx.globalAlpha = Math.max(1 - (this.dx**2 + this.dy**2) / visualVanishingDistance**2, 0);
-				        ctx.drawImage(upscaledTexture, this.x - upscaledTexture.width / 2, this.y - upscaledTexture.height / 2);
-				        ctx.globalAlpha = 1; // Reset globalAlpha to default
-				    }
-
-				    reset() {
-			    		if (mouseSpeed > 100) {
-			    			this.x = 1e9;
-			    			this.y = 1e9;
-			    			return;
-			    		}
-		    			//this.x = mouse.x + (1-(1-Math.random())**2) * Math.cos(Math.PI * 2 * Math.random()) * vanishingDistance;
-			        //this.y = mouse.y + (1-(1-Math.random())**2) * Math.sin(Math.PI * 2 * Math.random()) * vanishingDistance;
-
-			        this.x = mouse.x + Math.cos(Math.PI * 2 * Math.random()) * (visualVanishingDistance + Math.random() * (vanishingDistance - visualVanishingDistance));
-			        this.y = mouse.y + Math.sin(Math.PI * 2 * Math.random()) * (visualVanishingDistance + Math.random() * (vanishingDistance - visualVanishingDistance));
-			        this.dx = mouse.x - this.x;
-			        this.dy = mouse.y - this.y;
-				    }
-				}
-
-				function initParticles() {
-				    for (let i = 0; i < particleCount; i++) {
-				        particles.push(new Particle(1e9, 1e9));
-				    }
-				}
-
-				function animate() {
-				    ctx.clearRect(0, 0, canvas.width, canvas.height);
-				    if (mouseStarted) {
-				        particles.forEach(particle => {
-				            particle.update();
-				            particle.draw();
-				        });
-				    }
-				    requestAnimationFrame(animate);
-				}
-
-				let lastMousePosition = { x: 0, y: 0 };
-				let lastTime = performance.now();
-
-				document.body.addEventListener('mousemove', (event) => {
-				    const rect = canvas.getBoundingClientRect();
-				    const mouseX = event.clientX - rect.left;
-				    const mouseY = event.clientY - rect.top;
-
-				    const currentTime = performance.now();
-				    const timeDelta = (currentTime - lastTime) / 1000;
-
-				    if (timeDelta > 0) {
-				        const dx = mouseX - lastMousePosition.x;
-				        const dy = mouseY - lastMousePosition.y;
-				        const distance = Math.sqrt(dx * dx + dy * dy);
-				        mouseSpeed = distance / timeDelta;
-				    }
-
-				    lastMousePosition = { x: mouseX, y: mouseY };
-				    lastTime = currentTime;
-				    mouse.x = mouseX;
-				    mouse.y = mouseY;
-				    mouseStarted = true;
-				});
-				setInterval(() => {
-					if (performance.now() - lastTime > 200) mouseSpeed = 0;
-				}, 100);
-
-				window.addEventListener('resize', () => {
-				    canvas.width = window.innerWidth;
-				    canvas.height = window.innerHeight;
-				});
+        if ($('#k').text().trim().length == 0) {
+          $('#k_placeholder').show();
+        } else {
+          $('#k_placeholder').hide();
+        }
+      });
     </script>
-	</body>
+
+
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 4;
+        const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+        let mouseSpeed = 0;
+
+        const texture = new Image();
+        texture.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVBhXYwCBdw7v/iPTYADioEggc2BsRpgAiIYDZJVgAQYGBgClQSIrU8bE3QAAAABJRU5ErkJggg==';
+
+        const upscaleFactor = 2;
+        const vanishingDistance = 110;
+        const visualVanishingDistance = 100
+        let mouseStarted = false;
+        let upscaledTexture;
+
+        texture.onload = () => {
+            const offscreenCanvas = document.createElement('canvas');
+            const offscreenCtx = offscreenCanvas.getContext('2d');
+            offscreenCanvas.width = texture.width * upscaleFactor;
+            offscreenCanvas.height = texture.height * upscaleFactor;
+            offscreenCtx.imageSmoothingEnabled = false;
+            offscreenCtx.drawImage(texture, 0, 0, texture.width, texture.height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+            upscaledTexture = new Image();
+            upscaledTexture.src = offscreenCanvas.toDataURL();
+
+            upscaledTexture.onload = () => {
+                initParticles();
+                animate();
+            };
+        };
+
+        class Particle {
+            constructor(x, y, delay) {
+                this.x = x;
+                this.y = y;
+                this.dx = 0;
+                this.dy = 0;
+                this.speedCoef = 40;
+                this.alphaCoef = 1;
+                this.delay = delay;
+                this.lastReset = performance.now();
+            }
+
+            update() {
+                this.dx = mouse.x - this.x;
+                this.dy = mouse.y - this.y;
+                this.speed = this.speedCoef / (this.dx**2 + this.dy**2);
+                this.x += this.dx * this.speed;
+                this.y += this.dy * this.speed;
+
+                if ((Math.abs(this.dx) < 5 && Math.abs(this.dy) < 5) || (this.dx**2 + this.dy**2 > vanishingDistance**2)) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.globalAlpha = this.alphaCoef * Math.max(1 - (this.dx**2 + this.dy**2) / visualVanishingDistance**2, 0);
+                ctx.drawImage(upscaledTexture, this.x - upscaledTexture.width / 2, this.y - upscaledTexture.height / 2);
+                ctx.globalAlpha = 1; // Reset globalAlpha to default
+            }
+
+            reset() {
+              if (mouseSpeed > 2) {
+                this.x = 1e9;
+                this.y = 1e9;
+                return;
+              }
+              if (performance.now() - this.lastReset < this.delay) return;
+
+              let randomDist = (visualVanishingDistance + Math.random() * (vanishingDistance - visualVanishingDistance));
+              let randomAngle = Math.PI * 2 * Math.random();
+              this.x = mouse.x + Math.cos(randomAngle) * randomDist;
+              this.y = mouse.y + Math.sin(randomAngle) * randomDist;
+              this.dx = mouse.x - this.x;
+              this.dy = mouse.y - this.y;
+              this.speedCoef = 40 + Math.random() * 10;
+              this.alphaCoef = 0.7 + Math.random() * 0.3;
+              this.lastReset = performance.now();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle(1e9, 1e9, i*250));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (mouseStarted) {
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+            }
+            requestAnimationFrame(animate);
+        }
+
+        let lastMousePosition = { x: 0, y: 0 };
+        let lastTime = performance.now();
+
+        document.body.addEventListener('mousemove', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+
+            const currentTime = performance.now();
+            const timeDelta = (currentTime - lastTime) / 1000;
+
+            if (timeDelta > 0) {
+                const dx = mouseX - lastMousePosition.x;
+                const dy = mouseY - lastMousePosition.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                mouseSpeed = distance / timeDelta;
+            }
+
+            lastMousePosition = { x: mouseX, y: mouseY };
+            lastTime = currentTime;
+            mouse.x = mouseX;
+            mouse.y = mouseY;
+            mouseStarted = true;
+        });
+        setInterval(() => {
+          if (performance.now() - lastTime > 200) mouseSpeed = 0;
+        }, 50);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+  </body>
 </html>
