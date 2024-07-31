@@ -279,7 +279,7 @@
       <span class="confirm-charm confirm-close" onclick="closePanel();"></span>
     </div>
 
-    <button id="helpbtn" class="confirm" onmousedown="helpBtnClick()" style="transform: translateY(calc(100% + 10px));">
+    <button id="helpbtn" class="confirm" onmousedown="helpBtnClick()" style="transform: translateY(calc(100% + 10px)); display: none;">
       <span class="confirm-charm confirm-before"></span>
       <span id="helpbtn_text">Потрібна допомога?</span>
       <span class="confirm-charm confirm-after"></span>
@@ -375,6 +375,7 @@
 
         if (failCounter >= 3 && !helpPoppedUp) {
           $('#helpbtn_text').text('Потрібна допомога?');
+          $('#helpbtn').show();
           animateProperties({
             element: $('#helpbtn'), property: "transform", settings: "0.6s cubic-bezier(.38,1,.53,1)", 
             valueStart: "translateY(calc(100% + 10px))", valueEnd: "translateY(0)"
@@ -403,10 +404,11 @@
           });
           setTimeout(() => {
             helpPoppedUp = false;
-            poppingDown = false
+            poppingDown = false;
             failCounter = 0;
+            $('#helpbtn').hide();
           }, 600);
-        }, 1000);
+        }, 2000);
       }
 
       function success(decoded) {
@@ -460,6 +462,8 @@
         fakeconfirm.hide();
         confirm.css("opacity", "1");
         $('#k_hold').css("transition", "");
+        $('#k').text("");
+        $('#k_placeholder').show();
         $('#k_hold')[0].getBoundingClientRect();
         $('#k_hold').css("opacity", "1");
       }
@@ -492,6 +496,14 @@
         $('#k').on('keydown', function(event) {
           const $this = $(this);
           const currentContent = $this.text();
+
+          if (event.key === 'Enter' || event.keyCode == 13) {
+          	setTimeout(() => {
+          		$("#confirm").trigger("mousedown");
+          	});
+          	event.preventDefault();
+          	return;
+          }
 
           const nonCharacterKeys = [
               8,    // Backspace
