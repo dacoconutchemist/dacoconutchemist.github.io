@@ -152,7 +152,7 @@
         white-space: pre-wrap;
       }
 
-      .confirm:hover {
+      .confirm:hover, .confirm.touch-hover {
         color: #fff;
         border-color: #ffffff9b;
         background: #fff6;
@@ -192,7 +192,7 @@
         height: 100%;
       }
 
-      .confirm:hover > .confirm-charm {
+      .confirm:hover > .confirm-charm, .confirm.touch-hover > .confirm-charm {
         opacity: 1;
       }
 
@@ -453,6 +453,21 @@
       }
       
       $(document).ready(function() {
+		    if ('ontouchstart' in document.documentElement) {
+		    	$('*').on('touchstart', function(e) {
+            var $this = $(this);
+            $('*').removeClass('touch-hover');
+            $this.addClass('touch-hover');
+            e.preventDefault();
+	        });
+	        $('*').on('touchend touchcancel', function() {
+            var $this = $(this);
+            setTimeout(function() {
+              $this.removeClass('touch-hover');
+            }, 300);
+	        });
+		    }
+
         $('#k').on('input', function(event) {
           const inputfield = $('#k');
           if (inputfield.text().trim().length == 0) {
