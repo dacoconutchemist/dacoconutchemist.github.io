@@ -407,7 +407,14 @@
         		$('#confirm').css('opacity', "0");
         		document.getElementById('confirm').onmousedown = null;
         		glassClick();
-        		breakGlass();
+        		breakGlass($('#confirm')[0]);
+        	};
+        	document.getElementById('k').onmousedown = () => {
+        		$('#k').css('opacity', "0");
+        		document.getElementById('k').onmousedown = null;
+        		glassClick();
+        		breakGlass($('#k')[0]);
+        		//$('#k').remove();
         	};
         }
         poppingDown = true;
@@ -463,6 +470,9 @@
         }, {
           element: $('#k_hold'), property: "opacity", settings,
           valueStart: "1", valueEnd: "0"
+        }, {
+          element: $('#helpbtn'), property: "opacity", settings,
+          valueStart: "1", valueEnd: "0"
         }]);
 
         $('#outputtext').html(decoded);
@@ -476,10 +486,12 @@
         confirm_popup.hide();
         confirm.css("opacity", "1");
         $('#k_hold').css("transition", "");
+        $('#helpbtn').css("transition", "");
         $('#k').text("");
         $('#k_placeholder').show();
         $('#k_hold')[0].getBoundingClientRect();
         $('#k_hold').css("opacity", "1");
+        $('#helpbtn').css("opacity", "1");
       }
       
       $(document).ready(function() {
@@ -706,6 +718,7 @@
             this.vy = Math.random(10) * 10 - 5;
             this.sprite = 1 + Math.floor(Math.random() * 8);
             this.g = 0.75;
+            this.creation = performance.now();
           }
           update() {
             this.x += this.vx;
@@ -718,15 +731,15 @@
           }
         }
 
-        function breakGlass() {
+        function breakGlass(element) {
         		const rect = canvas.getBoundingClientRect();
-        		const btnRect = $('#confirm')[0].getBoundingClientRect();
+        		const btnRect = element.getBoundingClientRect();
             const mouseXMin = btnRect.left - rect.left;
             const mouseYMin = btnRect.top - rect.top;
 						for (let i = 0; i < 10; i++) {
 							let partX = mouseXMin + Math.random() * btnRect.width;
 							let partY = mouseYMin + Math.random() * btnRect.height;
-              particles.push(new GlassParticle(partX, partY));
+              glassParticles.push(new GlassParticle(partX, partY));
             }
         }
 
@@ -738,16 +751,19 @@
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            glassParticles.forEach((particle, index) => {
+            		if (performance.now() - particle.creation > 10000) {
+									delete glassParticles[index];
+            		}
+                particle.update();
+                particle.draw();
+            });
             if (mouseStarted) {
                 particles.forEach(particle => {
                     particle.update();
                     particle.draw();
                 });
             }
-            glassParticles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
             requestAnimationFrame(animate);
         }
 
