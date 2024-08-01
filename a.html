@@ -365,6 +365,7 @@
       var failCounter = 0;
       var helpCounter = 0;
       var helpPoppedUp = false, poppingDown = false;
+      var pickFlag = true;
 
       function fail() {
         const inputfield = $('#k');
@@ -399,7 +400,8 @@
         helpCounter++;
         if (helpCounter < 3) $('#helpbtn_text').text('Її не буде)))))))');
         else {
-        	$('#helpbtn_text').text('Задовбав, вот тримай кайло');
+        	$('#helpbtn_text').text('Задовбав, ось тримай кайло');
+        	pickFlag = false;
         	$('*').css("cursor", "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAMAAACelLz8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAeUExURURERP///9jY2MHBwUk2FWhOHhgYGIlnJygeCwAAABw/GusAAAAKdFJOU////////////wCyzCzPAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAcUlEQVQoU5WQQQ6AIAwEC9al/P/DsgIqGrTOqWGSyQbJDTloD/lbiYQQ41KIUUR1XT2KEjvUKZn5VEeVYeCP4gAzjgG8SrUO4BivqjFeftVjBBhmTNUZI0AI3+oaqxwfNVVj7ORNPWOdN2WFdt+Yqpw3/jMTBfqU9psAAAAASUVORK5CYII=') 6 2, auto");
         	document.getElementById('confirm').onmousedown = () => {
         		$('#confirm').css('opacity', "0");
@@ -510,7 +512,7 @@
           const currentContent = $this.text();
 
           if (event.key === 'Enter' || event.keyCode == 13) {
-          	setTimeout(() => {
+          	if (pickFlag) setTimeout(() => {
           		$("#confirm").trigger("mousedown");
           	});
           	event.preventDefault();
