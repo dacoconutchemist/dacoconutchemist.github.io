@@ -28,7 +28,7 @@
 
       * {
         font-family: ukrminecraft !important;
-        cursor: crosshair !important;
+        cursor: crosshair;
       }
 
       .endBackground {
@@ -363,6 +363,7 @@
       }
 
       var failCounter = 0;
+      var helpCounter = 0;
       var helpPoppedUp = false, poppingDown = false;
 
       function fail() {
@@ -395,7 +396,18 @@
       function helpBtnClick() {
         if (poppingDown) return;
         anvilClick();
-        $('#helpbtn_text').text('Її не буде)))))))');
+        helpCounter++;
+        if (helpCounter < 3) $('#helpbtn_text').text('Її не буде)))))))');
+        else {
+        	$('#helpbtn_text').text('Задовбав, вот тримай кайло');
+        	$('*').css("cursor", "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAMAAACelLz8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAeUExURURERP///9jY2MHBwUk2FWhOHhgYGIlnJygeCwAAABw/GusAAAAKdFJOU////////////wCyzCzPAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAcUlEQVQoU5WQQQ6AIAwEC9al/P/DsgIqGrTOqWGSyQbJDTloD/lbiYQQ41KIUUR1XT2KEjvUKZn5VEeVYeCP4gAzjgG8SrUO4BivqjFeftVjBBhmTNUZI0AI3+oaqxwfNVVj7ORNPWOdN2WFdt+Yqpw3/jMTBfqU9psAAAAASUVORK5CYII=') 6 2, auto");
+        	document.getElementById('confirm').onmousedown = () => {
+        		$('#confirm').css('opacity', "0");
+        		document.getElementById('confirm').onmousedown = null;
+        		glassClick();
+        		breakGlass();
+        	};
+        }
         poppingDown = true;
         setTimeout(() => {
           animateProperties({
@@ -568,34 +580,71 @@
         canvas.height = window.innerHeight;
 
         const particles = [];
+        const glassParticles = [];
         const particleCount = 4;
         const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
         let mouseSpeed = 0;
 
-        const texture = new Image();
-        texture.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVBhXYwCBdw7v/iPTYADioEggc2BsRpgAiIYDZJVgAQYGBgClQSIrU8bE3QAAAABJRU5ErkJggg==';
+        //const particleTexture = new Image();
+        //particleTexture.src = ;
 
-        const upscaleFactor = 2;
+        let glassBreakSource = [
+        	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVBhXYwCBdw7v/iPTYADioEggc2BsRpgAiIYDZJVgAQYGBgClQSIrU8bE3QAAAABJRU5ErkJggg==',
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA2SURBVDhPY/j//38aATwbDaPLLwbhEWYQIY3oeCQYRKpGdDwSDMImSQoeCQaBGZRiKhn0fzEAeddjrVHLpfcAAAAASUVORK5CYII=",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAoSURBVDhPY/j///9iJJxGLh41iDAeNYgwHjWIMB78BpGNB5tB/xcDAKUnYSACHNQoAAAAAElFTkSuQmCC",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVDhPY/j///9iauDBaVAaBXjUIMJ41CDCeNQgwnjQGvR/MQABrmEgcAcAeAAAAABJRU5ErkJggg==",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAxSURBVDhPY/j//38aBXgxDI8ahBMTbdBsNIwuPxINIqQRHY9Eg0jFI8UgOId8/H8xABpJYJrY05ZVAAAAAElFTkSuQmCC",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVDhPY/j//38ahXgxCI8ahBePGkQYjxpEGI8aRBhT06D/iwHOZFIdapJD3AAAAABJRU5ErkJggg==",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAnSURBVDhPY/z//38aAxUAE5SmGIwaRBiMGkQYjBpEGIwaRAgwMAAAvRkDh1DZUMkAAAAASUVORK5CYII=",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAnSURBVDhPY/z//38aAxUAE5SmGIwaRBiMGkQYjBpEGIwaRAgwMAAAvRkDh1DZUMkAAAAASUVORK5CYII=",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAnSURBVDhPY/z//38aAxUAE5SmGIwaRBiMGkQYjBpEGIwaRAgwMAAAvRkDh1DZUMkAAAAASUVORK5CYII=",
+        	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAwSURBVDhPY/j///9iamCaGJRGCR41CCuejYxHDQJjFI1QMTgeoQbh1YiOh61B/9MAPdRjrbgxIMwAAAAASUVORK5CYII="
+        ];
+        let textureScales = [2, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9];
+        let glassBreak = [];
+
         const vanishingDistance = 110;
         const visualVanishingDistance = 100
         let mouseStarted = false;
-        let upscaledTexture;
 
-        texture.onload = () => {
-            const offscreenCanvas = document.createElement('canvas');
+        function scaleUpTexture(texture, scaling, callback) {
+        		const offscreenCanvas = document.createElement('canvas');
             const offscreenCtx = offscreenCanvas.getContext('2d');
-            offscreenCanvas.width = texture.width * upscaleFactor;
-            offscreenCanvas.height = texture.height * upscaleFactor;
+            offscreenCanvas.width = texture.width * scaling;
+            offscreenCanvas.height = texture.height * scaling;
             offscreenCtx.imageSmoothingEnabled = false;
             offscreenCtx.drawImage(texture, 0, 0, texture.width, texture.height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
-            upscaledTexture = new Image();
-            upscaledTexture.src = offscreenCanvas.toDataURL();
+            let newTexture = new Image();
+            newTexture.src = offscreenCanvas.toDataURL();
+            newTexture.onload = callback;
+            return newTexture;
+        }
 
-            upscaledTexture.onload = () => {
+        /*particleTexture.onload = () => {
+        		upscaledTexture = scaleUpTexture(particleTexture, 2, () => {
                 initParticles();
                 animate();
-            };
-        };
+            });
+        };*/
+
+        function loadGlassTexture(src, scale) {
+				    return new Promise((resolve, reject) => {
+				        let glassTexture = new Image();
+				        glassTexture.src = src;
+				        glassTexture.onload = () => {
+				            let newTexture = scaleUpTexture(glassTexture, scale, () => {
+				                resolve(newTexture);
+				            });
+				        };
+				        glassTexture.onerror = reject;
+				    });
+				}
+
+				Promise.all(glassBreakSource.map((src, index) => loadGlassTexture(src, textureScales[index])).concat()).then( e => {
+					glassBreak = e;
+					initParticles();
+          animate();
+				});
 
         class Particle {
             constructor(x, y, delay) {
@@ -623,7 +672,7 @@
 
             draw() {
                 ctx.globalAlpha = this.alphaCoef * Math.max(1 - (this.dx**2 + this.dy**2) / visualVanishingDistance**2, 0);
-                ctx.drawImage(upscaledTexture, this.x - upscaledTexture.width / 2, this.y - upscaledTexture.height / 2);
+                ctx.drawImage(glassBreak[0], this.x - glassBreak[0].width / 2, this.y - glassBreak[0].height / 2);
                 ctx.globalAlpha = 1; // Reset globalAlpha to default
             }
 
@@ -647,6 +696,38 @@
             }
         }
 
+        class GlassParticle {
+        	constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.vx = Math.random(10) * 10 - 5;
+            this.vy = Math.random(10) * 10 - 5;
+            this.sprite = 1 + Math.floor(Math.random() * 8);
+            this.g = 0.75;
+          }
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vy += this.g;
+          }
+
+          draw() {
+            ctx.drawImage(glassBreak[this.sprite], this.x - glassBreak[this.sprite].width / 2, this.y - glassBreak[this.sprite].height / 2);
+          }
+        }
+
+        function breakGlass() {
+        		const rect = canvas.getBoundingClientRect();
+        		const btnRect = $('#confirm')[0].getBoundingClientRect();
+            const mouseXMin = btnRect.left - rect.left;
+            const mouseYMin = btnRect.top - rect.top;
+						for (let i = 0; i < 10; i++) {
+							let partX = mouseXMin + Math.random() * btnRect.width;
+							let partY = mouseYMin + Math.random() * btnRect.height;
+              particles.push(new GlassParticle(partX, partY));
+            }
+        }
+
         function initParticles() {
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle(1e9, 1e9, i*250));
@@ -661,6 +742,10 @@
                     particle.draw();
                 });
             }
+            glassParticles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
             requestAnimationFrame(animate);
         }
 
