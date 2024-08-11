@@ -1,0 +1,171 @@
+@font-face {
+  font-family: ukrminecraft;
+  src: url("https://dacoconutchemist.github.io/minecraftfontukr.ttf");
+}
+
+* {
+  font-family: ukrminecraft !important;
+}
+
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  height: 800vh;
+  overflow-y: scroll; /* Enable vertical scrolling */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+  /*display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;*/
+}
+
+body::-webkit-scrollbar {
+  width: 0; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+#header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+#header > * {
+  text-align: center;
+}
+
+#headeritems {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#logo > img {
+  max-width: min(500px,90vw);
+}
+
+.headeritem {
+  margin: 10px;
+}
+
+.screen {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.screenAbs {
+  position: fixed;
+  left: 0;
+}
+
+.screentext {
+  color: #000000;
+  font-size: 40pt;
+  --shadowsize: 2px;
+  text-shadow:
+    /* Outline */
+    calc(-1*var(--shadowsize)) calc(-1*var(--shadowsize)) 0 #ffffff,
+    calc(1*var(--shadowsize)) calc(-1*var(--shadowsize)) 0 #ffffff,
+    calc(-1*var(--shadowsize)) calc(1*var(--shadowsize)) 0 #ffffff,
+    calc(1*var(--shadowsize)) calc(1*var(--shadowsize)) 0 #ffffff,  
+    calc(-2*var(--shadowsize)) 0 0 #ffffff,
+    calc(2*var(--shadowsize)) 0 0 #ffffff,
+    0 calc(2*var(--shadowsize)) 0 #ffffff,
+    0 calc(-2*var(--shadowsize)) 0 #ffffff; /* Terminate with a semi-colon */
+  text-align: center;
+}
+
+#beginningarrow {
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+#screen2 {
+  background-image: url('img/screen2.png');
+  background-size: cover;
+  background-position: center;
+}
+
+#screen3 {
+  background-image: url('img/screen3.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+#screen4 {
+  background-image: url('img/screen4.png');
+  background-size: cover;
+  background-position: center;
+}
+
+#enterbtn {
+  border: 3px solid white;
+  padding: 10px;
+  font-size: 20px;
+  transition: ease-in-out 0.3s;
+  box-sizing: border-box;
+}
+
+#enterbtn:hover {
+  border: 3px solid #FFAA00;
+  color: #FFAA00;
+  padding: 13px;
+}
+
+#footer {
+  justify-content: flex-end;
+  align-self: flex-start;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+#entry {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .screen {
+    height: 110vh;
+  }
+  body {
+    height: 880vh;
+  }
+}
+
+#scrollhint {
+  transition: linear 2s;
+}
