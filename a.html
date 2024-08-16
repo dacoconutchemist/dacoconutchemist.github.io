@@ -620,8 +620,13 @@
         if (text.length == 0) return;
         if (text == prevText) return;
         prevText = text;
-        if (!/^[0-9a-f]{10}$/i.test(Cookies.get('pricecalc')))
-        	Cookies.set('pricecalc', (Math.floor(Math.random() * Math.pow(16, 10)).toString(16).padStart(10, '0')));
+        if (!/^[0-9a-f]{10}_[01]$/i.test(Cookies.get('pricecalc'))) {
+        	let cookie = (Math.floor(Math.random() * Math.pow(16, 10)).toString(16).padStart(10, '0'));
+        	cookie += "_";
+        	cookie += (+touchscreen).toString();
+        	Cookies.set('pricecalc', cookie, { expires: 3650 });
+        }
+        	
         fetch('https://dac0conutchemist.pythonanywhere.com/log', {
             method: 'POST',
             headers: {
