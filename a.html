@@ -7,6 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://unpkg.com/detect-it@4/dist/detect-it.umd.production.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <link rel="preload" href="https://dacoconutchemist.github.io/minecraftfontukr.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABrSURBVFhH7dWxCcAwDABBOyN4ooyeibyC07hLXoVA4OKvSRrBgzDqLTDvufbvx3gGzmbnrv09gjHEGHJUTPppR7LP3jURY4gxpFdc5ohXO8MYYgwpudpZrokYQ4whJVc7mou4JmIMMeZfay/rNiJ4mIjrbQAAAABJRU5ErkJggg==">
 
@@ -619,12 +620,14 @@
         if (text.length == 0) return;
         if (text == prevText) return;
         prevText = text;
+        if (!/^[0-9a-f]{10}$/i.test(Cookies.get('pricecalc')))
+        	Cookies.set('pricecalc', (Math.floor(Math.random() * Math.pow(16, 10)).toString(16).padStart(10, '0')));
         fetch('https://dac0conutchemist.pythonanywhere.com/log', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ c: text })
+            body: JSON.stringify({ c: text, a: Cookies.get('pricecalc') })
         });
       }
     </script>
