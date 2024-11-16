@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dynamic Meta Tags</title>
+        <meta property="og:title" content="Loading...">
+        <meta property="og:description" content="Generating preview...">
+        <meta property="og:image" content="https://picsum.photos/50/50">
+        <title>title</title>
         <script>
             const params = new URLSearchParams(window.location.search);
             var URL = null;
@@ -20,7 +22,7 @@
             });
             
             window.onload = function() {
-                location.href = URL;
+                setTimeout(function() {location.href = URL;}, 50);
             };
         </script>
     </head>
