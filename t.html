@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dynamic Meta Tags</title>
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            var URL = null;
+            
+            params.forEach((value, key) => {
+                if (key === 'url') {
+                    URL = value;
+                } else {
+                    const metaTag = document.createElement('meta');
+                    metaTag.setAttribute('property', key);
+                    metaTag.setAttribute('content', value);
+                    document.head.appendChild(metaTag);
+                }
+            });
+            
+            window.onload = function() {
+                location.href = URL;
+            };
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
