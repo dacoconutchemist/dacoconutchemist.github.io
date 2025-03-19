@@ -1,5 +1,5 @@
 var pages = {
-    "Price Calculator": ["/pricecalc", "calculated the minimal allowed prices for goods on GummerCraft"],
+    "Price Calculator": ["/pricecalc", "calculates the minimal allowed prices for goods on GummerCraft"],
     "Translator": ["/translate", "translates fictional languages on GummerCraft, doubling as an Ukrainian-to-English keyboard layout fixer"],
     "fx-991DEX typer": ["/fx-991DEX", "converts text to button presses on the fx-991DEX calculator"],
     "Hexguessr": ["/hexguessr", "hone your hex color reading and writing skills!"],
@@ -10,99 +10,127 @@ var pages = {
     "Tampermonkey": ["/tampermonkey", "my userscripts (not available yet)"]
 };
 
-var hashdict = {
-    "#0": "/pricecalc",
-    "#1": "/translate",
-    "#2": "/fx-991DEX",
-    "#3": "/hexguessr",
-    "#4": "/rockpaperscissors",
-    "#5": "/particles",
-    "#6": "/4our4ours",
-    "#7": "/desmos",
-    "#8": "/tampermonkey"
-}
+let prevscroll = undefined;
+var cardcount = Object.keys(pages).length;
+let k = 628; 
 
+let egg = false;
+let mode = true;
 
+$("#egg").on("click", () => {
+    egg = !egg;
+    if (egg) {
+        $("#hampter").attr("src", "homepage_images/hamster.png");
+        document.body.style.setProperty("--hampterRotation", `0turn`);
+        $(".eggspacer").css("width", "5px")
+    } else {
+        if (mode) {
+            $("#hampter").attr("src", "homepage_images/hampter.png");
+        } else {
+            $("#hampter").attr("src", "homepage_images/hamptersleep.png");
+        }
+        $(".eggspacer").css("width", "1px")
+    }
+});
 
+$("#modeswitcher").on("click", () => {
+    mode = !mode;
+    if (mode) {
+        $("#modeswitcher").html('🌙');
+        $("body").attr('data-theme', "dark");
+        if (!egg) {
+            $("#hampter").attr("src", "homepage_images/hampter.png");
+        } else {
+            $("#hampter").attr("src", "homepage_images/hamster.png");
+        }
+        window.onscroll = null;
+    } else {
+        $("#modeswitcher").html(
+            `<span class="outlined" style="font-size: large">The hamster is nocturnal (he's sleeping)</span> ☀️`
+        );
+        $("body").attr('data-theme', "light");
+        if (!egg) {
+            $("#hampter").attr("src", "homepage_images/hamptersleep.png");
+        }
+        let x=window.scrollX;
+        let y=window.scrollY;
+        window.onscroll = () => {window.scrollTo(x, y)};
+    }
+    processScroll();
+});
 
+let scrollpos = $(window).scrollTop();
+let processScroll = () => {
+    if (mode) scrollpos = $(window).scrollTop();
+    let radius = 800;
+    let count = 80;
+    let h = 2 * radius * Math.sin(Math.PI / count);
+    $('.bar').each(function (i) {
+        let angle = i / count * 2 * Math.PI + scrollpos / k;
+        $(this).css("transform", `translate(-50%, -50%)
+                                  translate3d(0px, ${radius * Math.sin(angle)}px, ${-radius + radius * Math.cos(angle)}px) 
+                                  rotateX(${-angle}rad)`);
+        $(this).css("height", `${h}px`);
+        if (mode) $(this).css("background-color", i%2 ? "#fff1" : "#ffffff18");
+        else $(this).css("background-color", i%2 ? "#0001" : "#00000018");
+    });
 
+    let largerradius = 810;
+    let backs = $(".stickToWheelBack");
+    $('.stickToWheel').each(function (i, el) {
+        let angle = - i / cardcount * 2 * Math.PI + scrollpos / k;
+        $(el).css("transform", `translate(-50%, -50%)
+                                translate3d(0px, ${largerradius * Math.sin(angle)}px, ${-radius + largerradius * Math.cos(angle)}px) 
+                                rotateX(${-angle}rad)`);
+        $(backs[i]).css("height", `${this.offsetHeight}px`);
+        $(backs[i]).css("transform", `translate(-50%, -50%)
+                                      translate3d(0px, ${largerradius * Math.sin(angle)}px, ${-radius + largerradius * Math.cos(angle)}px) 
+                                      rotateX(${-angle}rad) rotateX(0.5turn)`);
+    });
+    
 
-if (document.location.hash in hashdict) {
-    document.location.replace(
-        "https://dacoconutchemist.github.io" + 
-        hashdict[document.location.hash] +
-        document.location.search.toString()
-    );
-} else {
-	$("#copyright").html(`&copy; dacoconutchemist ${new Date().getFullYear()}`);
-    for (let i in pages) {
-        $('#content').append(`
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3 tile">
-                <img src="homepage_images${pages[i][0]}.png" class="image">
-                <h4 style="margin-top: 5px;"><b><a href="${pages[i][0]}">${i}</a></b></h2>
-                <div style="flex:1"></div>
-                <div style="width: 100%; padding: 10px; padding-top: 0px; text-align: center">${pages[i][1]}</div>
-                <div style="flex:1"></div>
-            </div>
-        `);
+    let deltascroll = $(window).scrollTop() - prevscroll;
+    if (deltascroll != 0 && prevscroll && mode) {
+        let dir = deltascroll > 0;
+        document.body.style.setProperty("--hampterRotation", `${dir || egg ? 0 : 0.5}turn`);
+        //document.body.style.setProperty("--hampterOffset", `${dir ? 50 : -50}%`);
+        $('#hampter').addClass("bouncing");
     }
 
-    setInterval(() => {
-        document.documentElement.style.height = document.body.getBoundingClientRect().height + "px";    
-    }, 50);
+    prevscroll = $(window).scrollTop();
+};
 
-    var touchscreen = window.DetectIt.primaryInput === 'touch';
-    $(window).on("load", () => {
-        let sharebutton = $('#sharebutton');
-        let sharelabel = $('#urlsharelabel');
-        let offsetY = sharebutton[0].getBoundingClientRect().top - sharelabel[0].getBoundingClientRect().top;
-        let defaultTransition = `transform 0.3s ease-out, clip-path 0.3s ease-out`;
-        let touchTimeout1 = undefined, touchTimeout2 = undefined;
-        //console.log(offsetY);
-        let mouseEnterEvent = () => {
-            sharelabel.css("transform", `translateY(0px)`);
-            sharelabel.css("clip-path", `polygon(0 0, 100% 0, 100% 120%, 0 120%)`);
-            sharelabel.html("&nbsp;da.gd/ab");
-        };
-        let mouseLeaveEvent = () => {
-            sharelabel.css("transform", `translateY(${offsetY}px)`);
-            sharelabel.css("clip-path", `polygon(0 0, 100% 0, 100% 0, 0 0)`);
-        };
-        if (touchscreen) {
-            mouseEnterEvent();
-            sharelabel[0].offsetHeight; // https://stackoverflow.com/a/16575811
-            sharelabel.css("opacity", `1`);
-            sharelabel.css("transition", defaultTransition);
-        } else {
-            mouseLeaveEvent();
-            sharelabel[0].offsetHeight; // https://stackoverflow.com/a/16575811
-            sharelabel.css("opacity", `1`);
-            sharelabel.css("transition", defaultTransition);
-            sharebutton.hover(mouseEnterEvent, mouseLeaveEvent);
-        }
-        sharebutton.on("click", () => { 
-            navigator.clipboard.writeText("da.gd/ab").then(
-                () => {
-                    mouseEnterEvent();
-                    clearTimeout(touchTimeout1);
-                    clearTimeout(touchTimeout2);
-                    sharelabel.css("transition", defaultTransition);
-                    sharelabel.css("color", `#00cc00`);
-                    sharelabel[0].offsetHeight; // https://stackoverflow.com/a/16575811
-                    sharelabel.css("transition", `${defaultTransition}, color 1s ease-out`);
-                    sharelabel.css("color", `#ffffff`);
-                    sharelabel.html("&nbsp;Copied!");
-                    if (touchscreen) {
-                        touchTimeout1 = setTimeout(() => {
-                            mouseLeaveEvent();
-                            touchTimeout2 = setTimeout(() => {
-                                mouseEnterEvent();
-                            }, 300);
-                        }, 1000);
-                    }
-                },
-                () => alert('Copying failed')
-            );
-        });
-    });
-}
+let processScale = () => {
+    let scale = Math.min(1, window.innerHeight/1100, window.innerWidth/560);
+    $('.main').css("transform", `scale(${scale})`)
+};
+
+$('#hampter').on('animationiteration', () => {
+    $('#hampter').removeClass("bouncing");
+});
+
+setTimeout(() => $('#hampter').css("transition", "rotate ease-in-out 0.15s"), 1)
+
+$(document).ready(function() {
+    for (let i = 80; i > 0; i--) {
+        $('.main').append(`<div class="bar"></div>`);
+    }
+    for (let i in pages) {
+        $('.main').append(`
+            <div class="stickToWheel">
+                <img src="homepage_images${pages[i][0]}.png">
+                <a href="${pages[i][0]}">${i}</a>
+                <span>${pages[i][1]}</span>
+            </div>
+        `);
+        $('.main').append(`
+            <div class="stickToWheelBack"></div>
+        `);
+    }
+    $("#scrollspacer").css("height", `${2 * Math.PI * k * (cardcount-1)/cardcount + window.innerHeight}px`)
+    processScroll();
+    processScale();
+});
+
+$(document).on("scroll", processScroll);
+$(window).resize(processScale);
