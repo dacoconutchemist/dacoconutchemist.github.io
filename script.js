@@ -12,7 +12,7 @@ var pages = {
 
 let prevscroll = undefined;
 var cardcount = Object.keys(pages).length;
-let k = 628; 
+let k = 500; 
 
 let egg = false;
 let mode = true;
