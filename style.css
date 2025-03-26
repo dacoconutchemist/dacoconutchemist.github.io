@@ -136,6 +136,7 @@ body, html {
 
 .stickToWheel > img {
     width: 100%;
+    pointer-events: none;
 }
 
 .stickToWheel > a {
@@ -174,4 +175,6 @@ body, html {
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    text-align: right;
 }

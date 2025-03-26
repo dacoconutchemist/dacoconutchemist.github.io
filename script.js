@@ -46,7 +46,7 @@ $("#modeswitcher").on("click", () => {
         window.onscroll = null;
     } else {
         $("#modeswitcher").html(
-            `<span class="outlined" style="font-size: large">The hamster is nocturnal (he's sleeping)</span> ☀️`
+            `<span class="outlined" style="font-size: medium">The hamster is nocturnal (he's sleeping)</span> ☀️`
         );
         $("body").attr('data-theme', "light");
         if (!egg) {
@@ -66,7 +66,7 @@ let processScroll = () => {
     let count = 80;
     let h = 2 * radius * Math.sin(Math.PI / count);
     $('.bar').each(function (i) {
-        let angle = i / count * 2 * Math.PI + scrollpos / k;
+        let angle = -i / count * 2 * Math.PI - scrollpos / k;
         $(this).css("transform", `translate(-50%, -50%)
                                   translate3d(0px, ${radius * Math.sin(angle)}px, ${-radius + radius * Math.cos(angle)}px) 
                                   rotateX(${-angle}rad)`);
@@ -78,7 +78,7 @@ let processScroll = () => {
     let largerradius = 810;
     let backs = $(".stickToWheelBack");
     $('.stickToWheel').each(function (i, el) {
-        let angle = - i / cardcount * 2 * Math.PI + scrollpos / k;
+        let angle = i / cardcount * 2 * Math.PI -scrollpos / k;
         $(el).css("transform", `translate(-50%, -50%)
                                 translate3d(0px, ${largerradius * Math.sin(angle)}px, ${-radius + largerradius * Math.cos(angle)}px) 
                                 rotateX(${-angle}rad)`);
@@ -92,7 +92,7 @@ let processScroll = () => {
     let deltascroll = $(window).scrollTop() - prevscroll;
     if (deltascroll != 0 && prevscroll && mode) {
         let dir = deltascroll > 0;
-        document.body.style.setProperty("--hampterRotation", `${dir || egg ? 0 : 0.5}turn`);
+        document.body.style.setProperty("--hampterRotation", `${egg ? 0 : dir ? 0.5 : 0}turn`);
         //document.body.style.setProperty("--hampterOffset", `${dir ? 50 : -50}%`);
         $('#hampter').addClass("bouncing");
     }
@@ -107,6 +107,7 @@ let processScale = () => {
 
 $('#hampter').on('animationiteration', () => {
     $('#hampter').removeClass("bouncing");
+    $('#hampter').css('transform', 'translate3d(0px, 0px, -1500px)');
 });
 
 setTimeout(() => $('#hampter').css("transition", "rotate ease-in-out 0.15s"), 1)
