@@ -67,7 +67,7 @@ let processScroll = () => {
     let h = 2 * radius * Math.sin(Math.PI / count);
     $('.bar').each(function (i) {
         let angle = -i / count * 2 * Math.PI - scrollpos / k;
-        $(this).css("transform", `translate(-50%, -50%)
+        $(this).css("transform", `translate(-50%, -50%) /*rotate3d(0.7071, -0.5, 0.5, 54.74deg)*/
                                   translate3d(0px, ${radius * Math.sin(angle)}px, ${-radius + radius * Math.cos(angle)}px) 
                                   rotateX(${-angle}rad)`);
         $(this).css("height", `${h}px`);
@@ -79,11 +79,11 @@ let processScroll = () => {
     let backs = $(".stickToWheelBack");
     $('.stickToWheel').each(function (i, el) {
         let angle = i / cardcount * 2 * Math.PI -scrollpos / k;
-        $(el).css("transform", `translate(-50%, -50%)
+        $(el).css("transform", `translate(-50%, -50%) /*rotate3d(0.7071, -0.5, 0.5, 54.74deg)*/
                                 translate3d(0px, ${largerradius * Math.sin(angle)}px, ${-radius + largerradius * Math.cos(angle)}px) 
                                 rotateX(${-angle}rad)`);
         $(backs[i]).css("height", `${this.offsetHeight}px`);
-        $(backs[i]).css("transform", `translate(-50%, -50%)
+        $(backs[i]).css("transform", `translate(-50%, -50%) /*rotate3d(0.7071, -0.5, 0.5, 54.74deg)*/
                                       translate3d(0px, ${largerradius * Math.sin(angle)}px, ${-radius + largerradius * Math.cos(angle)}px) 
                                       rotateX(${-angle}rad) rotateX(0.5turn)`);
     });
@@ -94,7 +94,7 @@ let processScroll = () => {
         let dir = deltascroll > 0;
         document.body.style.setProperty("--hampterRotation", `${egg ? 0 : dir ? 0.5 : 0}turn`);
         //document.body.style.setProperty("--hampterOffset", `${dir ? 50 : -50}%`);
-        $('#hampter').addClass("bouncing");
+        if (!$('#hampter').hasClass("bouncing")) $('#hampter').addClass("bouncing");
     }
 
     prevscroll = $(window).scrollTop();
