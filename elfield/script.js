@@ -64,7 +64,7 @@ $("#slider_E_t").on('change', e => {
 
 let drawField = true;
 $("#check_powerline").on('change', e => {
-    drawArrows = $('#check_powerline').is(":checked");
+    drawField = $('#check_powerline').is(":checked");
     render();
 });
 
