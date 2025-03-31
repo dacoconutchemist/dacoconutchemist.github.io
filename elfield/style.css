@@ -98,3 +98,26 @@ summary {
 #slider_powerline_t {
     width: 100%;
 }
+
+
+#languages {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 50px;
+    z-index: 100;
+}
+
+#languages > a {
+    height: 100%;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+#languages > img {
+    height: 100%;
+}

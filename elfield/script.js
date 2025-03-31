@@ -6,12 +6,30 @@ Array.prototype.remove = function(from, to) {
 };
 // /Array Remove
 
+var LANG = 'ua';
+
+let paramLang = new URLSearchParams(window.location.search).get('l');
+if (paramLang == "en" || paramLang == "de" || paramLang == "ua") {
+    LANG = paramLang;
+}
+
+$('[id], [class], details summary, label span, span, title').each(function() {
+    var text = $(this).html();
+    
+    if (text.startsWith('i18n_')) {
+        var key = text.replace('i18n_', '');
+        if (I18N[LANG] && I18N[LANG][key]) {
+            $(this).html(I18N[LANG][key]);
+        }
+    }
+});
+
 // Sliders and checkboxes and their linked variables
 
 let placedCharge = 2e-6;
 $("#slider_charge").on('input', e => {
     placedCharge = parseFloat(e.target.value) * 1e-6;
-    $("#val_charge").html(parseFloat(e.target.value).toFixed(2).padStart(5, " ") + " μC")
+    $("#val_charge").html(parseFloat(e.target.value).toFixed(2).padStart(5, " ") + I18N[LANG].chargeunit)
 });
 
 let drawEquipotential = true;
@@ -276,11 +294,11 @@ function render(wait=true) {
 
         const endTime = performance.now();
         
-        $('#progress').text(`Image rendered (${Math.round(endTime - startTime)} ms)`);
+        $('#progress').text(I18N[LANG].rendered.replace('%time%', Math.round(endTime - startTime).toString()));
     };
 
     if (wait) {
-        $('#progress').text('Rendering...');
+        $('#progress').text(I18N[LANG].rendering);
         setTimeout(innerCode, 2);
     }
     else innerCode();
