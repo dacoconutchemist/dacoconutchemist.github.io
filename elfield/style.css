@@ -137,6 +137,7 @@ details[open] > summary::before {
     flex: 1;
 }
 
+label,
 input[type="range"], 
 input[type="color"] {
     width: 100%;
