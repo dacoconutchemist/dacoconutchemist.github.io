@@ -8,24 +8,37 @@ var I18N = {
 		'howto-2': "&#x2022; To move particles, drag them around by their colored part using the left mouse button.",
 		'howto-3': "&#x2022; To remove particles, right click on their colored part.",
 		'equipot-summary': "Equipotential lines",
-		'check_equipot': " Show equipotential lines",
-		'slider_equipot': "Equipotential line density",
-		'slider_equipot_d': "Equipotential line opacity",
-		'slider_equipot_t': "Equipotential line thickness",
+		'check_equipot': " Show",
+		'slider_equipot': "Density",
+		'slider_equipot_d': "Opacity",
+		'slider_equipot_t': "Thickness",
 		'E-summary': "Electric field direction",
-		'check_E': " Show electric field direction",
-		'slider_E': "Electric field direction size",
-		'slider_E_d': "Electric field direction opacity",
-		'slider_E_t': "Electric field direction thickness",
+		'check_E': " Show",
+		'slider_E': "Size",
+		'slider_E_d': "Opacity",
+		'slider_E_t': "Thickness",
 		'powerline-summary': "Electric field lines",
-		'check_powerline': " Show electric field lines",
-		'slider_powerline': "Electric field line amount",
-		'slider_powerline_d': "Electric field line opacity",
-		'slider_powerline_t': "Electric field line thickness",
+		'check_powerline': " Show",
+		'slider_powerline': "Amount",
+		'slider_powerline_d': "Opacity",
+		'slider_powerline_t': "Thickness",
 		'chargeinitial': " 2.00 μC",
 		'chargeunit': " μC",
 		'rendered': 'Image rendered (%time% ms)',
-		'rendering': 'Rendering...'
+		'rendering': 'Rendering...',
+		'clear': 'Delete charges',
+		'reset': 'Reset all settings to default',
+		'clear_msg': 'Delete existing charges? This action cannot be undone',
+		'reset_msg': 'Reset all settings to their default values? This action cannot be undone',
+		'color_equipot': 'Color',
+		'color_powerline': 'Color',
+		'color_E': 'Color',
+		'bg-summary': 'Miscellaneous',
+		'check_bg': ' Enable background',
+		'color_bg_def': 'Default color',
+		'color_pos': 'Positive color',
+		'color_neg': 'Negative color',
+		'color_outline': 'Charge outline color'
 	},
 	'ua': {
 		'h1': "Симуляція Електричного Поля",
@@ -36,24 +49,37 @@ var I18N = {
 		'howto-2': "&#x2022; Щоб рухати частинки, перетягніть їх за забарвлену частину лівою кнопкою миші.",
 		'howto-3': "&#x2022; Щоб видаляти частинки, натисніть правою кнопкою миші на їх забарвлену частину.",
 		'equipot-summary': "Еквіпотенціальні лінії",
-		'check_equipot': " Показати еквіпотенціальні лінії",
-		'slider_equipot': "Щільність еквіпотенціальних ліній",
-		'slider_equipot_d': "Прозорість еквіпотенціальних ліній",
-		'slider_equipot_t': "Товщина еквіпотенціальних ліній",
+		'check_equipot': " Показати",
+		'slider_equipot': "Щільність",
+		'slider_equipot_d': "Прозорість",
+		'slider_equipot_t': "Товщина",
 		'E-summary': "Напрям електричного поля",
-		'check_E': " Показати напрям електричного поля",
-		'slider_E': "Розмір стрілок електричного поля",
-		'slider_E_d': "Прозорість стрілок електричного поля",
-		'slider_E_t': "Товщина стрілок електричного поля",
+		'check_E': " Показати",
+		'slider_E': "Розмір",
+		'slider_E_d': "Прозорість",
+		'slider_E_t': "Товщина",
 		'powerline-summary': "Лінії електричного поля",
-		'check_powerline': " Показати лінії електричного поля",
-		'slider_powerline': "Кількість ліній електричного поля",
-		'slider_powerline_d': "Прозорість ліній електричного поля",
-		'slider_powerline_t': "Товщина ліній електричного поля",
+		'check_powerline': " Показати",
+		'slider_powerline': "Кількість",
+		'slider_powerline_d': "Прозорість",
+		'slider_powerline_t': "Товщина",
 		'chargeinitial': " 2.00 мкКл",
 		'chargeunit': " мкКл",
-		'rendered': 'Рендеринг зображення завершено (%time% мс)',
-		'rendering': 'Рендеринг...'
+		'rendered': 'Рендеринг завершено (%time% мс)',
+		'rendering': 'Рендеринг...',
+		'clear': 'Видалити заряди',
+		'reset': 'Повернути до початкових налаштувань',
+		'clear_msg': 'Видалити існуючі заряди? Цю дію неможливо відмінити',
+		'reset_msg': 'Повернути всі налаштування до їх початкових значень? Цю дію неможливо відмінити',
+		'color_equipot': 'Колір',
+		'color_powerline': 'Колір',
+		'color_E': 'Колір',
+		'bg-summary': 'Інше',
+		'check_bg': ' Увімкнути фон',
+		'color_bg_def': 'Колір по замовчуванню',
+		'color_pos': 'Колір позитивних зарядів',
+		'color_neg': 'Колір негативних зарядів',
+		'color_outline': 'Колір контуру зарядів'
 	},
 	'de': {
         'h1': "Simulation des Elektrischen Feldes",
@@ -64,23 +90,63 @@ var I18N = {
         'howto-2': "&#x2022; Zum Bewegen von Teilchen: Ziehen Sie sie mit der linken Maustaste an ihrem farbigen Teil.",
         'howto-3': "&#x2022; Zum Entfernen von Teilchen: Rechtsklick auf den farbigen Teil.",
         'equipot-summary': "Äquipotentiallinien",
-        'check_equipot': " Äquipotentiallinien anzeigen",
-        'slider_equipot': "Dichte der Äquipotentiallinien",
-        'slider_equipot_d': "Deckkraft der Äquipotentiallinien",
-        'slider_equipot_t': "Dicke der Äquipotentiallinien",
+        'check_equipot': " Anzeigen",
+        'slider_equipot': "Dichte",
+        'slider_equipot_d': "Deckkraft",
+        'slider_equipot_t': "Dicke",
         'E-summary': "Richtung des elektrischen Feldes",
-        'check_E': " Richtung des elektrischen Feldes anzeigen",
-        'slider_E': "Größe der Feldrichtungsanzeige",
-        'slider_E_d': "Deckkraft der Feldrichtungsanzeige",
-        'slider_E_t': "Dicke der Feldrichtungsanzeige",
+        'check_E': " Anzeigen",
+        'slider_E': "Größe",
+        'slider_E_d': "Deckkraft",
+        'slider_E_t': "Dicke",
         'powerline-summary': "Elektrische Feldlinien",
-        'check_powerline': " Elektrische Feldlinien anzeigen",
-        'slider_powerline': "Anzahl der elektrischen Feldlinien",
-        'slider_powerline_d': "Deckkraft der elektrischen Feldlinien",
-        'slider_powerline_t': "Dicke der elektrischen Feldlinien",
+        'check_powerline': " Anzeigen",
+        'slider_powerline': "Anzahl",
+        'slider_powerline_d': "Deckkraft",
+        'slider_powerline_t': "Dicke",
         'chargeinitial': " 2.00 μC",
         'chargeunit': " μC",
         'rendered': 'Bild gerendert (%time% ms)',
-        'rendering': 'Rendering...'
+        'rendering': 'Rendering...',
+        'clear': 'Ladungen entfernen',
+		'reset': 'Rückkehr zu Originaleinstellungen',
+		'clear_msg': 'Alle Ladungen entfernen? Diese Aktion ist nicht rückgängig',
+		'reset_msg': 'Zu Originaleinstellungen zurückkehren? Diese Aktion ist nicht rückgängig',
+		'color_equipot': 'Farbe',
+		'color_powerline': 'Farbe',
+		'color_E': 'Farbe',
+		'bg-summary': 'Sonstiges',
+		'check_bg': ' Hintergrund',
+		'color_bg_def': 'Standardfarbe',
+		'color_pos': 'Positive Farbe',
+		'color_neg': 'Negative Farbe',
+		'color_outline': 'Konturfarbe der Ladungen'
     }
+};
+
+var LANG = 'en';
+
+function switchLanguage(lang) {
+	LANG = lang;
+	$('[data-i18n]').each(function() {
+	    var key = $(this).attr('data-i18n');
+	    if (I18N[lang]) {
+	    	if (I18N[lang][key]) {
+	    		$(this).html(I18N[lang][key]);
+	    	} else {
+	    		$(this).css("color", "red");
+	    		console.log(`'${key}': '',`);
+	    	}
+	    }
+	});
+	try {
+		updateJSI18N();
+	} catch(e) {}
+}
+
+switchLanguage('en');
+
+let paramLang = window.location.hash.slice(1);
+if (paramLang == "en" || paramLang == "de" || paramLang == "ua") {
+    switchLanguage(paramLang);
 }

@@ -17,23 +17,33 @@ html, body {
     justify-content: center;
     align-items: flex-end;
     flex-direction: column;
+    pointer-events: none;
+    max-height: calc(100vh - 36px);
 }
 
 #controls {
+    position: relative;
     padding: 10px;
     border-radius: 10px 0 0 0;
-    background-color: #ffffffcc;
+    background-color: #eeeeeecc;
     display: flex;
-    justify-content: center;
+    justify-content: safe center;
     align-items: flex-start;
     flex-direction: column;
     width: 350px;
     max-width: 350px;
+    pointer-events: auto;
+    overflow-y: scroll;
 }
 
 #progress {
     color: white;
     font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 7px;
+    border-radius: 5px;
+    margin-bottom: 3px;
+    margin-right: 3px;
 }
 
 .heading {
@@ -48,7 +58,7 @@ h1 {
 }
 
 .spacer {
-    margin-top: 5px;
+    margin-top: 6px;
     margin-bottom: 5px;
     border-top: 1px solid #696969;
     height: 1px;
@@ -68,6 +78,46 @@ details {
 }
 summary {
     font-weight: bold;
+    list-style-type: none;
+    vertical-align: middle;
+}
+
+#collapse, #uncollapse,
+details > summary::before {
+    content: '';
+    width: 1em;
+    height: 1em;
+    background-image: url('icons/chevron-right.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 0.25em;
+    vertical-align: sub;
+}
+details > summary::before {
+    display: inline-block !important;
+}
+details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+#collapse {
+    margin-top: 0.25em;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: rotate(90deg);
+    cursor: pointer;
+}
+#uncollapse {
+    margin-bottom: 0.25em;
+    transform: rotate(270deg);
+    cursor: pointer;
+    filter: invert(100%) 
+            drop-shadow(0 0 2px black) 
+            drop-shadow(0 0 2px black) 
+            drop-shadow(0 0 2px black) 
+            drop-shadow(0 0 2px black);
+    pointer-events: auto;
 }
 
 #val_charge {
@@ -87,18 +137,18 @@ summary {
     flex: 1;
 }
 
-#slider_equipot, 
-#slider_equipot_d, 
-#slider_equipot_t,
-#slider_E,
-#slider_E_d,
-#slider_E_t,
-#slider_powerline,
-#slider_powerline_d,
-#slider_powerline_t {
+input[type="range"], 
+input[type="color"] {
     width: 100%;
 }
 
+button {
+    border-style: solid;
+    width: 100%;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+}
 
 #languages {
     display: flex;
@@ -108,8 +158,10 @@ summary {
     position: absolute;
     top: 0;
     right: 0;
-    height: 50px;
     z-index: 100;
+    background-color: #eeeeeecc;
+    padding: 4px;
+    border-radius: 4px;
 }
 
 #languages > a {
@@ -118,6 +170,17 @@ summary {
     margin-left: 5px;
 }
 
-#languages > img {
+#languages > a:first-child {
+    margin-left: 0;
+}
+
+#languages > a > img {
     height: 100%;
+    height: 25px;
+    display: block;
+    border-radius: 4px;
+    transition: transform 0.2s ease-in-out;
+}
+#languages > a:hover > img {
+    transform: scale(1.05);
 }
