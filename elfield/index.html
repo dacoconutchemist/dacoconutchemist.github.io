@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="h1">Electric Field Simulation</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <script src="coi-serviceworker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
@@ -81,6 +83,7 @@
                 <input type="color" id="color_neg" value="#0000ff" autocomplete="off">
                 <span data-i18n="color_outline">Charge outline color</span>
                 <input type="color" id="color_outline" value="#ffffff" autocomplete="off">
+                <label><input type="checkbox" id="check_anim" autocomplete="off"><span data-i18n="check_anim"> Enable animated mode (laggy!)</span></label>
                 <button id="btn_clear" data-i18n="clear">Delete charges</button>
                 <button id="btn_reset" data-i18n="reset">Reset all settings to default</button>
             </details>

@@ -38,7 +38,9 @@ var I18N = {
 		'color_bg_def': 'Default color',
 		'color_pos': 'Positive color',
 		'color_neg': 'Negative color',
-		'color_outline': 'Charge outline color'
+		'color_outline': 'Charge outline color',
+		'rendered_fps': 'Image rendered (%fps% FPS on average)',
+		'check_anim': ' Animated mode (laggy!)'
 	},
 	'ua': {
 		'h1': "Симуляція Електричного Поля",
@@ -79,7 +81,9 @@ var I18N = {
 		'color_bg_def': 'Колір по замовчуванню',
 		'color_pos': 'Колір позитивних зарядів',
 		'color_neg': 'Колір негативних зарядів',
-		'color_outline': 'Колір контуру зарядів'
+		'color_outline': 'Колір контуру зарядів',
+		'rendered_fps': 'Рендеринг завершено (%fps% FPS в середньому)',
+		'check_anim': ' Анімований режим (лагучий!)'
 	},
 	'de': {
         'h1': "Simulation des Elektrischen Feldes",
@@ -120,7 +124,9 @@ var I18N = {
 		'color_bg_def': 'Standardfarbe',
 		'color_pos': 'Positive Farbe',
 		'color_neg': 'Negative Farbe',
-		'color_outline': 'Konturfarbe der Ladungen'
+		'color_outline': 'Konturfarbe der Ladungen',
+		'rendered_fps': 'Bild gerendert (%fps% FPS im Durchschnitt)',
+		'check_anim': ' Animierter Modus (langsam!)'
     }
 };
 

@@ -45,6 +45,7 @@ let listeners = [
     {sel: "#color_pos", type: "color", var: "colorBgPos", def: "#ff0000", defVar: [255, 0, 0]},
     {sel: "#color_neg", type: "color", var: "colorBgNeg", def: "#0000ff", defVar: [0, 0, 255]},
     {sel: "#color_outline", type: "color", var: "colorOutline", def: "#ffffff", defVar: [255, 255, 255]},
+    {sel: "#check_anim", type: "checkbox", var: "animatedMode", def: false, defVar: false}
 ];
 
 for (let i of listeners) {
@@ -83,15 +84,6 @@ function hexToArr(hex) {
 function colorToRGBA(rgb, a) {
     return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${a})`;
 }
-
-function lerpColors(bg, overlay, opacity) {
-    return [
-        bg[0]+(overlay[0]-bg[0])*opacity,
-        bg[1]+(overlay[1]-bg[1])*opacity,
-        bg[2]+(overlay[2]-bg[2])*opacity,
-    ];
-}
-
 
 const canvas = $('#can')[0];
 
@@ -148,179 +140,274 @@ function calculateField(x, y) {
 }
 
 let currentBg = null;
+let isRendering = false;
 let lastRenderTime = 0;
-function render(wait=true) {
-    let innerCode = () => {
-        const startTime = performance.now();
+let runningFPS = 10;
 
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
+const numWorkers = Math.min(10, navigator.hardwareConcurrency || 4);
+let workerCode = `
+    function lerpColors(bg, overlay, opacity) {
+        return [
+            bg[0]+(overlay[0]-bg[0])*opacity,
+            bg[1]+(overlay[1]-bg[1])*opacity,
+            bg[2]+(overlay[2]-bg[2])*opacity,
+        ];
+    }
 
-        //performance.mark("start-pots");
+    onmessage = function(e) {
+        let TYPE = e.data.TYPE;
+        if (TYPE == "potential") {
+            const { sharedPotentialBuffer, potsWidth, potsHeight, startY, endY, charges, k } = e.data;
+            const pots = new Float64Array(sharedPotentialBuffer);
 
-        let pots = [];
-        for (let y = -5; y < canvas.height+5; y++) {
-            pots[y] = [];
-            for (let x = -5; x < canvas.width+5; x++) {
-                let potential = 0;
-                for (let i = 0; i < charges.length; i++) {
-                    const charge = charges[i];
-                    const dx = x - charge.x;
-                    const dy = y - charge.y;
-                    const r = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (r > 0.01) {
-                        potential += (k * charge.q) / r;
-                    }
-                }
-                pots[y][x] = potential;
-            }
-        }
-
-        //performance.mark("end-pots");
-        //performance.measure("pots", "start-pots", "end-pots");
-        //performance.mark("start-bg");
-        
-        // when drawing equipotential lines, this is the offset to the back and to the front of the
-        // checked pixel in both x and y to find the potential being searched for
-        let equipotOffset1 = Math.floor(SETTINGS.equipLineThickness/2);
-        let equipotOffset2 = Math.ceil(SETTINGS.equipLineThickness/2);
-        let equipLineDensityStart = SETTINGS.equipLineDensityCoef ** -4;
-        for (let y = 0; y < canvas.height; y++) {
-            for (let x = 0; x < canvas.width; x++) {
-                const potential = pots[y][x];
-                let col = SETTINGS.colorBgDefault;
-                
-                if (SETTINGS.drawBg) {
-                    const clampedPotential = Math.max(-5000, Math.min(5000, potential));
-                    if (clampedPotential > 0) {
-                        col = lerpColors(col, SETTINGS.colorBgPos, Math.log(clampedPotential + 1) / Math.log(5001));
-                    } else {
-                        col = lerpColors(col, SETTINGS.colorBgNeg, Math.log(-clampedPotential + 1) / Math.log(5001));
-                    }
-                }
-
-                if (SETTINGS.drawEquipotential) {
-                    const potential00 = pots[y-equipotOffset1][x-equipotOffset1];
-                    const potential01 = pots[y+equipotOffset2][x-equipotOffset1];
-                    const potential10 = pots[y-equipotOffset1][x+equipotOffset2];
-                    const potential11 = pots[y+equipotOffset2][x+equipotOffset2];
-
-                    const minPot = Math.min(potential00, potential01, potential10, potential11);
-                    const maxPot = Math.max(potential00, potential01, potential10, potential11);
-
-                    for (let val = equipLineDensityStart; val < 5000; val *= SETTINGS.equipLineDensityCoef) {
-                        if ((maxPot > val && minPot < val) || (maxPot > -val && minPot < -val)) {
-                            col = lerpColors(col, SETTINGS.colorsEquipotential, SETTINGS.equipLineOpacity);
-                            break;
+            for (let y = startY; y < endY; y++) {
+                for (let x = 0; x < potsWidth; x++) {
+                    let potential = 0;
+                    for (let i = 0; i < charges.length; i++) {
+                        const charge = charges[i];
+                        const dx = x - (charge.x + 5);
+                        const dy = y - (charge.y + 5);
+                        const r = Math.sqrt(dx * dx + dy * dy);
+                        if (r > 0.01) {
+                            potential += (k * charge.q) / r;
                         }
                     }
-                }
-                
-                const index = (y * canvas.width + x) * 4;
-                data[index] = col[0];
-                data[index + 1] = col[1];
-                data[index + 2] = col[2];
-                data[index + 3] = 255;
-            }
-        }
-
-        //performance.mark("end-bg");
-        //performance.measure("bg", "start-bg", "end-bg");
-
-        ctx.putImageData(imageData, 0, 0);
-
-
-        if (SETTINGS.drawArrows) {
-            //performance.mark("start-arrows");
-
-            ctx.strokeStyle = colorToRGBA(SETTINGS.colorsArrows, SETTINGS.arrowsOpacity);
-            ctx.lineWidth = SETTINGS.arrowsThickness;
-            for (let y = 0; y < canvas.height/SETTINGS.arrowsSpacing; y++) {
-                for (let x = 0; x < canvas.width/SETTINGS.arrowsSpacing; x++) {
-                    let E = calculateField(x*SETTINGS.arrowsSpacing, y*SETTINGS.arrowsSpacing);
-                    let coordsFromCenter = {
-                        x: E.x / E.r * (SETTINGS.arrowsSpacing/2-1),
-                        y: E.y / E.r * (SETTINGS.arrowsSpacing/2-1),
-                    };
-                    ctx.beginPath();
-                    ctx.moveTo(x*SETTINGS.arrowsSpacing - coordsFromCenter.x, y*SETTINGS.arrowsSpacing - coordsFromCenter.y);
-                    ctx.lineTo(x*SETTINGS.arrowsSpacing + coordsFromCenter.x, y*SETTINGS.arrowsSpacing + coordsFromCenter.y);
-                    ctx.stroke();
+                    pots[y * potsWidth + x] = potential;
                 }
             }
-            //performance.mark("end-arrows");
-            //performance.measure("arrows", "start-arrows", "end-arrows");
-        }
-
-        if (SETTINGS.drawField) {
-            //performance.mark("start-field");
-
-            ctx.strokeStyle = colorToRGBA(SETTINGS.colorsField, SETTINGS.fieldOpacity);
-            ctx.lineWidth = SETTINGS.fieldThickness;
-            let incomingLines = [];
-            for (let i = 0; i < charges.length; i++) {
-                let linesNow = (incomingLines[i] || []).length;
-                for (let j = 0; j < 2**SETTINGS.fieldDensity - linesNow; j++) {
-                    let newLineAngle = 0;
-                    if (!incomingLines[i]) {
-                        incomingLines[i] = [];
-                        newLineAngle = 0;
-                    } else {
-                        incomingLines[i].sort((a, b) => a - b);
-
-                        let maxGap = 0;
-                        incomingLines[i].forEach((angle, I) => {
-                            let next = incomingLines[i][(I + 1) % incomingLines[i].length] + (I + 1 == incomingLines[i].length ? 2 * Math.PI : 0);
-                            let gap = next - angle;
-                            if (gap > maxGap) [maxGap, newLineAngle] = [gap, (angle + next) / 2 % (2 * Math.PI)];
-                        });
+        } else if (TYPE == "bg") {
+            const {
+                sharedBgBuffer,
+                sharedPotentialBuffer,
+                potsWidth,
+                equipLineThickness,
+                equipLineDensityCoef,
+                colorBgDefault,
+                drawBg,
+                colorBgPos,
+                colorBgNeg,
+                drawEquipotential,
+                colorsEquipotential,
+                equipLineOpacity,
+                canvasWidth,
+                canvasHeight,
+                startY,
+                endY
+            } = e.data;
+            let DATA = new Uint8ClampedArray(sharedBgBuffer);
+            const pots = new Float64Array(sharedPotentialBuffer);
+            const equipotOffset1 = Math.floor(equipLineThickness/2);
+            const equipotOffset2 = Math.ceil(equipLineThickness/2);
+            const equipLineDensityStart = equipLineDensityCoef ** -4;
+            const log5001 = Math.log(5001);
+            for (let y = startY; y < endY; y++) {
+                for (let x = 0; x < canvasWidth; x++) {
+                    const potential = pots[(y + 5) * potsWidth + x + 5];
+                    let col = colorBgDefault;
+                    
+                    if (drawBg) {
+                        const clampedPotential = Math.max(-5000, Math.min(5000, potential));
+                        if (clampedPotential > 0) {
+                            col = lerpColors(col, colorBgPos, Math.log(clampedPotential + 1) / log5001);
+                        } else {
+                            col = lerpColors(col, colorBgNeg, Math.log(-clampedPotential + 1) / log5001);
+                        }
                     }
-                    incomingLines[i].push(newLineAngle);
 
-                    let Px = charges[i].x + 5*Math.cos(newLineAngle);
-                    let Py = charges[i].y + 5*Math.sin(newLineAngle);
-                    ctx.beginPath();
-                    ctx.moveTo(Px, Py);
-                    let negateField = charges[i].q < 0 ? -1 : 1;
-                    outer: for (let I = 0; I < 50000; I++) {
-                        let E = calculateField(Px, Py);
-                        Px += E.x / E.r * negateField;
-                        Py += E.y / E.r * negateField;
-                        ctx.lineTo(Px, Py);
-                        if (Px*Px + Py*Py > 1e8) break outer;
-                        for (let k = 0; k < charges.length; k++) {
-                            if (i == k) continue;
-                            if ((Px - charges[k].x)**2 + (Py - charges[k].y)**2 <= 5) {
-                                if (!incomingLines[k]) {
-                                    incomingLines[k] = [];
-                                }
-                                incomingLines[k].push(Math.atan2(Py - charges[k].y, Px - charges[k].x));
-                                break outer;
+                    if (drawEquipotential) {
+                        const potential00 = pots[(y-equipotOffset1 + 5) * potsWidth + x-equipotOffset1 + 5];
+                        const potential01 = pots[(y+equipotOffset2 + 5) * potsWidth + x-equipotOffset1 + 5];
+                        const potential10 = pots[(y-equipotOffset1 + 5) * potsWidth + x+equipotOffset2 + 5];
+                        const potential11 = pots[(y+equipotOffset2 + 5) * potsWidth + x+equipotOffset2 + 5];
+
+                        const minPot = Math.min(potential00, potential01, potential10, potential11);
+                        const maxPot = Math.max(potential00, potential01, potential10, potential11);
+
+                        for (let val = equipLineDensityStart; val < 5000; val *= equipLineDensityCoef) {
+                            if ((maxPot > val && minPot < val) || (maxPot > -val && minPot < -val)) {
+                                col = lerpColors(col, colorsEquipotential, equipLineOpacity);
+                                break;
                             }
                         }
                     }
-                    ctx.stroke();
+                    
+                    const index = (y * canvasWidth + x) * 4;
+                    DATA[index] = col[0];
+                    DATA[index + 1] = col[1];
+                    DATA[index + 2] = col[2];
+                    DATA[index + 3] = 255;
                 }
             }
-            //performance.mark("end-field");
-            //performance.measure("field", "start-field", "end-field");
         }
-
-        //performance.mark("end-all");
-
-        currentBg = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-        const endTime = performance.now();
-        lastRenderTime = Math.round(endTime - startTime);
-        $('#progress').text(I18N[LANG].rendered.replace('%time%', lastRenderTime.toString()));
+        
+        postMessage('done');
     };
+`;
+const workerURL = URL.createObjectURL(new Blob([workerCode], { type: "application/javascript" }));
+let workers = [];
+for (let i = 0; i < numWorkers; i++) workers.push(new Worker(workerURL));
 
-    if (wait) {
-        $('#progress').text(I18N[LANG].rendering);
-        setTimeout(innerCode, 2);
+async function render(wait=true) {
+    if (isRendering) return;
+    isRendering = true;
+
+    if (!SETTINGS.animatedMode) $('#progress').text(I18N[LANG].rendering);
+
+    const startTime = performance.now();
+
+    let canvasWidth = canvas.width;
+    let canvasHeight = canvas.height;
+
+    const potsWidth = canvasWidth + 10;
+    const potsHeight = canvasHeight + 10;
+    const sharedPotentialBuffer = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * potsWidth * potsHeight);
+    //const pots = new Float64Array(sharedPotentialBuffer);
+    for (let i = 0; i < numWorkers; i++) {
+        const startY = Math.floor(i * potsHeight / numWorkers);
+        const endY = Math.floor((i + 1) * potsHeight / numWorkers);
+        workers[i].postMessage({
+            TYPE: "potential",
+            sharedPotentialBuffer,
+            potsWidth,
+            potsHeight,
+            startY,
+            endY,
+            charges,
+            k
+        });
     }
-    else innerCode();
+    await Promise.all(workers.map(worker => new Promise(resolve => {
+        worker.onmessage = resolve
+    })));
+
+    const sharedBgBuffer = new SharedArrayBuffer(Uint8ClampedArray.BYTES_PER_ELEMENT * canvasWidth * canvasHeight * 4);
+    for (let i = 0; i < numWorkers; i++) {
+        const startY = Math.floor(i * canvasHeight / numWorkers);
+        const endY = Math.floor((i + 1) * canvasHeight / numWorkers);
+        workers[i].postMessage({
+            TYPE: "bg",
+            sharedBgBuffer,
+            sharedPotentialBuffer,
+            potsWidth,
+            // accessing variables instead of properties of SETTINGS goes vroom vroom so I do it here
+            equipLineThickness: SETTINGS.equipLineThickness,
+            equipLineDensityCoef: SETTINGS.equipLineDensityCoef,
+            colorBgDefault: SETTINGS.colorBgDefault,
+            drawBg: SETTINGS.drawBg,
+            colorBgPos: SETTINGS.colorBgPos,
+            colorBgNeg: SETTINGS.colorBgNeg,
+            drawEquipotential: SETTINGS.drawEquipotential,
+            colorsEquipotential: SETTINGS.colorsEquipotential,
+            equipLineOpacity: SETTINGS.equipLineOpacity,
+            canvasWidth,
+            canvasHeight,
+            startY,
+            endY,
+        });
+    }
+    await Promise.all(workers.map(worker => new Promise(resolve => {
+        worker.onmessage = resolve
+    })));
+    
+    //console.log(pixelData);
+    const imageData = new ImageData(canvasWidth, canvasHeight)
+    imageData.data.set(new Uint8ClampedArray(sharedBgBuffer));
+    ctx.putImageData(imageData, 0, 0);
+
+
+    if (SETTINGS.drawArrows) {
+        //performance.mark("start-arrows");
+
+        ctx.strokeStyle = colorToRGBA(SETTINGS.colorsArrows, SETTINGS.arrowsOpacity);
+        ctx.lineWidth = SETTINGS.arrowsThickness;
+        for (let y = 0; y < canvas.height/SETTINGS.arrowsSpacing; y++) {
+            for (let x = 0; x < canvas.width/SETTINGS.arrowsSpacing; x++) {
+                let E = calculateField(x*SETTINGS.arrowsSpacing, y*SETTINGS.arrowsSpacing);
+                let coordsFromCenter = {
+                    x: E.x / E.r * (SETTINGS.arrowsSpacing/2-1),
+                    y: E.y / E.r * (SETTINGS.arrowsSpacing/2-1),
+                };
+                ctx.beginPath();
+                ctx.moveTo(x*SETTINGS.arrowsSpacing - coordsFromCenter.x, y*SETTINGS.arrowsSpacing - coordsFromCenter.y);
+                ctx.lineTo(x*SETTINGS.arrowsSpacing + coordsFromCenter.x, y*SETTINGS.arrowsSpacing + coordsFromCenter.y);
+                ctx.stroke();
+            }
+        }
+        //performance.mark("end-arrows");
+        //performance.measure("arrows", "start-arrows", "end-arrows");
+    }
+
+    if (SETTINGS.drawField) {
+        //performance.mark("start-field");
+
+        ctx.strokeStyle = colorToRGBA(SETTINGS.colorsField, SETTINGS.fieldOpacity);
+        ctx.lineWidth = SETTINGS.fieldThickness;
+        let maxIter = 10000;//Math.ceil(Math.sqrt(canvasWidth*canvasWidth + canvasHeight*canvasHeight) * 2);
+        let incomingLines = [];
+        for (let i = 0; i < charges.length; i++) {
+            let linesNow = (incomingLines[i] || []).length;
+            for (let j = 0; j < 2**SETTINGS.fieldDensity - linesNow; j++) {
+                let newLineAngle = 0;
+                if (!incomingLines[i]) {
+                    incomingLines[i] = [];
+                    newLineAngle = 0;
+                } else {
+                    incomingLines[i].sort((a, b) => a - b);
+
+                    let maxGap = 0;
+                    incomingLines[i].forEach((angle, I) => {
+                        let next = incomingLines[i][(I + 1) % incomingLines[i].length] + (I + 1 == incomingLines[i].length ? 2 * Math.PI : 0);
+                        let gap = next - angle;
+                        if (gap > maxGap) [maxGap, newLineAngle] = [gap, (angle + next) / 2 % (2 * Math.PI)];
+                    });
+                }
+                incomingLines[i].push(newLineAngle);
+
+                let Px = charges[i].x + 5*Math.cos(newLineAngle);
+                let Py = charges[i].y + 5*Math.sin(newLineAngle);
+                ctx.beginPath();
+                ctx.moveTo(Px, Py);
+                let negateField = charges[i].q < 0 ? -1 : 1;
+                outer: for (let I = 0; I < maxIter; I++) {
+                    let E = calculateField(Px, Py);
+                    Px += E.x / E.r * negateField;
+                    Py += E.y / E.r * negateField;
+                    ctx.lineTo(Px, Py);
+                    if (Px < -2000 || Py < -2000 || Px > canvasWidth+2000 || Py > canvasHeight+2000) break outer;
+                    
+                    for (let k = 0; k < charges.length; k++) {
+                        if (i == k) continue;
+                        if ((Px - charges[k].x)**2 + (Py - charges[k].y)**2 <= 5) {
+                            if (!incomingLines[k]) {
+                                incomingLines[k] = [];
+                            }
+                            incomingLines[k].push(Math.atan2(Py - charges[k].y, Px - charges[k].x));
+                            break outer;
+                        }
+                    }
+                }
+                ctx.stroke();
+            }
+        }
+        //performance.mark("end-field");
+        //performance.measure("field", "start-field", "end-field");
+    }
+
+    //performance.mark("end-all");
+
+    currentBg = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    const endTime = performance.now();
+    lastRenderTime = Math.round(endTime - startTime);
+
+    if (!SETTINGS.animatedMode) $('#progress').text(I18N[LANG].rendered.replace('%time%', lastRenderTime.toString()));
+    else {
+        let fps = 1000/lastRenderTime;
+        runningFPS = runningFPS * 0.8 + fps * 0.2;
+        $('#progress').text(I18N[LANG].rendered_fps.replace('%fps%', runningFPS.toFixed(2)));
+    }
+
+    isRendering = false;
 }
 
 function updateJSI18N() {
@@ -372,6 +459,11 @@ $(canvas).on("mousemove", e => {
     if (draggingIndex != -1) {
         draggingCoords.x = mousePos.x - draggingOffset.x;
         draggingCoords.y = mousePos.y - draggingOffset.y;
+        if (SETTINGS.animatedMode) {
+            charges[draggingIndex].x = draggingCoords.x;
+            charges[draggingIndex].y = draggingCoords.y;
+            if (!isRendering) render();
+        }
     }
 });
 $(canvas).on("mouseup", e => {
@@ -383,7 +475,7 @@ $(canvas).on("mouseup", e => {
         charges[draggingIndex].y = draggingCoords.y;
         draggingCoords = {x: -100, y: -100};
         draggingIndex = -1;
-        render();
+        render().then(() => {render()});
     }
 });
 $(canvas).on("contextmenu", e => {
@@ -411,7 +503,7 @@ function animateWithoutRequest() {
         ctx.stroke();
     }
 
-    if (draggingIndex != -1) {
+    if (!SETTINGS.animatedMode) if (draggingIndex != -1) {
         ctx.beginPath();
         ctx.arc(draggingCoords.x, draggingCoords.y, getChargeRadius(draggingIndex), 0, 2 * Math.PI);
         ctx.fillStyle = charges[draggingIndex].q > 0 ? colorToRGBA(SETTINGS.colorBgPos, 0.5) : colorToRGBA(SETTINGS.colorBgNeg, 0.5);
