@@ -451,8 +451,12 @@ $(canvas).on("mousedown", e => {
         }
     }
 });
-$(canvas).on("mousemove", e => {
-    const mousePos = {
+$(canvas).on("mousemove touchmove", e => {
+    if (e.touches) const mousePos = {
+        x: e.touches[0].clientX - canvas.offsetTop,
+        y: e.touches[0].clientY - canvas.offsetLeft
+    };
+    else const mousePos = {
         x: e.clientX - canvas.offsetTop,
         y: e.clientY - canvas.offsetLeft
     };
@@ -466,7 +470,7 @@ $(canvas).on("mousemove", e => {
         }
     }
 });
-$(canvas).on("mouseup", e => {
+$(canvas).on("mouseup touchend", e => {
     if (draggingIndex == -1) return;
     if (draggingCoords.x == -100) {
         draggingIndex = -1;
