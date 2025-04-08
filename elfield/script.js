@@ -452,13 +452,13 @@ $(canvas).on("mousedown", e => {
     }
 });
 $(canvas).on("mousemove touchmove", e => {
-    if (e.touches) const mousePos = {
-        x: e.touches[0].clientX - canvas.offsetTop,
-        y: e.touches[0].clientY - canvas.offsetLeft
-    };
-    else const mousePos = {
+    let mousePos = {
         x: e.clientX - canvas.offsetTop,
         y: e.clientY - canvas.offsetLeft
+    };
+    if (e.touches) mousePos = {
+        x: e.touches[0].clientX - canvas.offsetTop,
+        y: e.touches[0].clientY - canvas.offsetLeft
     };
     if (draggingIndex != -1) {
         draggingCoords.x = mousePos.x - draggingOffset.x;
