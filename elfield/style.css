@@ -81,6 +81,9 @@ summary {
     list-style-type: none;
     vertical-align: middle;
 }
+summary::-webkit-details-marker {
+    display:none;
+}
 
 #collapse, #uncollapse,
 details > summary::before {
