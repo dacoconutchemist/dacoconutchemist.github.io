@@ -90,10 +90,7 @@ const canvas = $('#can')[0];
 const ctx = canvas.getContext('2d');
 
 const k = 9e9; // \frac{1}{4\pi\epsilon_0}
-let charges = [
-    { x: window.innerWidth/3, y: window.innerHeight/2, q: 2e-6 },
-    { x: window.innerWidth*2/3, y: window.innerHeight/2, q: -2e-6 }
-];
+let charges = [];
 
 $("#btn_clear").on('click', e => {
     if (confirm(I18N[LANG].clear_msg)) {
@@ -247,7 +244,7 @@ const workerURL = URL.createObjectURL(new Blob([workerCode], { type: "applicatio
 let workers = [];
 for (let i = 0; i < numWorkers; i++) workers.push(new Worker(workerURL));
 
-async function render(wait=true) {
+async function render() {
     if (isRendering) return;
     isRendering = true;
 
@@ -313,6 +310,10 @@ async function render(wait=true) {
     const imageData = new ImageData(canvasWidth, canvasHeight)
     imageData.data.set(new Uint8ClampedArray(sharedBgBuffer));
     ctx.putImageData(imageData, 0, 0);
+
+    /*ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    console.log("for (const key in $0) if (key.startsWith('on')) document.addEventListener(key.slice(2), console.log);")*/
 
 
     if (SETTINGS.drawArrows) {
@@ -419,14 +420,16 @@ let draggingIndex = -1;
 let draggingOffset = {x: 0, y: 0};
 let draggingCoords = {x: -100, y: -100};
 $(canvas).on("mousedown", e => {
+    //console.log(e.button);
     if (draggingIndex != -1) return;
-    const mousePos = {
+    let mousePos = {
         x: e.clientX - canvas.offsetTop,
         y: e.clientY - canvas.offsetLeft
     };
     let chargeDragged = false;
     for (let i = 0; i < charges.length; i++) {
         if ((mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2 <= getChargeRadius(i)**2) {
+            console.log('yee')
             if (e.button == 0) {
                 draggingOffset = {
                     x: mousePos.x - charges[i].x,
@@ -456,10 +459,6 @@ $(canvas).on("mousemove touchmove", e => {
         x: e.clientX - canvas.offsetTop,
         y: e.clientY - canvas.offsetLeft
     };
-    if (e.touches) mousePos = {
-        x: e.touches[0].clientX - canvas.offsetTop,
-        y: e.touches[0].clientY - canvas.offsetLeft
-    };
     if (draggingIndex != -1) {
         draggingCoords.x = mousePos.x - draggingOffset.x;
         draggingCoords.y = mousePos.y - draggingOffset.y;
@@ -485,6 +484,125 @@ $(canvas).on("mouseup touchend", e => {
 $(canvas).on("contextmenu", e => {
     return false;
 });
+
+
+
+
+const hammer = new Hammer(canvas);
+
+canvas.style.touchAction = 'none';
+hammer.get('press').set({ time: 500 });
+hammer.get('pan').set({
+    direction: Hammer.DIRECTION_ALL,
+    //threshold: 1
+});
+
+// Handle single tap (simulate left click)
+hammer.on("tap", ev => {
+    const e = {
+        button: 0,
+        clientX: ev.center.x,
+        clientY: ev.center.y
+    };
+    $(canvas).trigger($.Event("mousedown", e));
+    $(canvas).trigger($.Event("mouseup", e));
+});
+
+// Handle press (long tap) as right-click
+hammer.on("press", ev => {
+    const e = {
+        button: 2,
+        clientX: ev.center.x,
+        clientY: ev.center.y
+    };
+    $(canvas).trigger($.Event("mousedown", e));
+    $(canvas).trigger($.Event("mouseup", e));
+});
+
+// Dragging support
+let isDragging = false;
+
+/*hammer.on("panstart", ev => {
+    const e = {
+        button: 0,
+        clientX: ev.center.x,
+        clientY: ev.center.y
+    };
+    isDragging = true;
+    $(canvas).trigger($.Event("mousedown", e));
+});
+
+hammer.on("panmove", ev => {
+    if (!isDragging) return;
+    const e = {
+        clientX: ev.center.x,
+        clientY: ev.center.y
+    };
+    $(canvas).trigger($.Event("mousemove", e));
+});
+
+hammer.on("panend pancancel", ev => {
+    if (!isDragging) return;
+    const e = {
+        clientX: ev.center.x,
+        clientY: ev.center.y
+    };
+    isDragging = false;
+    $(canvas).trigger($.Event("mouseup", e));
+});*/
+
+/*let isTouchDragging = false;
+let forceTimeout = null;
+let isShortClick = false;
+let touchX = 0;
+let touchY = 0;
+let lastX = 0;
+let lastY = 0;
+$(canvas).on("touchstart", e => {
+    touchX = e.touches[0].clientX;
+    lastX = e.touches[0].clientX;
+    touchY = e.touches[0].clientY;
+    lastY = e.touches[0].clientY;
+    if (!isShortClick && !isTouchDragging) {
+        isShortClick = true;
+        forceTimeout = setTimeout(() => {
+            if (isShortClick) {
+                isShortClick = false;
+                $(canvas).triggerHandler(jQuery.Event("mousedown", {clientX: touchX, clientY: touchY, button: 2}));
+                $(canvas).triggerHandler(jQuery.Event("mouseup", {clientX: touchX, clientY: touchY}));
+            }
+        }, 500);
+    }
+});
+$(canvas).on("touchmove", e => {
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+    console.log((touchX-lastX)**2+(touchY-lastY)**2);
+    if (isShortClick && (touchX-lastX)**2+(touchY-lastY)**2 > 400) {
+        isShortClick = false;
+        isTouchDragging = true;
+        clearTimeout(forceTimeout);
+        $(canvas).triggerHandler(jQuery.Event("mousedown", {clientX: touchX, clientY: touchY, button: 0}));
+        $(canvas).triggerHandler(jQuery.Event("mousemove", {clientX: lastX, clientY: lastY}));
+    }
+    if (isTouchDragging) {
+        clearTimeout(forceTimeout);
+        $(canvas).triggerHandler(jQuery.Event("mousemove", {clientX: lastX, clientY: lastY}));
+    }
+});
+$(canvas).on("touchend", e => {
+    clearTimeout(forceTimeout);
+    if (isShortClick) {
+        isShortClick = false;
+        $(canvas).triggerHandler(jQuery.Event("mousedown", {clientX: lastX, clientY: lastY, button: 0}));
+        $(canvas).triggerHandler(jQuery.Event("mouseup"));
+    }
+    if (isTouchDragging) {
+        isTouchDragging = false;
+        $(canvas).triggerHandler(jQuery.Event("mouseup"));
+    }
+});*/
+
 
 
 function animateWithoutRequest() {
@@ -521,9 +639,6 @@ function animate() {
     animateWithoutRequest();
     requestAnimationFrame(animate);
 }
-requestAnimationFrame(animate);
-animateWithoutRequest();
-render(false);
 $(window).on("resize", () => {
     animateWithoutRequest();
     render();
@@ -536,4 +651,24 @@ $("#collapse").on("click", () => {
 $("#uncollapse").on("click", () => {
     $("#controls").show();
     $("#uncollapse").hide();
+});
+
+function setRealVh() {
+  document.documentElement.style.setProperty('--real-vh', `${window.innerHeight}px`);
+}
+setRealVh();
+window.addEventListener('resize', setRealVh);
+
+$(document).ready(() => {
+    if (window.innerWidth > 480) charges = [
+        { x: window.innerWidth/3, y: window.innerHeight/2, q: 2e-6 },
+        { x: window.innerWidth*2/3, y: window.innerHeight/2, q: -2e-6 }
+    ];
+    else charges = [
+        { x: window.innerWidth/3, y: window.innerHeight/3, q: 2e-6 },
+        { x: window.innerWidth*2/3, y: window.innerHeight/3, q: -2e-6 }
+    ];
+    requestAnimationFrame(animate);
+    animateWithoutRequest();
+    render();
 });
