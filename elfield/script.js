@@ -306,14 +306,14 @@ async function render() {
         worker.onmessage = resolve
     })));
     
-    //console.log(pixelData);
+    ////console.log(pixelData);
     const imageData = new ImageData(canvasWidth, canvasHeight)
     imageData.data.set(new Uint8ClampedArray(sharedBgBuffer));
     ctx.putImageData(imageData, 0, 0);
 
-    /*ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    console.log("for (const key in $0) if (key.startsWith('on')) document.addEventListener(key.slice(2), console.log);")*/
+    //ctx.fillStyle = "black";
+    //ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ////console.log("for (const key in $0) if (key.startsWith('on')) document.addEventListener(key.slice(2), //console.log);")
 
 
     if (SETTINGS.drawArrows) {
@@ -420,7 +420,7 @@ let draggingIndex = -1;
 let draggingOffset = {x: 0, y: 0};
 let draggingCoords = {x: -100, y: -100};
 $(canvas).on("mousedown", e => {
-    //console.log(e.button);
+    ////console.log(e.button);
     if (draggingIndex != -1) return;
     let mousePos = {
         x: e.clientX - canvas.offsetTop,
@@ -428,9 +428,10 @@ $(canvas).on("mousedown", e => {
     };
     let chargeDragged = false;
     for (let i = 0; i < charges.length; i++) {
-        if ((mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2 <= getChargeRadius(i)**2) {
-            console.log('yee')
+        if ((mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2 <= (e.radius || getChargeRadius(i))**2) {
+            //console.log('intersecting charge found')
             if (e.button == 0) {
+                //console.log('charge dragged')
                 draggingOffset = {
                     x: mousePos.x - charges[i].x,
                     y: mousePos.y - charges[i].y
@@ -439,6 +440,7 @@ $(canvas).on("mousedown", e => {
                 draggingIndex = i;
                 break;
             } else if (e.button == 2) {
+                //console.log('charge yeeted')
                 charges.remove(i);
                 chargeDragged = true;
                 render();
@@ -454,7 +456,7 @@ $(canvas).on("mousedown", e => {
         }
     }
 });
-$(canvas).on("mousemove touchmove", e => {
+$(canvas).on("mousemove", e => {
     let mousePos = {
         x: e.clientX - canvas.offsetTop,
         y: e.clientY - canvas.offsetLeft
@@ -469,7 +471,8 @@ $(canvas).on("mousemove touchmove", e => {
         }
     }
 });
-$(canvas).on("mouseup touchend", e => {
+$(canvas).on("mouseup", e => {
+    //console.log(draggingIndex, draggingCoords)
     if (draggingIndex == -1) return;
     if (draggingCoords.x == -100) {
         draggingIndex = -1;
@@ -491,65 +494,73 @@ $(canvas).on("contextmenu", e => {
 const hammer = new Hammer(canvas);
 
 canvas.style.touchAction = 'none';
+hammer.get('tap').set({ time: 250 });
 hammer.get('press').set({ time: 500 });
 hammer.get('pan').set({
     direction: Hammer.DIRECTION_ALL,
-    //threshold: 1
 });
 
 // Handle single tap (simulate left click)
 hammer.on("tap", ev => {
+    //console.log('tap')
     const e = {
         button: 0,
         clientX: ev.center.x,
         clientY: ev.center.y
     };
-    $(canvas).trigger($.Event("mousedown", e));
-    $(canvas).trigger($.Event("mouseup", e));
+    $(canvas).triggerHandler($.Event("mousedown", e));
+    $(canvas).triggerHandler($.Event("mouseup", e));
 });
 
 // Handle press (long tap) as right-click
 hammer.on("press", ev => {
+    //console.log('press')
     const e = {
         button: 2,
         clientX: ev.center.x,
-        clientY: ev.center.y
+        clientY: ev.center.y,
+        radius: 18
     };
-    $(canvas).trigger($.Event("mousedown", e));
-    $(canvas).trigger($.Event("mouseup", e));
+    $(canvas).triggerHandler($.Event("mousedown", e));
+    $(canvas).triggerHandler($.Event("mouseup", e));
 });
 
 // Dragging support
 let isDragging = false;
 
-/*hammer.on("panstart", ev => {
+hammer.on("panstart", ev => {
+    //console.log('pan start')
     const e = {
         button: 0,
         clientX: ev.center.x,
-        clientY: ev.center.y
+        clientY: ev.center.y,
+        radius: 18
     };
     isDragging = true;
-    $(canvas).trigger($.Event("mousedown", e));
+    $(canvas).triggerHandler($.Event("mousedown", e));
 });
 
 hammer.on("panmove", ev => {
-    if (!isDragging) return;
+    //console.log('pan move')
+    //if (!isDragging) return;
+    //console.log(ev)
     const e = {
         clientX: ev.center.x,
         clientY: ev.center.y
     };
-    $(canvas).trigger($.Event("mousemove", e));
+    $(canvas).triggerHandler($.Event("mousemove", e));
 });
 
 hammer.on("panend pancancel", ev => {
-    if (!isDragging) return;
+    //console.log('pan end')
+    //if (!isDragging) return;
     const e = {
         clientX: ev.center.x,
         clientY: ev.center.y
     };
     isDragging = false;
-    $(canvas).trigger($.Event("mouseup", e));
-});*/
+    $(canvas).triggerHandler($.Event("mouseup", e));
+});
 
 /*let isTouchDragging = false;
 let forceTimeout = null;
@@ -577,7 +588,7 @@ $(canvas).on("touchstart", e => {
 $(canvas).on("touchmove", e => {
     lastX = e.touches[0].clientX;
     lastY = e.touches[0].clientY;
-    console.log((touchX-lastX)**2+(touchY-lastY)**2);
+    //console.log((touchX-lastX)**2+(touchY-lastY)**2);
     if (isShortClick && (touchX-lastX)**2+(touchY-lastY)**2 > 400) {
         isShortClick = false;
         isTouchDragging = true;
