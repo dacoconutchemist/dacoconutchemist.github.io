@@ -152,7 +152,7 @@ details[open] > summary::before {
   bottom: -10px;
   left: -10px;
   right: -10px;
-  z-index: -1; /* Push below the actual button */
+  z-index: -1;
 }
 
 #val_charge {
