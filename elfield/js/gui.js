@@ -271,3 +271,12 @@ function setRealVh() {
 }
 setRealVh();
 window.addEventListener('resize', setRealVh);
+
+// safari being safari
+const touchHandler = e => {
+    e.preventDefault();
+}
+document.addEventListener('touchstart', touchHandler, {passive:false})
+document.addEventListener('touchmove', touchHandler, {passive:false})
+document.addEventListener('touchend', touchHandler, {passive:false})
+document.addEventListener('touchcancel', touchHandler, {passive:false})
