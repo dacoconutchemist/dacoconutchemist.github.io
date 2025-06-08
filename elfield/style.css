@@ -9,6 +9,9 @@ html, body {
     width: 100%;
     height: 100%;
     touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 #bottomrighthold {
@@ -219,4 +222,29 @@ button {
 }
 #languages > a:hover > img {
     transform: scale(1.05);
+}
+
+#tools {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#tools input[type="radio"] {
+    display: none;
+}
+
+#tools label {
+    display: inline-block;
+    cursor: pointer;
+    margin: 2px;
+}
+
+#tools label img {
+    border: 2px solid transparent;
+}
+
+#tools input[type="radio"]:checked + label img {
+    border-color: white;
 }
