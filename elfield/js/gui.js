@@ -14,7 +14,7 @@ let listeners = [
     */
     {sel: "#slider_charge", event: "input", type: "", var: "placedCharge", def: "2", defVar: 2, callback: e=>{
         SETTINGS.placedCharge = parseFloat(e.target.value);
-        $("#val_charge").html(parseFloat(e.target.value).toFixed(2).padStart(5, " ") + I18N[LANG].chargeunit)
+        updateJSI18N();
     }},
     {sel: "#check_equipot", type: "checkbox", var: "drawEquipotential", def: true, defVar: true},
     {sel: "#slider_equipot", type: "slider", var: "equipLineDensityCoef", def: "0.25", defVar: 4, preprocess: v => 1/parseFloat(v)},
@@ -39,6 +39,8 @@ let listeners = [
     {sel: "#color_outline", type: "color", var: "colorOutline", def: "#ffffff", defVar: [255, 255, 255]},
     {sel: "#check_anim", type: "checkbox", var: "animatedMode", def: false, defVar: false}
 ];
+
+SETTINGS.colorTool = [0, 255, 255];
 
 // set default callbacks per type
 for (let i of listeners) {
@@ -68,6 +70,58 @@ for (let i of listeners) {
     SETTINGS[i.var] = i.defVar;
     $(i.sel).on(i.event || "change", callback);
 }
+
+SETTINGS.mode = "charge";
+let toolCoords = [];
+$("#tools > input").on('change', e => {
+    let prevMode = SETTINGS.mode;
+    SETTINGS.mode = $('input[name="toolsgroup"]:checked').val();
+    if (prevMode != SETTINGS.mode) {
+        switch (SETTINGS.mode) {
+        case "charge":
+            toolCoords = [];
+            break;
+        case "voltage":
+            if (window.innerWidth > 480) toolCoords = [
+                { x: window.innerWidth/3, y: window.innerHeight/2 - 50 },
+                { x: window.innerWidth*2/3, y: window.innerHeight/2 + 50 }
+            ];
+            else toolCoords = [
+                { x: window.innerWidth/3, y: window.innerHeight/3 - 50 },
+                { x: window.innerWidth*2/3, y: window.innerHeight/3 + 50 }
+            ];
+            break;
+        case "angle":
+            if (window.innerWidth > 480) toolCoords = [
+                { x: window.innerWidth/3, y: window.innerHeight/2 - 50 },
+                { x: window.innerWidth*2/3 - 50, y: window.innerHeight/2 },
+                { x: window.innerWidth/3, y: window.innerHeight/2 + 50 }
+            ];
+            else toolCoords = [
+                { x: window.innerWidth/3, y: window.innerHeight/3 - 50 },
+                { x: window.innerWidth*2/3 - 50, y: window.innerHeight/3 },
+                { x: window.innerWidth/3, y: window.innerHeight/3 + 50 }
+            ];
+            break;
+        case "equipline":
+            if (window.innerWidth > 480) toolCoords = [
+                { x: window.innerWidth/2 - 50, y: window.innerHeight/2 - 50 }
+            ];
+            else toolCoords = [
+                { x: window.innerWidth/2 - 50, y: window.innerHeight/3  - 50 }
+            ];
+            break;
+        case "powerline":
+            if (window.innerWidth > 480) toolCoords = [
+                { x: window.innerWidth/2 - 50, y: window.innerHeight/2  - 50 }
+            ];
+            else toolCoords = [
+                { x: window.innerWidth/2 - 50, y: window.innerHeight/3  - 50}
+            ];
+            break;
+        }
+    }
+});
 
 $("#btn_clear").on('click', e => {
     if (confirm(I18N[LANG].clear_msg)) {
@@ -107,6 +161,7 @@ function updateJSI18N() {
 let draggingIndex = -1;
 let draggingOffset = { x: 0, y: 0 }; // distance from center of charge to mouse pointer when dragging
 let draggingCoords = { x: -100, y: -100 };
+let dragType = "charge";
 
 function clickOrStartDrag(e) {
     if (draggingIndex != -1) return;
@@ -117,10 +172,18 @@ function clickOrStartDrag(e) {
     let chargeDragged = false;
     let chargeIndex = -1;
     if (e._interaction.pointerType != "touch") {
-        // if using a mouse, find the first intersecting charge
+        // if using a mouse, find the first intersecting charge/circle
         for (let i = 0; i < charges.length; i++) {
             if ((mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2 <= (e.radius || getChargeRadius(i))**2) {
                 chargeIndex = i;
+                dragType = "charge";
+                break;
+            }
+        }
+        for (let i = 0; i < toolCoords.length; i++) {
+            if ((mousePos.x - toolCoords[i].x)**2 + (mousePos.y - toolCoords[i].y)**2 <= 25) {
+                chargeIndex = i;
+                dragType = "tool";
                 break;
             }
         }
@@ -131,34 +194,51 @@ function clickOrStartDrag(e) {
             let distanceSq = (mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2;
             if (distanceSq < minDistanceSq) {
                 minDistanceSq = distanceSq;
+                dragType = "charge";
+                chargeIndex = i;
+            }
+        }
+        for (let i = 0; i < toolCoords.length; i++) {
+            let distanceSq = (mousePos.x - toolCoords[i].x)**2 + (mousePos.y - toolCoords[i].y)**2;
+            if (distanceSq < minDistanceSq) {
+                minDistanceSq = distanceSq;
+                dragType = "tool";
                 chargeIndex = i;
             }
         }
         if (minDistanceSq > 400) chargeIndex = -1;
     }
-    
     // if we are actually dragging something:
     if (chargeIndex > -1) {
         if (e.button == 0) {
             // charge dragged
-            draggingOffset = {
-                x: mousePos.x - charges[chargeIndex].x,
-                y: mousePos.y - charges[chargeIndex].y
-            };
+            if (dragType == "charge") {
+                draggingOffset = {
+                    x: mousePos.x - charges[chargeIndex].x,
+                    y: mousePos.y - charges[chargeIndex].y
+                };
+                // field line priority hack - lines for first charge det drawn first
+                // any dragged charge gets deprioritised by readding it to the end of the array
+                let charge = charges[chargeIndex];
+                charges.remove(chargeIndex);
+                charges.push(charge);
+                draggingIndex = charges.length - 1;
+            }
+            else {
+                draggingOffset = {
+                    x: mousePos.x - toolCoords[chargeIndex].x,
+                    y: mousePos.y - toolCoords[chargeIndex].y
+                };
+                draggingIndex = chargeIndex;
+            }
             chargeDragged = true;
-            draggingIndex = chargeIndex;
-
-            // field line priority hack - lines for first charge det drawn first
-            // any dragged charge gets deprioritised by readding it to the end of the array
-            let charge = charges[chargeIndex];
-            charges.remove(chargeIndex);
-            charges.push(charge);
-            draggingIndex = charges.length - 1;
         } else if (e.button == 2) {
-            // charge deleted
-            charges.remove(chargeIndex);
-            chargeDragged = true;
-            render();
+            if (dragType == "charge") {
+                // charge deleted
+                charges.remove(chargeIndex);
+                chargeDragged = true;
+                render();
+            }
         }
     }
     if (!chargeDragged) {
@@ -188,11 +268,17 @@ interact(canvas)
                 if (draggingIndex != -1) {
                     draggingCoords.x = mousePos.x - draggingOffset.x;
                     draggingCoords.y = mousePos.y - draggingOffset.y;
-                    if (SETTINGS.animatedMode) {
-                        charges[draggingIndex].x = draggingCoords.x;
-                        charges[draggingIndex].y = draggingCoords.y;
-                        if (!isRendering) render();
+                    if (dragType == "charge") {
+                        if (SETTINGS.animatedMode) {
+                            charges[draggingIndex].x = draggingCoords.x;
+                            charges[draggingIndex].y = draggingCoords.y;
+                            if (!isRendering) render();
+                        }
+                    } else {
+                        toolCoords[draggingIndex].x = draggingCoords.x;
+                        toolCoords[draggingIndex].y = draggingCoords.y;
                     }
+                    
                 }
             },
             end(e) {
@@ -204,11 +290,16 @@ interact(canvas)
                     draggingIndex = -1;
                 } else {
                     // if we did drag something then put it there and reset
-                    charges[draggingIndex].x = draggingCoords.x;
-                    charges[draggingIndex].y = draggingCoords.y;
+                    if (dragType == "charge") {
+                        charges[draggingIndex].x = draggingCoords.x;
+                        charges[draggingIndex].y = draggingCoords.y;
+                    } else {
+                        toolCoords[draggingIndex].x = draggingCoords.x;
+                        toolCoords[draggingIndex].y = draggingCoords.y;
+                    }
                     draggingCoords = {x: -100, y: -100};
                     draggingIndex = -1;
-                    render().then(() => {render()});
+                    if (dragType == "charge") render().then(() => {render()});
                 }
                 updateCursor(e);
             }
@@ -244,6 +335,12 @@ function updateCursor(e) {
     let onFlag = false;
     for (let i = 0; i < charges.length; i++) {
         if ((mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2 <= getChargeRadius(i)**2) {
+            onFlag = true;
+            break;
+        }
+    }
+    for (let i = 0; i < toolCoords.length; i++) {
+        if ((mousePos.x - toolCoords[i].x)**2 + (mousePos.y - toolCoords[i].y)**2 <= 25) {
             onFlag = true;
             break;
         }

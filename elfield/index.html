@@ -28,12 +28,24 @@
             <div class="spacer"></div>
             <label><input type="checkbox" id="check_anim" autocomplete="off"><span data-i18n="check_anim"> Smooth mode (not recommended for low-end systems)</span></label>
             <div class="spacer"></div>
-            <!--<div id="tools">
-                <input type="radio" id="tool_charge" name="toolsgroup" value="HTML">
-                <input type="radio" id="tool_measure" name="toolsgroup" value="HTML">
-                <input type="radio" id="tool_" name="toolsgroup" value="HTML">
-                <input type="radio" id="html" name="toolsgroup" value="HTML">
-            </div>-->
+            <div id="tools">
+                <span data-i18n="toolchoice" style="margin-right: 5px">Tool: </span>
+
+                <input type="radio" id="tool_charge" name="toolsgroup" autocomplete="off" value="charge" checked>
+                <label for="tool_charge"><img src="icons/tool_charge.png"></label>
+
+                <input type="radio" id="tool_voltage" name="toolsgroup" autocomplete="off" value="voltage">
+                <label for="tool_voltage"><img src="icons/tool_voltage.png"></label>
+
+                <input type="radio" id="tool_angle" name="toolsgroup" autocomplete="off" value="angle">
+                <label for="tool_angle"><img src="icons/tool_angle.png"></label>
+
+                <input type="radio" id="tool_equipline" name="toolsgroup" autocomplete="off" value="equipline">
+                <label for="tool_equipline"><img src="icons/tool_equipline.png"></label>
+
+                <input type="radio" id="tool_powerline" name="toolsgroup" autocomplete="off" value="powerline">
+                <label for="tool_powerline"><img src="icons/tool_powerline.png"></label>
+            </div>
             <span data-i18n="chargelabel">Charge of the placed particle:</span>
             <span id="hold_charge">
                 <input type="range" id="slider_charge" min="0.5" max="10" step="0.01" value="2.00" autocomplete="off">
@@ -42,7 +54,9 @@
             <details>
                 <summary data-i18n="howto-summary">How to use</summary>
                 <span data-i18n="howto-1">&#x2022; To place particles, use left click for positive charge sign or right click for negative charge sign. The absolute value of the charge is controlled by the slider above.</span>
+                <br>
                 <span data-i18n="howto-2">&#x2022; To move particles, drag them around by their colored part using the left mouse button.</span>
+                <br>
                 <span data-i18n="howto-3">&#x2022; To remove particles, right click on their colored part.</span>
             </details>
             <details>

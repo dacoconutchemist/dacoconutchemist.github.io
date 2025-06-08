@@ -2,11 +2,12 @@ var I18N = {
     'en': {
         'h1': "Electric Field Simulation",
         'author': "by dacoconutchemist",
+        'toolchoice': 'Tool: ',
         'chargelabel': "Charge of the placed particle:",
         'howto-summary': "How to use",
-        'howto-1': "&#x2022; To place particles, use left click for positive charge sign or right click for negative charge sign. The absolute value of the charge is controlled by the slider above.",
-        'howto-2': "&#x2022; To move particles, drag them around by their colored part using the left mouse button.",
-        'howto-3': "&#x2022; To remove particles, right click on their colored part.",
+        'howto-1': "&#x2022; To place particles, use left click for positive charge sign (short tap on touchscreen) or right click (long tap on touchscreen) for negative charge sign. The absolute value of the charge is controlled by the slider above.",
+        'howto-2': "&#x2022; To move particles, drag them around by their colored part.",
+        'howto-3': "&#x2022; To remove particles, right click on their colored part (long tap on touchscreen).",
         'equipot-summary': "Equipotential lines",
         'check_equipot': " Show",
         'slider_equipot': "Density",
@@ -25,6 +26,7 @@ var I18N = {
         'slider_powerline_t': "Thickness",
         'chargeinitial': " 2.00 μC",
         'chargeunit': " μC",
+        'voltageunit': " V",
         'rendered': 'Image rendered (%time% ms)',
         'rendering': 'Rendering...',
         'clear': 'Delete charges',
@@ -41,11 +43,12 @@ var I18N = {
         'color_neg': 'Negative color',
         'color_outline': 'Charge outline color',
         'rendered_fps': 'Image rendered (%fps% FPS on average)',
-        'check_anim': ' Smooth mode (not recommended for low-end devices)'
+        'check_anim': ' <abbr title="(not recommended for low-end devices)">Smooth mode</abbr>'
     },
     'ua': {
         'h1': "Симуляція Електричного Поля",
         'author': "зроблено dacoconutchemist",
+        'toolchoice': 'Інструмент: ',
         'chargelabel': "Заряд поставленої частинки:",
         'howto-summary': "Як користуватись",
         'howto-1': "&#x2022; Щоб поставити заряджену частинку, скористайтесь лівою кнопкою миші для додатнього заряду або правою для від'ємного. Модуль заряду контролюється повзунком вище.",
@@ -69,6 +72,7 @@ var I18N = {
         'slider_powerline_t': "Товщина",
         'chargeinitial': " 2.00 мкКл",
         'chargeunit': " мкКл",
+        'voltageunit': " В",
         'rendered': 'Рендеринг завершено (%time% мс)',
         'rendering': 'Рендеринг...',
         'clear': 'Видалити заряди',
@@ -85,11 +89,12 @@ var I18N = {
         'color_neg': 'Колір негативних зарядів',
         'color_outline': 'Колір контуру зарядів',
         'rendered_fps': 'Рендеринг завершено (%fps% FPS в сер.)',
-        'check_anim': ' Плавний режим (не рекомендується для слабких пристроїв)'
+        'check_anim': ' <abbr title="(не рекомендується для слабких пристроїв)">Плавний режим</abbr>'
     },
     'de': {
         'h1': "Simulation des Elektrischen Feldes",
         'author': "von dacoconutchemist",
+        'toolchoice': 'Instrument: ',
         'chargelabel': "Ladung des platzierten Teilchens:",
         'howto-summary': "Anleitung",
         'howto-1': "&#x2022; Zum Platzieren von Teilchen: Linksklick für positive Ladung, Rechtsklick für negative Ladung. Der Betrag der Ladung wird über den Schieberegler oben eingestellt.",
@@ -113,6 +118,7 @@ var I18N = {
         'slider_powerline_t': "Dicke",
         'chargeinitial': " 2.00 μC",
         'chargeunit': " μC",
+        'voltageunit': " V",
         'rendered': 'Bild gerendert (%time% ms)',
         'rendering': 'Rendering...',
         'clear': 'Ladungen entfernen',
@@ -129,7 +135,7 @@ var I18N = {
         'color_neg': 'Negative Farbe',
         'color_outline': 'Konturfarbe der Ladungen',
         'rendered_fps': 'Bild gerendert (%fps% FPS im Durchschnitt)',
-        'check_anim': ' Kontinuierlicher Modus (nicht empfohlen für leistungsschwache Geräte)'
+        'check_anim': '  <abbr title="(nicht empfohlen für leistungsschwache Geräte)">Kontinuierlicher Modus</abbr>'
     }
 };
 

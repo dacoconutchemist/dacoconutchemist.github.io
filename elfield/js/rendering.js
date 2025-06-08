@@ -2,8 +2,8 @@ function calculatePotential(x, y) {
     let potential = 0;
     for (let i = 0; i < charges.length; i++) {
         const charge = charges[i];
-        const dx = x - (charge.x + 5);
-        const dy = y - (charge.y + 5);
+        const dx = x - charge.x;
+        const dy = y - charge.y;
         const r = Math.sqrt(dx * dx + dy * dy);
         if (r > 0.01) {
             potential += (k * charge.q) / r;
@@ -351,29 +351,7 @@ async function render() {
 
     /*ctx.strokeStyle = colorToRGBA(SETTINGS.colorsEquipotential, SETTINGS.equipLineOpacity);
     ctx.lineWidth = SETTINGS.equipLineThickness;
-    let maxIter = 10000;
-    
-    let Px = 500;
-    let Py = 500;
-    let Sx = Px;
-    let Sy = Py;
-    let startPot = calculatePotential(Px, Py);
-    ctx.beginPath();
-    ctx.moveTo(Px, Py);
-    for (let I = 0; I < maxIter; I++) {
-        let E = calculateField(Px, Py);
-        Px += E.y / E.r;
-        Py += -E.x / E.r;
-
-        let deltaPot = startPot - calculatePotential(Px, Py);
-        Px -= deltaPot * E.x / E.r / E.r;
-        Py -= deltaPot * E.y / E.r / E.r;
-
-        ctx.lineTo(Px, Py);
-        if (Px < -2000 || Py < -2000 || Px > canvasWidth+2000 || Py > canvasHeight+2000) break;
-        if (I > 50 && (Sx - Px)**2 + (Sy - Py)**2 < 25) I = maxIter - 30;
-    
-    ctx.stroke();*/
+    */
 
     // END TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS 
 
@@ -395,6 +373,153 @@ function animateWithoutRequest() {
 
     if (currentBg) ctx.putImageData(currentBg, 0, 0);
 
+    // draw ghost charge that is being dragged (if the mode is right)
+    if (!SETTINGS.animatedMode) if (draggingIndex != -1) {
+        if (dragType == "charge") {
+            ctx.beginPath();
+            ctx.arc(draggingCoords.x, draggingCoords.y, getChargeRadius(draggingIndex), 0, 2 * Math.PI);
+            ctx.fillStyle = charges[draggingIndex].q > 0 ? colorToRGBA(SETTINGS.colorBgPos, 0.5) : colorToRGBA(SETTINGS.colorBgNeg, 0.5);
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = colorToRGBA(SETTINGS.colorOutline, 0.5);
+            ctx.stroke();
+        }
+    }
+
+    // draw tool stuff
+    ctx.lineWidth = 3;
+    ctx.miterLimit = 1;
+    ctx.strokeStyle = colorToRGBA(SETTINGS.colorTool);
+    ctx.font = "20px monospace";
+    switch (SETTINGS.mode) {
+    case "voltage":
+        ctx.beginPath();
+        ctx.moveTo(toolCoords[0].x, toolCoords[0].y);
+        ctx.lineTo(toolCoords[1].x, toolCoords[1].y);
+        ctx.stroke();
+
+        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        let textFlag = true;
+        for (let i of charges) {
+            if ((i.x - toolCoords[0].x) ** 2 + (i.y - toolCoords[0].y) ** 2 < 8 ||
+                (i.x - toolCoords[1].x) ** 2 + (i.y - toolCoords[1].y) ** 2 < 8) {
+                textFlag = false;
+                break;
+            }
+        }
+        if (!textFlag) break;
+        let argsV = [
+            Math.abs(
+                calculatePotential(toolCoords[0].x, toolCoords[0].y) - 
+                calculatePotential(toolCoords[1].x, toolCoords[1].y)
+            ).toFixed(2) + I18N[LANG].voltageunit, 
+            (toolCoords[0].x + toolCoords[1].x) / 2, 
+            (toolCoords[0].y + toolCoords[1].y) / 2
+        ];
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "black";
+        ctx.strokeText(...argsV);
+        ctx.fillText(...argsV);
+        break;
+    case "angle":
+        let angle1 = Math.atan2(toolCoords[2].y - toolCoords[1].y, toolCoords[2].x - toolCoords[1].x);
+        let angle2 = Math.atan2(toolCoords[0].y - toolCoords[1].y, toolCoords[0].x - toolCoords[1].x);
+        if (angle2 < angle1) angle2 += Math.PI * 2;
+
+        ctx.beginPath();
+        ctx.moveTo(toolCoords[1].x, toolCoords[1].y);
+        let ccw = angle2 - angle1 > Math.PI;
+        let radius = Math.max(0, Math.min(
+            50, 
+            Math.sqrt((toolCoords[2].y - toolCoords[1].y)**2 + (toolCoords[2].x - toolCoords[1].x)**2) - 10,
+            Math.sqrt((toolCoords[0].y - toolCoords[1].y)**2 + (toolCoords[0].x - toolCoords[1].x)**2) - 10
+        ));
+        ctx.arc(toolCoords[1].x, toolCoords[1].y, radius, angle1, angle2, ccw);
+        ctx.stroke();
+        ctx.closePath();
+        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool, 0.5);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(toolCoords[0].x, toolCoords[0].y);
+        ctx.lineTo(toolCoords[1].x, toolCoords[1].y);
+        ctx.lineTo(toolCoords[2].x, toolCoords[2].y);
+        ctx.stroke();
+
+        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool);
+        const angleText = (angle1 + angle2) / 2 + (ccw * Math.PI);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        let args = [
+            Math.abs(Math.abs(angle1 - angle2)/Math.PI*180 - ccw*360).toFixed(2) + "°", 
+            toolCoords[1].x + 25*Math.cos(angleText), 
+            toolCoords[1].y + 25*Math.sin(angleText)
+        ];
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "black";
+        ctx.strokeText(...args);
+        ctx.fillText(...args);
+        break;
+    case "equipline":
+        ctx.strokeStyle = colorToRGBA(SETTINGS.colorTool);
+        ctx.lineWidth = 3;
+        let maxIter = 10000;
+    
+        let Px = toolCoords[0].x;
+        let Py = toolCoords[0].y;
+        let startPot = calculatePotential(Px, Py);
+        ctx.beginPath();
+        ctx.moveTo(Px, Py);
+        let endFlag = true;
+        for (let I = 0; I < maxIter; I++) {
+            let E = calculateField(Px, Py);
+            Px += E.y / E.r;
+            Py += -E.x / E.r;
+
+            let deltaPot = startPot - calculatePotential(Px, Py);
+            Px -= Math.min(deltaPot * E.x / E.r / E.r, 2);
+            Py -= Math.min(deltaPot * E.y / E.r / E.r, 2);
+
+            ctx.lineTo(Px, Py);
+            if (Px < -2000 || Py < -2000 || Px > canvas.width+2000 || Py > canvas.height+2000) break;
+            if (endFlag && I > 50 && (toolCoords[0].x - Px)**2 + (toolCoords[0].y - Py)**2 < 25) {
+                I = maxIter - 30;
+                endFlag = false;
+            }
+        }
+        ctx.stroke();
+        break;
+    case "powerline":
+        ctx.strokeStyle = colorToRGBA(SETTINGS.colorTool);
+        ctx.lineWidth = 3;
+        let drawLine = negateField => {
+            let Px = toolCoords[0].x;
+            let Py = toolCoords[0].y;
+            ctx.beginPath();
+            ctx.moveTo(Px, Py);
+            negateField = negateField ? -1 : 1;
+            outer: for (let I = 0; I < 10000; I++) {
+                let E = calculateField(Px, Py);
+                Px += E.x / E.r * negateField;
+                Py += E.y / E.r * negateField;
+                ctx.lineTo(Px, Py);
+
+                if (Px < -2000 || Py < -2000 || Px > canvas.width+2000 || Py > canvas.height+2000) break outer;
+                for (let k = 0; k < charges.length; k++) {
+                    if ((Px - charges[k].x)**2 + (Py - charges[k].y)**2 <= 5) {
+                        break outer;
+                    }
+                }
+            }
+            ctx.stroke();
+        };
+        drawLine(false);
+        drawLine(true);
+        break;
+    }
+
     // draw charge circles
     for (let i = 0; i < charges.length; i++) {
         const charge = charges[i];
@@ -407,15 +532,13 @@ function animateWithoutRequest() {
         ctx.stroke();
     }
 
-    // draw ghost charge that is being dragged (if the mode is right)
-    if (!SETTINGS.animatedMode) if (draggingIndex != -1) {
+    // draw tool circles
+    for (let i = 0; i < toolCoords.length; i++) {
+        const circle = toolCoords[i];
         ctx.beginPath();
-        ctx.arc(draggingCoords.x, draggingCoords.y, getChargeRadius(draggingIndex), 0, 2 * Math.PI);
-        ctx.fillStyle = charges[draggingIndex].q > 0 ? colorToRGBA(SETTINGS.colorBgPos, 0.5) : colorToRGBA(SETTINGS.colorBgNeg, 0.5);
+        ctx.arc(circle.x, circle.y, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool);
         ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = colorToRGBA(SETTINGS.colorOutline, 0.5);
-        ctx.stroke();
     }
 }
 function animate() {
