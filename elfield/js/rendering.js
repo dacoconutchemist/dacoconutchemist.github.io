@@ -347,14 +347,6 @@ async function render() {
         }
     }
 
-    // START TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS 
-
-    /*ctx.strokeStyle = colorToRGBA(SETTINGS.colorsEquipotential, SETTINGS.equipLineOpacity);
-    ctx.lineWidth = SETTINGS.equipLineThickness;
-    */
-
-    // END TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS TESTING GROUNDS 
-
     currentBg = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
     lastRenderTime = Math.round(performance.now() - startTime);
@@ -466,27 +458,49 @@ function animateWithoutRequest() {
         ctx.strokeStyle = colorToRGBA(SETTINGS.colorTool);
         ctx.lineWidth = 3;
         let maxIter = 10000;
-    
-        let Px = toolCoords[0].x;
-        let Py = toolCoords[0].y;
-        let startPot = calculatePotential(Px, Py);
+        
+        let Px1 = toolCoords[0].x;
+        let Py1 = toolCoords[0].y;
+        let Px2 = toolCoords[0].x;
+        let Py2 = toolCoords[0].y;
+        let startPot = calculatePotential(toolCoords[0].x, toolCoords[0].y);
         ctx.beginPath();
-        ctx.moveTo(Px, Py);
+        ctx.moveTo(Px1, Py1);
         let endFlag = true;
         for (let I = 0; I < maxIter; I++) {
-            let E = calculateField(Px, Py);
-            Px += E.y / E.r;
-            Py += -E.x / E.r;
+            let E = calculateField(Px1, Py1);
+            Px1 += E.y / E.r;
+            Py1 += -E.x / E.r;
 
-            let deltaPot = startPot - calculatePotential(Px, Py);
-            Px -= Math.min(deltaPot * E.x / E.r / E.r, 2);
-            Py -= Math.min(deltaPot * E.y / E.r / E.r, 2);
+            let deltaPot = startPot - calculatePotential(Px1, Py1);
+            Px1 -= Math.min(deltaPot * E.x / E.r / E.r, 2);
+            Py1 -= Math.min(deltaPot * E.y / E.r / E.r, 2);
 
-            ctx.lineTo(Px, Py);
-            if (Px < -2000 || Py < -2000 || Px > canvas.width+2000 || Py > canvas.height+2000) break;
-            if (endFlag && I > 50 && (toolCoords[0].x - Px)**2 + (toolCoords[0].y - Py)**2 < 25) {
+            ctx.lineTo(Px1, Py1);
+            if (Px1 < -2000 || Py1 < -2000 || Px1 > canvas.width+2000 || Py1 > canvas.height+2000) break;
+            if (endFlag && I > 50 && (toolCoords[0].x - Px1)**2 + (toolCoords[0].y - Py1)**2 < 25) {
                 I = maxIter - 30;
                 endFlag = false;
+            }
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        if (endFlag) {
+            for (let I = 0; I < maxIter; I++) {
+                let E = calculateField(Px2, Py2);
+                Px2 += -E.y / E.r;
+                Py2 += E.x / E.r;
+
+                let deltaPot = startPot - calculatePotential(Px2, Py2);
+                Px2 -= Math.min(deltaPot * E.x / E.r / E.r, 2);
+                Py2 -= Math.min(deltaPot * E.y / E.r / E.r, 2);
+
+                ctx.lineTo(Px2, Py2);
+                if (Px2 < -2000 || Py2 < -2000 || Px2 > canvas.width+2000 || Py2 > canvas.height+2000) break;
+                if (endFlag && I > 50 && (Px2 - Px1)**2 + (Py2 - Py1)**2 < 25) {
+                    I = maxIter - 30;
+                    endFlag = false;
+                }
             }
         }
         ctx.stroke();
