@@ -31,10 +31,9 @@ function calculateField(x, y) {
     return {x: Ex, y: Ey, r: Math.sqrt(Ex * Ex + Ey * Ey)};
 }
 
-let currentBg = null;
 let isRendering = false;
 let lastRenderTime = 0;
-let runningFPS = 10;
+let runningFPS = 30;
 
 // multithreading
 const numWorkers = Math.min(10, navigator.hardwareConcurrency || 4);
@@ -100,7 +99,6 @@ let workerCode = `
             // magic here
             const equipotOffset1 = Math.floor(equipLineThickness/2);
             const equipotOffset2 = Math.ceil(equipLineThickness/2);
-            const equipLineDensityStart = equipLineDensityCoef ** -4;
 
             const log5001 = Math.log(5001); // it's measurably faster this way ok???
 
@@ -134,11 +132,14 @@ let workerCode = `
 
                         // if a "pixel" contains a potential belonging to one of the lines somewhere
                         // inside of it (intermediate value theorem), it belongs to a line
-                        for (let val = equipLineDensityStart; val < 5000; val *= equipLineDensityCoef) {
+                        for (let val = equipLineDensityCoef; val < 5000; val *= equipLineDensityCoef) {
                             if ((maxPot > val && minPot < val) || (maxPot > -val && minPot < -val)) {
                                 col = lerpColors(col, colorsEquipotential, equipLineOpacity);
                                 break;
                             }
+                        }
+                        if ((maxPot > 0 && minPot < 0) || (maxPot > 0 && minPot < 0)) {
+                            col = lerpColors(col, colorsEquipotential, equipLineOpacity);
                         }
                     }
                     
@@ -242,8 +243,10 @@ async function render() {
 
     if (SETTINGS.drawArrows) {
         ctx.fillStyle = ctx.strokeStyle = colorToRGBA(SETTINGS.colorsArrows, SETTINGS.arrowsOpacity);
+        ctx.lineJoin = "miter";
         ctx.lineWidth = SETTINGS.arrowsThickness;
         // loop through arrow positions
+        ctx.beginPath();
         for (let y = 0; y < canvas.height/SETTINGS.arrowsSpacing; y++) {
             for (let x = 0; x < canvas.width/SETTINGS.arrowsSpacing; x++) {
                 let E = calculateField(x*SETTINGS.arrowsSpacing, y*SETTINGS.arrowsSpacing);
@@ -252,7 +255,6 @@ async function render() {
                     x: E.x / E.r * (SETTINGS.arrowsSpacing/2-1),
                     y: E.y / E.r * (SETTINGS.arrowsSpacing/2-1),
                 };
-                ctx.beginPath();
 
                 let endX = x*SETTINGS.arrowsSpacing + coordsFromCenter.x;
                 let endY = y*SETTINGS.arrowsSpacing + coordsFromCenter.y;
@@ -262,27 +264,21 @@ async function render() {
                 if (SETTINGS.drawArrowHeads) {
                     let headLength = SETTINGS.arrowsThickness*3;
                     let angle = Math.atan2(coordsFromCenter.y, coordsFromCenter.x);
-                    // shorten line so that it wouldn't stick out from under the arrow head
-                    let shaftEndX = endX - headLength * Math.cos(angle) / 2;
-                    let shaftEndY = endY - headLength * Math.sin(angle) / 2;
-                    ctx.lineTo(shaftEndX, shaftEndY);
-                    ctx.stroke();
+                    ctx.lineTo(endX, endY);
                     // arrow head triangle
-                    ctx.beginPath();
-                    ctx.moveTo(endX, endY);
-                    ctx.lineTo(endX - headLength * Math.cos(angle - Math.PI / 6),
+                    ctx.moveTo(endX - headLength * Math.cos(angle - Math.PI / 6),
                                endY - headLength * Math.sin(angle - Math.PI / 6));
+                    ctx.lineTo(endX, endY);
                     ctx.lineTo(endX - headLength * Math.cos(angle + Math.PI / 6),
                                endY - headLength * Math.sin(angle + Math.PI / 6));
-                    ctx.lineTo(endX, endY);
-                    ctx.fill();
                 } else {
                     // otherwise just a line
                     ctx.lineTo(endX, endY);
-                    ctx.stroke();
+                    
                 }
             }
         }
+        ctx.stroke();
     }
 
     if (SETTINGS.drawField) {
@@ -346,53 +342,47 @@ async function render() {
             }
         }
     }
-
-    currentBg = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+    animateWithoutRequest();
 
     lastRenderTime = Math.round(performance.now() - startTime);
-
+    runningFPS = runningFPS * 0.8 + 200/lastRenderTime;
     updateJSI18N();
 
     isRendering = false;
 }
 
 function animateWithoutRequest() {
-    var bounds = canvas.getBoundingClientRect();
-    canvas.setAttribute("width", bounds.width);
-    canvas.width = bounds.width;
-    canvas.setAttribute("height", bounds.height);
-    canvas.height = bounds.height;
-
-    if (currentBg) ctx.putImageData(currentBg, 0, 0);
+    ctxGUI.clearRect(0, 0, canvas.width, canvas.height)
 
     // draw ghost charge that is being dragged (if the mode is right)
     if (!SETTINGS.animatedMode) if (draggingIndex != -1) {
         if (dragType == "charge") {
-            ctx.beginPath();
-            ctx.arc(draggingCoords.x, draggingCoords.y, getChargeRadius(draggingIndex), 0, 2 * Math.PI);
-            ctx.fillStyle = charges[draggingIndex].q > 0 ? colorToRGBA(SETTINGS.colorBgPos, 0.5) : colorToRGBA(SETTINGS.colorBgNeg, 0.5);
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = colorToRGBA(SETTINGS.colorOutline, 0.5);
-            ctx.stroke();
+            ctxGUI.beginPath();
+            ctxGUI.arc(draggingCoords.x, draggingCoords.y, getChargeRadius(draggingIndex), 0, 2 * Math.PI);
+            ctxGUI.fillStyle = charges[draggingIndex].q > 0 ? colorToRGBA(SETTINGS.colorBgPos, 0.5) : colorToRGBA(SETTINGS.colorBgNeg, 0.5);
+            ctxGUI.fill();
+            ctxGUI.lineWidth = 2;
+            ctxGUI.strokeStyle = colorToRGBA(SETTINGS.colorOutline, 0.5);
+            ctxGUI.stroke();
         }
     }
 
     // draw tool stuff
-    ctx.lineWidth = 3;
-    ctx.miterLimit = 1;
-    ctx.strokeStyle = colorToRGBA(SETTINGS.colorTool);
-    ctx.font = "20px monospace";
+    ctxGUI.lineWidth = 3;
+    ctxGUI.miterLimit = 1;
+    ctxGUI.strokeStyle = colorToRGBA(SETTINGS.colorTool);
+    ctxGUI.font = "20px monospace";
     switch (SETTINGS.mode) {
     case "voltage":
-        ctx.beginPath();
-        ctx.moveTo(toolCoords[0].x, toolCoords[0].y);
-        ctx.lineTo(toolCoords[1].x, toolCoords[1].y);
-        ctx.stroke();
+        ctxGUI.beginPath();
+        ctxGUI.moveTo(toolCoords[0].x, toolCoords[0].y);
+        ctxGUI.lineTo(toolCoords[1].x, toolCoords[1].y);
+        ctxGUI.stroke();
 
-        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool);
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
+        ctxGUI.fillStyle = colorToRGBA(SETTINGS.colorTool);
+        ctxGUI.textAlign = "center";
+        ctxGUI.textBaseline = "middle";
         let textFlag = true;
         for (let i of charges) {
             if ((i.x - toolCoords[0].x) ** 2 + (i.y - toolCoords[0].y) ** 2 < 8 ||
@@ -410,53 +400,53 @@ function animateWithoutRequest() {
             (toolCoords[0].x + toolCoords[1].x) / 2, 
             (toolCoords[0].y + toolCoords[1].y) / 2
         ];
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "black";
-        ctx.strokeText(...argsV);
-        ctx.fillText(...argsV);
+        ctxGUI.lineWidth = 3;
+        ctxGUI.strokeStyle = "black";
+        ctxGUI.strokeText(...argsV);
+        ctxGUI.fillText(...argsV);
         break;
     case "angle":
         let angle1 = Math.atan2(toolCoords[2].y - toolCoords[1].y, toolCoords[2].x - toolCoords[1].x);
         let angle2 = Math.atan2(toolCoords[0].y - toolCoords[1].y, toolCoords[0].x - toolCoords[1].x);
         if (angle2 < angle1) angle2 += Math.PI * 2;
 
-        ctx.beginPath();
-        ctx.moveTo(toolCoords[1].x, toolCoords[1].y);
+        ctxGUI.beginPath();
+        ctxGUI.moveTo(toolCoords[1].x, toolCoords[1].y);
         let ccw = angle2 - angle1 > Math.PI;
         let radius = Math.max(0, Math.min(
             50, 
             Math.sqrt((toolCoords[2].y - toolCoords[1].y)**2 + (toolCoords[2].x - toolCoords[1].x)**2) - 10,
             Math.sqrt((toolCoords[0].y - toolCoords[1].y)**2 + (toolCoords[0].x - toolCoords[1].x)**2) - 10
         ));
-        ctx.arc(toolCoords[1].x, toolCoords[1].y, radius, angle1, angle2, ccw);
-        ctx.stroke();
-        ctx.closePath();
-        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool, 0.5);
-        ctx.fill();
+        ctxGUI.arc(toolCoords[1].x, toolCoords[1].y, radius, angle1, angle2, ccw);
+        ctxGUI.stroke();
+        ctxGUI.closePath();
+        ctxGUI.fillStyle = colorToRGBA(SETTINGS.colorTool, 0.5);
+        ctxGUI.fill();
 
-        ctx.beginPath();
-        ctx.moveTo(toolCoords[0].x, toolCoords[0].y);
-        ctx.lineTo(toolCoords[1].x, toolCoords[1].y);
-        ctx.lineTo(toolCoords[2].x, toolCoords[2].y);
-        ctx.stroke();
+        ctxGUI.beginPath();
+        ctxGUI.moveTo(toolCoords[0].x, toolCoords[0].y);
+        ctxGUI.lineTo(toolCoords[1].x, toolCoords[1].y);
+        ctxGUI.lineTo(toolCoords[2].x, toolCoords[2].y);
+        ctxGUI.stroke();
 
-        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool);
+        ctxGUI.fillStyle = colorToRGBA(SETTINGS.colorTool);
         const angleText = (angle1 + angle2) / 2 + (ccw * Math.PI);
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
+        ctxGUI.textAlign = "center";
+        ctxGUI.textBaseline = "middle";
         let args = [
             Math.abs(Math.abs(angle1 - angle2)/Math.PI*180 - ccw*360).toFixed(2) + "°", 
             toolCoords[1].x + 25*Math.cos(angleText), 
             toolCoords[1].y + 25*Math.sin(angleText)
         ];
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "black";
-        ctx.strokeText(...args);
-        ctx.fillText(...args);
+        ctxGUI.lineWidth = 3;
+        ctxGUI.strokeStyle = "black";
+        ctxGUI.strokeText(...args);
+        ctxGUI.fillText(...args);
         break;
     case "equipline":
-        ctx.strokeStyle = colorToRGBA(SETTINGS.colorTool);
-        ctx.lineWidth = 3;
+        ctxGUI.strokeStyle = colorToRGBA(SETTINGS.colorTool);
+        ctxGUI.lineWidth = 3;
         let maxIter = 10000;
         
         let Px1 = toolCoords[0].x;
@@ -464,8 +454,8 @@ function animateWithoutRequest() {
         let Px2 = toolCoords[0].x;
         let Py2 = toolCoords[0].y;
         let startPot = calculatePotential(toolCoords[0].x, toolCoords[0].y);
-        ctx.beginPath();
-        ctx.moveTo(Px1, Py1);
+        ctxGUI.beginPath();
+        ctxGUI.moveTo(Px1, Py1);
         let endFlag = true;
         for (let I = 0; I < maxIter; I++) {
             let E = calculateField(Px1, Py1);
@@ -476,15 +466,15 @@ function animateWithoutRequest() {
             Px1 -= Math.min(deltaPot * E.x / E.r / E.r, 2);
             Py1 -= Math.min(deltaPot * E.y / E.r / E.r, 2);
 
-            ctx.lineTo(Px1, Py1);
+            ctxGUI.lineTo(Px1, Py1);
             if (Px1 < -2000 || Py1 < -2000 || Px1 > canvas.width+2000 || Py1 > canvas.height+2000) break;
             if (endFlag && I > 50 && (toolCoords[0].x - Px1)**2 + (toolCoords[0].y - Py1)**2 < 25) {
                 I = maxIter - 30;
                 endFlag = false;
             }
         }
-        ctx.stroke();
-        ctx.beginPath();
+        ctxGUI.stroke();
+        ctxGUI.beginPath();
         if (endFlag) {
             for (let I = 0; I < maxIter; I++) {
                 let E = calculateField(Px2, Py2);
@@ -495,7 +485,7 @@ function animateWithoutRequest() {
                 Px2 -= Math.min(deltaPot * E.x / E.r / E.r, 2);
                 Py2 -= Math.min(deltaPot * E.y / E.r / E.r, 2);
 
-                ctx.lineTo(Px2, Py2);
+                ctxGUI.lineTo(Px2, Py2);
                 if (Px2 < -2000 || Py2 < -2000 || Px2 > canvas.width+2000 || Py2 > canvas.height+2000) break;
                 if (endFlag && I > 50 && (Px2 - Px1)**2 + (Py2 - Py1)**2 < 25) {
                     I = maxIter - 30;
@@ -503,22 +493,22 @@ function animateWithoutRequest() {
                 }
             }
         }
-        ctx.stroke();
+        ctxGUI.stroke();
         break;
     case "powerline":
-        ctx.strokeStyle = colorToRGBA(SETTINGS.colorTool);
-        ctx.lineWidth = 3;
+        ctxGUI.strokeStyle = colorToRGBA(SETTINGS.colorTool);
+        ctxGUI.lineWidth = 3;
         let drawLine = negateField => {
             let Px = toolCoords[0].x;
             let Py = toolCoords[0].y;
-            ctx.beginPath();
-            ctx.moveTo(Px, Py);
+            ctxGUI.beginPath();
+            ctxGUI.moveTo(Px, Py);
             negateField = negateField ? -1 : 1;
             outer: for (let I = 0; I < 10000; I++) {
                 let E = calculateField(Px, Py);
                 Px += E.x / E.r * negateField;
                 Py += E.y / E.r * negateField;
-                ctx.lineTo(Px, Py);
+                ctxGUI.lineTo(Px, Py);
 
                 if (Px < -2000 || Py < -2000 || Px > canvas.width+2000 || Py > canvas.height+2000) break outer;
                 for (let k = 0; k < charges.length; k++) {
@@ -527,7 +517,7 @@ function animateWithoutRequest() {
                     }
                 }
             }
-            ctx.stroke();
+            ctxGUI.stroke();
         };
         drawLine(false);
         drawLine(true);
@@ -537,25 +527,26 @@ function animateWithoutRequest() {
     // draw charge circles
     for (let i = 0; i < charges.length; i++) {
         const charge = charges[i];
-        ctx.beginPath();
-        ctx.arc(charge.x, charge.y, getChargeRadius(i), 0, 2 * Math.PI);
-        ctx.fillStyle = charge.q > 0 ? colorToRGBA(SETTINGS.colorBgPos, 1) : colorToRGBA(SETTINGS.colorBgNeg, 1);
-        ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = colorToRGBA(SETTINGS.colorOutline, 1);
-        ctx.stroke();
+        ctxGUI.beginPath();
+        ctxGUI.arc(charge.x, charge.y, getChargeRadius(i), 0, 2 * Math.PI);
+        ctxGUI.fillStyle = charge.q > 0 ? colorToRGBA(SETTINGS.colorBgPos, 1) : colorToRGBA(SETTINGS.colorBgNeg, 1);
+        ctxGUI.fill();
+        ctxGUI.lineWidth = 2;
+        ctxGUI.strokeStyle = colorToRGBA(SETTINGS.colorOutline, 1);
+        ctxGUI.stroke();
     }
 
     // draw tool circles
     for (let i = 0; i < toolCoords.length; i++) {
         const circle = toolCoords[i];
-        ctx.beginPath();
-        ctx.arc(circle.x, circle.y, 5, 0, 2 * Math.PI);
-        ctx.fillStyle = colorToRGBA(SETTINGS.colorTool);
-        ctx.fill();
+        ctxGUI.beginPath();
+        ctxGUI.arc(circle.x, circle.y, 5, 0, 2 * Math.PI);
+        ctxGUI.fillStyle = colorToRGBA(SETTINGS.colorTool);
+        ctxGUI.fill();
     }
 }
+
 function animate() {
-    animateWithoutRequest();
+    if (!isRendering) animateWithoutRequest();
     requestAnimationFrame(animate);
 }

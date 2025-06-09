@@ -8,6 +8,5 @@ $(document).ready(() => {
         { x: window.innerWidth*2/3, y: window.innerHeight/3, q: -2e-6 }
     ];
     requestAnimationFrame(animate);
-    animateWithoutRequest();
-    render();
+    setCanvasSize();
 });

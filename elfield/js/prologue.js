@@ -18,8 +18,10 @@ function colorToRGBA(rgb, a=1) {
 }
 
 const canvas = $('#can')[0];
+const canvasGUI = $('#cangui')[0];
 
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
+const ctxGUI = canvasGUI.getContext('2d', { willReadFrequently: true });
 
 const k = 8.98755179e9; // \frac{1}{4\pi\epsilon_0}
 

@@ -150,9 +150,7 @@ function updateJSI18N() {
     // update time/fps display
     if (!SETTINGS.animatedMode) $('#progress').text(I18N[LANG].rendered.replace('%time%', lastRenderTime.toString()));
     else {
-        let fps = 1000/lastRenderTime;
-        runningFPS = runningFPS * 0.8 + fps * 0.2;
-        $('#progress').text(I18N[LANG].rendered_fps.replace('%fps%', runningFPS.toFixed(2)));
+        $('#progress').html(I18N[LANG].rendered_fps.replace('%fps%', runningFPS.toFixed(2)));
     }
     // update Coulomb units
     $("#val_charge").html(SETTINGS.placedCharge.toFixed(2).padStart(5, " ") + I18N[LANG].chargeunit)
@@ -166,8 +164,8 @@ let dragType = "charge";
 function clickOrStartDrag(e) {
     if (draggingIndex != -1) return;
     let mousePos = {
-        x: e.clientX - canvas.offsetTop,
-        y: e.clientY - canvas.offsetLeft
+        x: e.clientX - canvasGUI.offsetTop,
+        y: e.clientY - canvasGUI.offsetLeft
     };
     let chargeDragged = false;
     let chargeIndex = -1;
@@ -253,7 +251,7 @@ function clickOrStartDrag(e) {
 }
 
 interact.pointerMoveTolerance(5);
-interact(canvas)
+interact(canvasGUI)
     .draggable({
         listeners: {
             start(e) {
@@ -261,8 +259,8 @@ interact(canvas)
             },
             move(e) {
                 let mousePos = {
-                    x: e.clientX - canvas.offsetTop,
-                    y: e.clientY - canvas.offsetLeft
+                    x: e.clientX - canvasGUI.offsetTop,
+                    y: e.clientY - canvasGUI.offsetLeft
                 };
                 // drag either ghost charge or actual charge depending on mode
                 if (draggingIndex != -1) {
@@ -324,13 +322,13 @@ interact(canvas)
     })
     .styleCursor(false);
 
-$(canvas).on('mousemove', updateCursor)
+$(canvasGUI).on('mousemove', updateCursor)
 
 function updateCursor(e) {
     // hand when mousing over, clenched hand when dragging, crosshair otherwise
     let mousePos = {
-        x: e.clientX - canvas.offsetTop,
-        y: e.clientY - canvas.offsetLeft
+        x: e.clientX - canvasGUI.offsetTop,
+        y: e.clientY - canvasGUI.offsetLeft
     };
     let onFlag = false;
     for (let i = 0; i < charges.length; i++) {
@@ -345,10 +343,24 @@ function updateCursor(e) {
             break;
         }
     }
-    canvas.style.cursor = draggingIndex == -1 ? (onFlag ? "grab" : "crosshair") : "grabbing";
+    canvasGUI.style.cursor = draggingIndex == -1 ? (onFlag ? "grab" : "crosshair") : "grabbing";
 }
 
+let setCanvasSize = () => {
+    var bounds = canvas.getBoundingClientRect();
+    canvas.setAttribute("width", bounds.width);
+    canvas.width = bounds.width;
+    canvas.setAttribute("height", bounds.height);
+    canvas.height = bounds.height;
+    canvasGUI.setAttribute("width", bounds.width);
+    canvasGUI.width = bounds.width;
+    canvasGUI.setAttribute("height", bounds.height);
+    canvasGUI.height = bounds.height;
+    animateWithoutRequest();
+    render();
+}
 $(window).on("resize", () => {
+    setCanvasSize();
     animateWithoutRequest();
     render();
 });
