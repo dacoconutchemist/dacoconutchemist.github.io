@@ -6,6 +6,16 @@ Array.prototype.remove = function(from, to) {
 };
 // /Array Remove
 
+// https://stackoverflow.com/a/52256801
+function debounce(func, time=100){
+    var timer;
+    return function(event){
+        if(timer) clearTimeout(timer);
+        timer = setTimeout(func, time, event);
+    };
+}
+// / https://stackoverflow.com/a/52256801
+
 // helper functions and constants
 
 function hexToArr(hex) {

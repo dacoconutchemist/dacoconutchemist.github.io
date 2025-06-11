@@ -76,7 +76,7 @@ abbr {
     border-radius: 5px;
     margin-bottom: 3px;
     margin-right: 3px;
-    font-size: 75%;
+    font-size: smaller;
 }
 
 .heading {

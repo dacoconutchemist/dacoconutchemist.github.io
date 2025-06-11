@@ -40,11 +40,14 @@ const numWorkers = Math.min(10, navigator.hardwareConcurrency || 4);
 let workerCode = `
     // linear interpolation of colors
     function lerpColors(bg, overlay, opacity) {
-        return [
-            bg[0]+(overlay[0]-bg[0])*opacity,
-            bg[1]+(overlay[1]-bg[1])*opacity,
-            bg[2]+(overlay[2]-bg[2])*opacity,
-        ];
+        const r = (bg >> 16) + ((overlay >> 16) - (bg >> 16)) * opacity;
+        const g = ((bg >> 8) & 0xFF) + (((overlay >> 8) & 0xFF) - ((bg >> 8) & 0xFF)) * opacity;
+        const b = (bg & 0xFF) + ((overlay & 0xFF) - (bg & 0xFF)) * opacity;
+        return (r << 16) | (g << 8) | b;
+    }
+
+    function byteify(color) {
+        return (color[0] << 16) | (color[1] << 8) | color[2];
     }
 
     onmessage = function(e) {
@@ -75,7 +78,7 @@ let workerCode = `
             // background color calculation
 
             // pass all parameters and interpret the shared buffer as a float array
-            const {
+            let {
                 sharedBgBuffer,
                 sharedPotentialBuffer,
                 potsWidth,
@@ -101,6 +104,11 @@ let workerCode = `
             const equipotOffset2 = Math.ceil(equipLineThickness/2);
 
             const log5001 = Math.log(5001); // it's measurably faster this way ok???
+
+            colorBgDefault = byteify(colorBgDefault);
+            colorBgPos = byteify(colorBgPos);
+            colorBgNeg = byteify(colorBgNeg);
+            colorsEquipotential = byteify(colorsEquipotential);
 
             for (let y = startY; y < endY; y++) {
                 for (let x = 0; x < canvasWidth; x++) {
@@ -145,9 +153,9 @@ let workerCode = `
                     
                     // set corresponding pixel
                     const index = (y * canvasWidth + x) * 4;
-                    DATA[index] = col[0];
-                    DATA[index + 1] = col[1];
-                    DATA[index + 2] = col[2];
+                    DATA[index] = col >> 16;
+                    DATA[index + 1] = (col >> 8) & 0xFF;
+                    DATA[index + 2] = col & 0xFF;
                     DATA[index + 3] = 255;
                 }
             }
@@ -161,21 +169,20 @@ let workers = [];
 for (let i = 0; i < numWorkers; i++) workers.push(new Worker(workerURL));
 
 async function render() {
+    //performance.mark('renderStart');
     if (isRendering) return;
     isRendering = true;
 
     if (!SETTINGS.animatedMode) $('#progress').text(I18N[LANG].rendering);
 
-    const startTime = performance.now();
-
     let canvasWidth = canvas.width;
     let canvasHeight = canvas.height;
 
     if (!INSECURE_CONTEXT_DEBUG_MODE && (SETTINGS.drawBg || SETTINGS.drawField)) {
-        // make a shared potential buffer (with an array inside) that is a bit bigger than the canvas (for thick equipotential lines)
+        let canvasWidth = canvas.width;
+        let canvasHeight = canvas.height;
         const potsWidth = canvasWidth + 10;
         const potsHeight = canvasHeight + 10;
-        const sharedPotentialBuffer = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * potsWidth * potsHeight);
         // assign horizontal slices of the screen to workers
         for (let i = 0; i < numWorkers; i++) {
             const startY = Math.floor(i * potsHeight / numWorkers);
@@ -197,8 +204,6 @@ async function render() {
             worker.onmessage = resolve
         })));
 
-        // shared background color buffer (array)
-        const sharedBgBuffer = new SharedArrayBuffer(Uint8ClampedArray.BYTES_PER_ELEMENT * canvasWidth * canvasHeight * 4);
         // assign horizontal slices of the screen to workers
         for (let i = 0; i < numWorkers; i++) {
             const startY = Math.floor(i * canvasHeight / numWorkers);
@@ -233,7 +238,7 @@ async function render() {
         // put resulting data onto the canvas
         const imageData = new ImageData(canvasWidth, canvasHeight)
         imageData.data.set(new Uint8ClampedArray(sharedBgBuffer));
-        ctx.putImageData(imageData, 0, 0);        
+        ctx.putImageData(imageData, 0, 0);
     } else {
         // clear screen if i can't be bothered enough to make a certificate when testing on mobile 
         // or if both the background and equipotential lines are shut off (who would even do that but ok)
@@ -242,43 +247,63 @@ async function render() {
     }
 
     if (SETTINGS.drawArrows) {
-        ctx.fillStyle = ctx.strokeStyle = colorToRGBA(SETTINGS.colorsArrows, SETTINGS.arrowsOpacity);
+        const halfSpacing = SETTINGS.arrowsSpacing / 2 - 1;
+        const color = colorToRGBA(SETTINGS.colorsArrows, SETTINGS.arrowsOpacity);
+
+        ctx.fillStyle = ctx.strokeStyle = color;
         ctx.lineJoin = "miter";
         ctx.lineWidth = SETTINGS.arrowsThickness;
-        // loop through arrow positions
+
+        const rows = Math.ceil(canvas.height / SETTINGS.arrowsSpacing);
+        const cols = Math.ceil(canvas.width / SETTINGS.arrowsSpacing);
+
         ctx.beginPath();
-        for (let y = 0; y < canvas.height/SETTINGS.arrowsSpacing; y++) {
-            for (let x = 0; x < canvas.width/SETTINGS.arrowsSpacing; x++) {
-                let E = calculateField(x*SETTINGS.arrowsSpacing, y*SETTINGS.arrowsSpacing);
-                if (E.r == 0) continue;
-                let coordsFromCenter = {
-                    x: E.x / E.r * (SETTINGS.arrowsSpacing/2-1),
-                    y: E.y / E.r * (SETTINGS.arrowsSpacing/2-1),
-                };
+        for (let y = 0; y < rows; y++) {
+            const py = y * SETTINGS.arrowsSpacing;
+            for (let x = 0; x < cols; x++) {
+                const px = x * SETTINGS.arrowsSpacing;
+                const E = calculateField(px, py);
+                if (E.r === 0) continue;
 
-                let endX = x*SETTINGS.arrowsSpacing + coordsFromCenter.x;
-                let endY = y*SETTINGS.arrowsSpacing + coordsFromCenter.y;
+                const dx = (E.x / E.r) * halfSpacing;
+                const dy = (E.y / E.r) * halfSpacing;
 
-                ctx.moveTo(x*SETTINGS.arrowsSpacing - coordsFromCenter.x, y*SETTINGS.arrowsSpacing - coordsFromCenter.y);
-                
-                if (SETTINGS.drawArrowHeads) {
-                    let headLength = SETTINGS.arrowsThickness*3;
-                    let angle = Math.atan2(coordsFromCenter.y, coordsFromCenter.x);
-                    ctx.lineTo(endX, endY);
-                    // arrow head triangle
-                    ctx.moveTo(endX - headLength * Math.cos(angle - Math.PI / 6),
-                               endY - headLength * Math.sin(angle - Math.PI / 6));
-                    ctx.lineTo(endX, endY);
-                    ctx.lineTo(endX - headLength * Math.cos(angle + Math.PI / 6),
-                               endY - headLength * Math.sin(angle + Math.PI / 6));
-                } else {
-                    // otherwise just a line
-                    ctx.lineTo(endX, endY);
-                    
-                }
+                ctx.moveTo(px - dx, py - dy);
+                ctx.lineTo(px + dx, py + dy);
             }
         }
         ctx.stroke();
+
+        if (SETTINGS.drawArrowHeads) {
+            const headLength = SETTINGS.arrowsThickness * 3;
+
+            ctx.beginPath();
+            for (let y = 0; y < rows; y++) {
+                const py = y * SETTINGS.arrowsSpacing;
+                for (let x = 0; x < cols; x++) {
+                    const px = x * SETTINGS.arrowsSpacing;
+                    const E = calculateField(px, py);
+                    if (E.r === 0) continue;
+
+                    const dx = (E.x / E.r) * halfSpacing;
+                    const dy = (E.y / E.r) * halfSpacing;
+
+                    const endX = px + dx;
+                    const endY = py + dy;
+                    const angle = Math.atan2(dy, dx);
+
+                    const x1 = endX - headLength * Math.cos(angle - Math.PI / 6);
+                    const y1 = endY - headLength * Math.sin(angle - Math.PI / 6);
+                    const x2 = endX - headLength * Math.cos(angle + Math.PI / 6);
+                    const y2 = endY - headLength * Math.sin(angle + Math.PI / 6);
+
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(endX, endY);
+                    ctx.lineTo(x2, y2);
+                }
+            }
+            ctx.stroke();
+        }
     }
 
     if (SETTINGS.drawField) {
@@ -345,11 +370,14 @@ async function render() {
     
     animateWithoutRequest();
 
-    lastRenderTime = Math.round(performance.now() - startTime);
+    let currTime = performance.now();
+    lastRenderTime = Math.round(currTime - startTime);
     runningFPS = runningFPS * 0.8 + 200/lastRenderTime;
     updateJSI18N();
 
     isRendering = false;
+    //performance.mark('renderEnd');
+    startTime = currTime;
 }
 
 function animateWithoutRequest() {

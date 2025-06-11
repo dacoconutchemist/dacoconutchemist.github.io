@@ -312,7 +312,7 @@ interact(canvasGUI)
     })
     .on('hold', e => {
         // do hold behavior only on touchscreen
-        if (e._interaction.pointerType == "touch") {
+        if (e._interaction.pointerType != "mouse") {
             e.button = 2;
             clickOrStartDrag(e);
             // same here as above
@@ -346,6 +346,8 @@ function updateCursor(e) {
     canvasGUI.style.cursor = draggingIndex == -1 ? (onFlag ? "grab" : "crosshair") : "grabbing";
 }
 
+let sharedPotentialBuffer;
+let sharedBgBuffer
 let setCanvasSize = () => {
     var bounds = canvas.getBoundingClientRect();
     canvas.setAttribute("width", bounds.width);
@@ -356,14 +358,20 @@ let setCanvasSize = () => {
     canvasGUI.width = bounds.width;
     canvasGUI.setAttribute("height", bounds.height);
     canvasGUI.height = bounds.height;
+
+    const potsWidth = canvas.width + 10;
+    const potsHeight = canvas.height + 10;
+    sharedPotentialBuffer = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * potsWidth * potsHeight);
+    sharedBgBuffer = new SharedArrayBuffer(Uint8ClampedArray.BYTES_PER_ELEMENT * canvas.width * canvas.height * 4);
+
     animateWithoutRequest();
     render();
 }
-$(window).on("resize", () => {
+$(window).on("resize", debounce(() => {
     setCanvasSize();
     animateWithoutRequest();
     render();
-});
+}));
 
 $("#collapse").on("click", () => {
     $("#controls").hide();
