@@ -340,7 +340,7 @@ async function render() {
                 ctx.beginPath();
                 ctx.moveTo(Px, Py);
                 // move in the other direction if coming out of a negative charge
-                let negateField = charges[i].q < 0 ? -1 : 1;
+                let negateField = (charges[i].q < 0 ? -1 : 1) / SETTINGS.fieldQuality;
                 outer: for (let I = 0; I < maxIter; I++) {
                     // step by 1 pixel of length each time in the direction of E (or opposite)
                     let E = calculateField(Px, Py);
@@ -349,12 +349,12 @@ async function render() {
                     ctx.lineTo(Px, Py);
 
                     // stop if the line gets reeeeeally out of bounds
-                    if (Px < -2000 || Py < -2000 || Px > canvasWidth+2000 || Py > canvasHeight+2000) break outer;
+                    if (Px < 0 || Py < 0 || Px > canvasWidth || Py > canvasHeight) break outer;
                     
                     // check if the line approached a charge and add it to the respective charge's tracked lines
                     for (let k = 0; k < charges.length; k++) {
                         if (i == k) continue;
-                        if ((Px - charges[k].x)**2 + (Py - charges[k].y)**2 <= 5) {
+                        if ((Px - charges[k].x)**2 + (Py - charges[k].y)**2 <= 30) {
                             if (!incomingLines[k]) {
                                 incomingLines[k] = [];
                             }

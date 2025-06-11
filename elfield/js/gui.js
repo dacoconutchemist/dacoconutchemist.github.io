@@ -29,6 +29,7 @@ let listeners = [
     {sel: "#slider_powerline", type: "slider", var: "fieldDensity", def: "4", defVar: 4, preprocess: v => parseInt(v)},
     {sel: "#slider_powerline_d", type: "slider", var: "fieldOpacity", def: "1", defVar: 1, preprocess: v => parseFloat(v)},
     {sel: "#slider_powerline_t", type: "slider", var: "fieldThickness", def: "2", defVar: 2, preprocess: v => parseInt(v)},
+    {sel: "#slider_powerline_q", type: "slider", var: "fieldQuality", def: "0.5", defVar: 0.5, preprocess: v => parseFloat(v)},
     {sel: "#check_bg", type: "checkbox", var: "drawBg", def: true, defVar: true},
     {sel: "#color_equipot", type: "color", var: "colorsEquipotential", def: "#ffffff", defVar: [255, 255, 255]},
     {sel: "#color_powerline", type: "color", var: "colorsField", def: "#00ff00", defVar: [0, 255, 0]},
