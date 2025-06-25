@@ -98,6 +98,11 @@ h1 {
     width: 100%;
 }
 
+#unit_charge > *,
+#chargeunit {
+    font-family: monospace, monospace;
+}
+
 details {
     display: flex;
     justify-content: center;
@@ -177,14 +182,21 @@ details[open] > summary::before {
 
 #val_charge {
     font-family: monospace, monospace;
-    margin-left: 5px;
+    margin-left: 0.4rem;
+    width: 6ch;
+    overflow-x: hidden;
+    text-align: right;
 }
 
-#hold_charge {
+#hold_charge_inner {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    width: 100%;
+}
+
+.holds {
     width: 100%;
 }
 

@@ -12,10 +12,14 @@ let listeners = [
         callback: if no type is specified, this is the body of the listener
         preprocess: only for sliders, self-explanatory
     */
-    {sel: "#slider_charge", event: "input", type: "", var: "placedCharge", def: "2", defVar: 2, callback: e=>{
-        SETTINGS.placedCharge = parseFloat(e.target.value);
+    {sel: "#slider_charge", event: "input", type: "", var: "placedCharge", def: "0.602", defVar: 2, callback: e=>{
+        SETTINGS.placedCharge = (10**parseFloat(e.target.value)) / 2;
         updateJSI18N();
     }},
+    {sel: "#check_magnetic", type: "checkbox", var: "MAGNETIC", def: false, defVar: false},
+    {sel: "#voltage_mode", type: "checkbox", var: "voltageInftyMode", def: false, defVar: false},
+    {sel: "#angle_mode", type: "checkbox", var: "angleDistanceMode", def: false, defVar: false},
+    {sel: "#powerlinetool_arrows", type: "checkbox", var: "powerlineToolArrows", def: true, defVar: true},
     {sel: "#check_equipot", type: "checkbox", var: "drawEquipotential", def: true, defVar: true},
     {sel: "#slider_equipot", type: "slider", var: "equipLineDensityCoef", def: "0.25", defVar: 4, preprocess: v => 1/parseFloat(v)},
     {sel: "#slider_equipot_d", type: "slider", var: "equipLineOpacity", def: "1", defVar: 1, preprocess: v => parseFloat(v)},
@@ -121,11 +125,25 @@ $("#tools > input").on('change', e => {
             ];
             break;
         }
+        $('.holds').hide();
+        $(`#hold_` + SETTINGS.mode).show();
     }
 });
 
+$("#val_charge").on('blur', e => {
+    let text = $("#val_charge").text();
+    let val = SETTINGS.placedCharge;
+    try {
+        val = Math.max(Math.min(parseFloat(text), 500), 0.5);
+    } catch (e) {}
+    if(!isNaN(text)) SETTINGS.placedCharge = val;
+    $("#val_charge").html(SETTINGS.placedCharge.toFixed(2));
+    $("#slider_charge").val(Math.log10(2*SETTINGS.placedCharge));
+});
+
 $("#btn_clear").on('click', e => {
-    if (confirm(I18N[LANG].clear_msg)) {
+    let message = SETTINGS.MAGNETIC ? I18N[LANG].clear_msgM : I18N[LANG].clear_msg;
+    if (confirm(message)) {
         // delete charges
         charges = [];
         render();
@@ -147,6 +165,17 @@ $("#btn_reset").on('click', e => {
     }
 });
 
+$('#check_magnetic').on('change', e => {
+    let magnetic = $('#check_magnetic').is(":checked");
+    if (magnetic) {
+        $('.m-hidden').hide();
+        switchLanguage(LANG, true);
+    } else {
+        $('.m-hidden').show();
+        switchLanguage(LANG, false);
+    }
+});
+
 function updateJSI18N() {
     // update time/fps display
     if (!SETTINGS.animatedMode) $('#progress').text(I18N[LANG].rendered.replace('%time%', lastRenderTime.toString()));
@@ -154,7 +183,7 @@ function updateJSI18N() {
         $('#progress').html(I18N[LANG].rendered_fps.replace('%fps%', runningFPS.toFixed(2)));
     }
     // update Coulomb units
-    $("#val_charge").html(SETTINGS.placedCharge.toFixed(2).padStart(5, " ") + I18N[LANG].chargeunit)
+    $("#val_charge").html(SETTINGS.placedCharge.toFixed(2))
 }
 
 let draggingIndex = -1;
@@ -172,7 +201,7 @@ function clickOrStartDrag(e) {
     let chargeIndex = -1;
     if (e._interaction.pointerType != "touch") {
         // if using a mouse, find the first intersecting charge/circle
-        for (let i = 0; i < charges.length; i++) {
+        if (SETTINGS.mode == "charge") for (let i = 0; i < charges.length; i++) {
             if ((mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2 <= (e.radius || getChargeRadius(i))**2) {
                 chargeIndex = i;
                 dragType = "charge";
@@ -189,7 +218,7 @@ function clickOrStartDrag(e) {
     } else {
         // on touchscreen, use voronoi shaped areas for easier aiming (find closest charge to tap up to 20 px away)
         let minDistanceSq = 1e10;
-        for (let i = 0; i < charges.length; i++) {
+        if (SETTINGS.mode == "charge") for (let i = 0; i < charges.length; i++) {
             let distanceSq = (mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2;
             if (distanceSq < minDistanceSq) {
                 minDistanceSq = distanceSq;
@@ -240,7 +269,7 @@ function clickOrStartDrag(e) {
             }
         }
     }
-    if (!chargeDragged) {
+    if (SETTINGS.mode == "charge") if (!chargeDragged) {
         // if it's not being dragged, it's placed
         if (e.button == 0 || e.button == 2) {
             charges.sort((a, b) => Math.abs(b.q) - Math.abs(a.q));
@@ -332,13 +361,13 @@ function updateCursor(e) {
         y: e.clientY - canvasGUI.offsetLeft
     };
     let onFlag = false;
-    for (let i = 0; i < charges.length; i++) {
+    if (SETTINGS.mode == "charge") for (let i = 0; i < charges.length; i++) {
         if ((mousePos.x - charges[i].x)**2 + (mousePos.y - charges[i].y)**2 <= getChargeRadius(i)**2) {
             onFlag = true;
             break;
         }
     }
-    for (let i = 0; i < toolCoords.length; i++) {
+    else for (let i = 0; i < toolCoords.length; i++) {
         if ((mousePos.x - toolCoords[i].x)**2 + (mousePos.y - toolCoords[i].y)**2 <= 25) {
             onFlag = true;
             break;

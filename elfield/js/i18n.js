@@ -22,8 +22,7 @@ var I18N = {
         'slider_powerline_d': "Opacity",
         'slider_powerline_t': "Thickness",
         'slider_powerline_q': "Quality",
-        'chargeinitial': " 2.00 μC",
-        'chargeunit': " μC",
+        'chargeunit': " μC",
         'voltageunit': " V",
         'rendered': 'Image rendered (%time% ms)',
         'rendering': 'Rendering...',
@@ -41,7 +40,19 @@ var I18N = {
         'color_neg': 'Negative color',
         'color_outline': 'Charge outline color',
         'rendered_fps': 'Image rendered (%fps% FPS on average)',
-        'check_anim': ' <abbr title="(not recommended for low-end devices)">Smooth mode</abbr>'
+        'check_anim': ' <abbr title="(not recommended for low-end devices)">Smooth mode</abbr>',
+        'check_magnetic': ' Magnetic field',
+        'voltage_mode': 'Relative to infinity?',
+        'angle_mode': 'Measure distance',
+        'currentlabel': 'Current of the placed infinite wire:',
+        'currentunit': ' μA',
+        'powerlineM-summary': 'Magnetic field lines',
+        'B-summary': 'Magnetic field direction',
+        'color_to': '"To" color',
+        'color_away': '"Away" color',
+        'color_outlineM': 'Wire outline color',
+        'clearM': 'Delete wires',
+        'clear_msgM': 'Delete existing wires? This action cannot be undone'
     },
     'ua': {
         'h1': "Симуляція Електричного Поля",
@@ -66,8 +77,7 @@ var I18N = {
         'slider_powerline_d': "Прозорість",
         'slider_powerline_t': "Товщина",
         'slider_powerline_q': "Якість",
-        'chargeinitial': " 2.00 мкКл",
-        'chargeunit': " мкКл",
+        'chargeunit': " мкКл",
         'voltageunit': " В",
         'rendered': 'Рендеринг завершено (%time% мс)',
         'rendering': 'Рендеринг...',
@@ -85,7 +95,19 @@ var I18N = {
         'color_neg': 'Колір негативних зарядів',
         'color_outline': 'Колір контуру зарядів',
         'rendered_fps': 'Рендеринг завершено (%fps% FPS в сер.)',
-        'check_anim': ' <abbr title="(не рекомендується для слабких пристроїв)">Плавний режим</abbr>'
+        'check_anim': ' <abbr title="(не рекомендується для слабких пристроїв)">Плавний режим</abbr>',
+        'check_magnetic': ' Магнітне поле',
+        'voltage_mode': 'Відносно нескінченності?',
+        'angle_mode': 'Виміряти відстань',
+        'currentlabel': 'Струм в поставленому нескінченному дроті:',
+        'currentunit': ' мкА',
+        'powerlineM-summary': 'Лінії магнітного поля',
+        'B-summary': 'Напрям магнітного поля',
+        'color_to': 'Колір "до нас"',
+        'color_away': 'Колір "від нас"',
+        'color_outlineM': 'Колір контуру дротів',
+        'clearM': 'Видалити дроти',
+        'clear_msgM': 'Видалити існуючі дроти? Цю дію неможливо відмінити'
     },
     'de': {
         'h1': "Simulation des Elektrischen Feldes",
@@ -110,8 +132,7 @@ var I18N = {
         'slider_powerline_d': "Deckkraft",
         'slider_powerline_t': "Dicke",
         'slider_powerline_q': "Qualität",
-        'chargeinitial': " 2.00 μC",
-        'chargeunit': " μC",
+        'chargeunit': " μC",
         'voltageunit': " V",
         'rendered': 'Bild gerendert (%time% ms)',
         'rendering': 'Rendering...',
@@ -129,14 +150,27 @@ var I18N = {
         'color_neg': 'Negative Farbe',
         'color_outline': 'Konturfarbe der Ladungen',
         'rendered_fps': 'Bild gerendert (%fps% FPS im Durchschnitt)',
-        'check_anim': ' <abbr title="(nicht empfohlen für leistungsschwache Geräte)">Kontinuierlicher Modus</abbr>'
+        'check_anim': ' <abbr title="(nicht empfohlen für leistungsschwache Geräte)">Kontinuierlicher Modus</abbr>',
+        'check_magnetic': ' Magnetisches Feld',
+        'voltage_mode': 'Relativ zur Unendlichkeit?',
+        'angle_mode': 'Abstand messen',
+        'currentlabel': 'Strom des platzierten unendlichen Drahtes',
+        'currentunit': ' μA',
+        'powerlineM-summary': 'Magnetische Feldlinien',
+        'B-summary': 'Richtung des magnetischen Feldes',
+        'color_to': 'Farbe "zu uns"',
+        'color_away': 'Farbe "weg von uns"',
+        'color_outlineM': 'Konturfarbe der Drahten',
+        'clearM': 'Drahte entfernen',
+        'clear_msgM': 'Alle Drähte entfernen? Diese Aktion ist nicht rückgängig'
     }
 };
 
 var LANG = 'en';
 
-function switchLanguage(lang) {
-    LANG = lang;
+function switchLanguage(lang, magnet=0) {
+    if (magnet === 0) magnet = SETTINGS.MAGNETIC;
+    LANG = lang; 
     // for every translatable thing
     $('[data-i18n]').each(function() {
         var key = $(this).attr('data-i18n');
@@ -145,6 +179,17 @@ function switchLanguage(lang) {
         if (I18N[lang]) {
             if (I18N[lang][key]) {
                 $(this).html(I18N[lang][key]);
+            } else {
+                $(this).css("color", "red");
+                console.log(`'${key}': '',`);
+            }
+        }
+    });
+    $('[data-i18n-m]').each(function() {
+        var key = $(this).attr('data-i18n-m');
+        if (I18N[lang]) {
+            if (I18N[lang][key]) {
+                if (magnet) $(this).html(I18N[lang][key]);
             } else {
                 $(this).css("color", "red");
                 console.log(`'${key}': '',`);

@@ -28,106 +28,121 @@
             <i class="heading" data-i18n="author">by dacoconutchemist</i>
             <div class="spacer"></div>
             <label><input type="checkbox" id="check_anim" autocomplete="off"><span data-i18n="check_anim"> Smooth mode (not recommended for low-end systems)</span></label>
+            <label><input type="checkbox" id="check_magnetic" autocomplete="off"><span data-i18n="check_magnetic"> Magnetic field!</span></label>
             <div class="spacer"></div>
-            <div id="tools">
-                <span data-i18n="toolchoice" style="margin-right: 5px">Tool: </span>
+            <div id="electricTools" style="width: 100%">
+                <div id="tools">
+                    <span data-i18n="toolchoice" style="margin-right: 5px">Tool: </span>
 
-                <input type="radio" id="tool_charge" name="toolsgroup" autocomplete="off" value="charge" checked>
-                <label for="tool_charge"><img src="icons/tool_charge.png"></label>
+                    <input type="radio" id="tool_charge" name="toolsgroup" autocomplete="off" value="charge" checked>
+                    <label for="tool_charge"><img src="icons/tool_charge.png"></label>
 
-                <input type="radio" id="tool_voltage" name="toolsgroup" autocomplete="off" value="voltage">
-                <label for="tool_voltage"><img src="icons/tool_voltage.png"></label>
+                    <input type="radio" id="tool_voltage" name="toolsgroup" autocomplete="off" value="voltage">
+                    <label for="tool_voltage" class="m-hidden"><img src="icons/tool_voltage.png"></label>
 
-                <input type="radio" id="tool_angle" name="toolsgroup" autocomplete="off" value="angle">
-                <label for="tool_angle"><img src="icons/tool_angle.png"></label>
+                    <input type="radio" id="tool_angle" name="toolsgroup" autocomplete="off" value="angle">
+                    <label for="tool_angle"><img src="icons/tool_angle.png"></label>
 
-                <input type="radio" id="tool_equipline" name="toolsgroup" autocomplete="off" value="equipline">
-                <label for="tool_equipline"><img src="icons/tool_equipline.png"></label>
+                    <input type="radio" id="tool_equipline" name="toolsgroup" autocomplete="off" value="equipline">
+                    <label for="tool_equipline"><img src="icons/tool_equipline.png"></label>
 
-                <input type="radio" id="tool_powerline" name="toolsgroup" autocomplete="off" value="powerline">
-                <label for="tool_powerline"><img src="icons/tool_powerline.png"></label>
+                    <input type="radio" id="tool_powerline" name="toolsgroup" autocomplete="off" value="powerline">
+                    <label for="tool_powerline" class="m-hidden"><img src="icons/tool_powerline.png"></label>
+                </div>
+                <span class="holds" id="hold_charge">
+                    <span data-i18n="chargelabel" data-i18n-m="currentlabel">Charge of the placed particle:</span>
+                    <span id="hold_charge_inner">
+                        <input type="range" id="slider_charge" min="0" max="3" step="0.001" value="0.602" autocomplete="off">
+                        <span id="val_charge" contenteditable>2.00</span>
+                        <span id="chargeunit" data-i18n="chargeunit" data-i18n-m="currentunit"> μC</span>
+                    </span>
+                </span>
+                <span class="holds" id="hold_voltage" style="display: none;">
+                    <label><input type="checkbox" id="voltage_mode" autocomplete="off"><span data-i18n="voltage_mode"> Relative to infinity?</span></label>
+                </span>
+                <span class="holds" id="hold_angle" style="display: none;">
+                    <label><input type="checkbox" id="angle_mode" autocomplete="off"><span data-i18n="angle_mode"> Measure distance</span></label>
+                </span>
+                <!--<span class="holds" id="hold_powerline" style="display: none;">
+                    <label><input type="checkbox" id="powerlinetool_arrows" checked="true" autocomplete="off"><span data-i18n="powerlinetool_arrows"> Arrow heads</span></label>
+                </span>-->
+                <details>
+                    <summary>
+                        <span data-i18n="howto-summary">How to use</span>
+                    </summary>
+                    <span data-i18n="howto-1">&#x2022; To place particles, use left click for positive charge sign or right click for negative charge sign. The absolute value of the charge is controlled by the slider above.</span>
+                    <br>
+                    <span data-i18n="howto-2">&#x2022; To move particles, drag them around by their colored part using the left mouse button.</span>
+                    <br>
+                    <span data-i18n="howto-3">&#x2022; To remove particles, right click on their colored part.</span>
+                </details>
+                <details>
+                    <summary>
+                        <span data-i18n="equipot-summary" data-i18n-m="powerlineM-summary">Equipotential lines</span>
+                        <input type="checkbox" id="check_equipot" checked="true" autocomplete="off">
+                    </summary>
+                    <span data-i18n="slider_equipot">Equipotential line density</span>
+                    <input type="range" id="slider_equipot" min="0.2" max="0.8" step="0.001" value="0.25" autocomplete="off">
+                    <span data-i18n="slider_equipot_d">Equipotential line opacity</span>
+                    <input type="range" id="slider_equipot_d" min="0.04" max="1" step="0.001" value="1" autocomplete="off">
+                    <span data-i18n="slider_equipot_t">Equipotential line thickness</span>
+                    <input type="range" id="slider_equipot_t" min="1" max="8" step="1" value="1" autocomplete="off">
+                    <span data-i18n="color_equipot">Color</span>
+                    <input type="color" id="color_equipot" value="#ffffff" autocomplete="off">
+                </details>
+                <details class="m-hidden">
+                    <summary>
+                        <span data-i18n="powerline-summary">Electric field lines</span>
+                        <input type="checkbox" id="check_powerline" checked autocomplete="off">
+                    </summary>
+                    <span data-i18n="slider_powerline">Electric field line amount</span>
+                    <input type="range" id="slider_powerline" min="3" max="7" step="1" value="4" autocomplete="off">
+                    <span data-i18n="slider_powerline_d">Electric field line opacity</span>
+                    <input type="range" id="slider_powerline_d" min="0.04" max="1" step="0.001" value="1" autocomplete="off">
+                    <span data-i18n="slider_powerline_t">Electric field line thickness</span>
+                    <input type="range" id="slider_powerline_t" min="1" max="6" step="1" value="2" autocomplete="off">
+                    <span data-i18n="slider_powerline_q">Electric field line quality</span>
+                    <input type="range" id="slider_powerline_q" min="0.2" max="1" step="0.001" value="0.5" autocomplete="off">
+                    <span data-i18n="color_powerline">Color</span>
+                    <input type="color" id="color_powerline" value="#00ff00" autocomplete="off">
+                </details>
+                <details>
+                    <summary>
+                        <span data-i18n="E-summary" data-i18n-m="B-summary">Electric field direction</span>
+                        <input type="checkbox" id="check_E" autocomplete="off">
+                    </summary>
+                    <span data-i18n="slider_E">Electric field direction size</span>
+                    <input type="range" id="slider_E" min="7" max="40" step="0.01" value="20" autocomplete="off">
+                    <span data-i18n="slider_E_d">Electric field direction opacity</span>
+                    <input type="range" id="slider_E_d" min="0.04" max="1" step="0.001" value="1" autocomplete="off">
+                    <span data-i18n="slider_E_t">Electric field direction thickness</span>
+                    <input type="range" id="slider_E_t" min="2" max="6" step="0.01" value="2" autocomplete="off">
+                    <span data-i18n="color_E">Color</span>
+                    <input type="color" id="color_E" value="#ff00ff" autocomplete="off">
+                    <label><input type="checkbox" id="check_E_head" checked="true" autocomplete="off"><span data-i18n="check_E_head"> Arrowheads</span></label>
+                </details>
+                <details>
+                    <summary>
+                        <span data-i18n="bg-summary">Miscellaneous</span>
+                    </summary>
+                    <label><input type="checkbox" id="check_bg" checked="true" autocomplete="off"><span data-i18n="check_bg"> Enable background</span></label>
+                    <span data-i18n="color_bg_def">Default color</span>
+                    <input type="color" id="color_bg_def" value="#000000" autocomplete="off">
+                    <span data-i18n="color_pos" data-i18n-m="color_away">Positive color</span>
+                    <input type="color" id="color_pos" value="#ff0000" autocomplete="off">
+                    <span data-i18n="color_neg" data-i18n-m="color_to">Negative color</span>
+                    <input type="color" id="color_neg" value="#0000ff" autocomplete="off">
+                    <span data-i18n="color_outline" data-i18n-m="color_outlineM">Charge outline color</span>
+                    <input type="color" id="color_outline" value="#ffffff" autocomplete="off">
+                    <button id="btn_clear" data-i18n="clear" data-i18n-m="clearM">Delete charges</button>
+                    <button id="btn_reset" data-i18n="reset">Reset all settings to default</button>
+                </details>
             </div>
-            <span data-i18n="chargelabel">Charge of the placed particle:</span>
-            <span id="hold_charge">
-                <input type="range" id="slider_charge" min="0.5" max="10" step="0.01" value="2.00" autocomplete="off">
-                <span id="val_charge" data-i18n="chargeinitial"> 2.00 μC</span>
-            </span>
-            <details>
-                <summary>
-                    <span data-i18n="howto-summary">How to use</span>
-                </summary>
-                <span data-i18n="howto-1">&#x2022; To place particles, use left click for positive charge sign or right click for negative charge sign. The absolute value of the charge is controlled by the slider above.</span>
-                <br>
-                <span data-i18n="howto-2">&#x2022; To move particles, drag them around by their colored part using the left mouse button.</span>
-                <br>
-                <span data-i18n="howto-3">&#x2022; To remove particles, right click on their colored part.</span>
-            </details>
-            <details>
-                <summary>
-                    <span data-i18n="equipot-summary">Equipotential lines</span>
-                    <input type="checkbox" id="check_equipot" checked="true" autocomplete="off">
-                </summary>
-                <span data-i18n="slider_equipot">Equipotential line density</span>
-                <input type="range" id="slider_equipot" min="0.2" max="0.8" step="0.01" value="0.25" autocomplete="off">
-                <span data-i18n="slider_equipot_d">Equipotential line opacity</span>
-                <input type="range" id="slider_equipot_d" min="0.04" max="1" step="0.01" value="1" autocomplete="off">
-                <span data-i18n="slider_equipot_t">Equipotential line thickness</span>
-                <input type="range" id="slider_equipot_t" min="1" max="8" step="1" value="1" autocomplete="off">
-                <span data-i18n="color_equipot">Color</span>
-                <input type="color" id="color_equipot" value="#ffffff" autocomplete="off">
-            </details>
-            <details>
-                <summary>
-                    <span data-i18n="powerline-summary">Electric field lines</span>
-                    <input type="checkbox" id="check_powerline" checked autocomplete="off">
-                </summary>
-                <span data-i18n="slider_powerline">Electric field line amount</span>
-                <input type="range" id="slider_powerline" min="3" max="7" step="1" value="4" autocomplete="off">
-                <span data-i18n="slider_powerline_d">Electric field line opacity</span>
-                <input type="range" id="slider_powerline_d" min="0.04" max="1" step="0.01" value="1" autocomplete="off">
-                <span data-i18n="slider_powerline_t">Electric field line thickness</span>
-                <input type="range" id="slider_powerline_t" min="1" max="6" step="1" value="2" autocomplete="off">
-                <span data-i18n="slider_powerline_q">Electric field line quality</span>
-                <input type="range" id="slider_powerline_q" min="0.2" max="1" step="0.05" value="0.5" autocomplete="off">
-                <span data-i18n="color_powerline">Color</span>
-                <input type="color" id="color_powerline" value="#00ff00" autocomplete="off">
-            </details>
-            <details>
-                <summary>
-                    <span data-i18n="E-summary">Electric field direction</span>
-                    <input type="checkbox" id="check_E" autocomplete="off">
-                </summary>
-                <span data-i18n="slider_E">Electric field direction size</span>
-                <input type="range" id="slider_E" min="7" max="40" step="1" value="20" autocomplete="off">
-                <span data-i18n="slider_E_d">Electric field direction opacity</span>
-                <input type="range" id="slider_E_d" min="0.04" max="1" step="0.01" value="1" autocomplete="off">
-                <span data-i18n="slider_E_t">Electric field direction thickness</span>
-                <input type="range" id="slider_E_t" min="1" max="6" step="1" value="2" autocomplete="off">
-                <span data-i18n="color_E">Color</span>
-                <input type="color" id="color_E" value="#ff00ff" autocomplete="off">
-                <label><input type="checkbox" id="check_E_head" checked="true" autocomplete="off"><span data-i18n="check_E_head"> Arrowheads</span></label>
-            </details>
-            <details>
-                <summary>
-                    <span data-i18n="bg-summary">Miscellaneous</span>
-                </summary>
-                <label><input type="checkbox" id="check_bg" checked="true" autocomplete="off"><span data-i18n="check_bg"> Enable background</span></label>
-                <span data-i18n="color_bg_def">Default color</span>
-                <input type="color" id="color_bg_def" value="#000000" autocomplete="off">
-                <span data-i18n="color_pos">Positive color</span>
-                <input type="color" id="color_pos" value="#ff0000" autocomplete="off">
-                <span data-i18n="color_neg">Negative color</span>
-                <input type="color" id="color_neg" value="#0000ff" autocomplete="off">
-                <span data-i18n="color_outline">Charge outline color</span>
-                <input type="color" id="color_outline" value="#ffffff" autocomplete="off">
-                <button id="btn_clear" data-i18n="clear">Delete charges</button>
-                <button id="btn_reset" data-i18n="reset">Reset all settings to default</button>
-            </details>
         </div>
     </div>
     <script src="js/prologue.js"></script>
-    <script src="js/i18n.js"></script>
     <script src="js/gui.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/rendering.js"></script>
     <script src="js/init.js"></script>
 </body>

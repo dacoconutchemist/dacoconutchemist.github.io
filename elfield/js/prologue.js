@@ -31,14 +31,16 @@ const canvas = $('#can')[0];
 const canvasGUI = $('#cangui')[0];
 
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
-const ctxGUI = canvasGUI.getContext('2d', { willReadFrequently: true });
+const ctxGUI = canvasGUI.getContext('2d');
 
 const k = 8.98755179e9; // \frac{1}{4\pi\epsilon_0}
+const kM = 2e-7; // \frac{\mu_0}{2\pi} (yes, this turns out to be 2e-7 with a precision of 9 digits)
 
 let charges = [];
 
 function getChargeRadius(i) {
-    return Math.sqrt(Math.abs(charges[i].q) * 1e6) * 5
+    //return Math.sqrt(Math.abs(charges[i].q) * 1e6) * 5
+    return 2.55*Math.log(Math.abs(charges[i].q)) + 40.52;
 }
 
 var INSECURE_CONTEXT_DEBUG_MODE = false;
