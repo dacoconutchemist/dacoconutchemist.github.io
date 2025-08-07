@@ -1,6 +1,6 @@
 @font-face {
   font-family: ukrminecraft;
-  src: url("https://dacoconutchemist.github.io/minecraftfontukr.ttf");
+  src: url("https://g.da-co.xyz/minecraftfontukr.ttf");
 }
 
 * {
@@ -168,4 +168,5 @@ body::-webkit-scrollbar {
 
 #scrollhint {
   transition: linear 2s;
+
 }
