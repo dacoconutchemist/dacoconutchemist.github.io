@@ -1,13 +1,13 @@
 var pages = {
+    "Electric Field Simulation": ["/elfield", "charged balls but they look nice"],
+    "Desmos": ["/desmos", "games I made with the graphical calculator Desmos (external link)", "https://www.desmos.com/gallery/4f2f1ebd-d631-4e57-b53d-ef54639d74be"],
+    "4our 4ours": ["/4our4ours", "the Four Fours game from Numberphile, but digital and more customizable (beta version)"],
     "Price Calculator": ["/pricecalc", "calculates the minimal allowed prices for goods on GummerCraft"],
     "Translator": ["/translate", "translates fictional languages on GummerCraft, doubling as an Ukrainian-to-English keyboard layout fixer"],
     "fx-991DEX typer": ["/fx-991DEX", "converts text to button presses on the fx-991DEX calculator"],
-    "Hexguessr": ["/hexguessr", "hone your hex color reading and writing skills!"],
     "Rock-Paper-Scissors": ["/rockpaperscissors", "look at em go!"],
     "Gravity simulation": ["/particles", "balls go vroom vroom"],
-    "Electric Field Simulation": ["/elfield", "charged balls but they look nice"],
-    "4our 4ours": ["/4our4ours", "the Four Fours game from Numberphile, but digital and more customizable (beta version)"],
-    "Desmos": ["/desmos", "stuff I made with Desmos (not available yet)"],
+    "Hexguessr": ["/hexguessr", "hone your hex color reading and writing skills!"],
     "Tampermonkey": ["/tampermonkey", "my userscripts (not available yet)"]
 };
 
@@ -121,7 +121,7 @@ $(document).ready(function() {
         $('.main').append(`
             <div class="stickToWheel">
                 <img src="homepage_images${pages[i][0]}.png">
-                <a href="${pages[i][0]}">${i}</a>
+                <a href="${pages[i][2] || pages[i][0]}">${i}</a>
                 <span>${pages[i][1]}</span>
             </div>
         `);
@@ -136,7 +136,3 @@ $(document).ready(function() {
 
 $(document).on("scroll", processScroll);
 $(window).resize(processScale);
-
-$('#slider_charge').on('change', e => {
-    console.log(e.target.value)
-})
