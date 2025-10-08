@@ -1,5 +1,5 @@
 var pages = {
-    "Electric Field Simulation": ["/elfield", "charged balls but they look nice"],
+    "Electric Field Simulation": ["/elfield", "a simulation of field lines and equipotential lines of charged particles"],
     "Desmos": ["/desmos", "games I made with the graphical calculator Desmos (external link)", "https://www.desmos.com/gallery/4f2f1ebd-d631-4e57-b53d-ef54639d74be"],
     "4our 4ours": ["/4our4ours", "the Four Fours game from Numberphile, but digital and more customizable (beta version)"],
     "Price Calculator": ["/pricecalc", "calculates the minimal allowed prices for goods on GummerCraft"],
